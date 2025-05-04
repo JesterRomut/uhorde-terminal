@@ -19,6 +19,12 @@
 
 <svelte:head>
     <title>MacOS 1.2.EFC_12492_2775293581</title>
+    <link rel="preload" href="/fonts/MapleMonoNormalNL[wght].ttf" as="font" />
+    <link
+        rel="preload"
+        href="/fonts/MapleMonoNormalNL-Italic[wght].ttf"
+        as="font"
+    />
     <!-- <link
         rel="stylesheet"
         href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-Regular/result.css"

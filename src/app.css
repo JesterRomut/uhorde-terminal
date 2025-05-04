@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
 
-@theme {
-}
 body {
     background-color: var(--color-gray-950);
 }
