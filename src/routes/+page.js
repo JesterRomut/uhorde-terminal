@@ -1,14 +1,11 @@
-// import MapleMonoNormalNL from "$lib/assets/MapleMonoNormalNL[wght].ttf";
-// import MapleMonoNormalItalic from "$lib/assets/MapleMonoNormalNL-Italic[wght].ttf";
+//import ChargeBladePic from "$lib/assets/IMG_2860_zh.png?enhanced";
 
 /**@type {import("./$types").PageLoad} */
 export async function load({ params }) {
-    await new Promise((fulfil) => {
-        setTimeout(fulfil, 1000);
-    });
+    // await new Promise((fulfil) => {
+    //     setTimeout(fulfil, 1000);
+    // });
     return {
-        loaded: true,
-        // font: MapleMonoNormalNL,
-        // fontItalic: MapleMonoNormalItalic,
+        //chargeBlade: ChargeBladePic,
     };
 }
