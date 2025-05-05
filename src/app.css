@@ -4,3 +4,19 @@
 body {
     background-color: var(--color-gray-950);
 }
+
+@theme {
+    --animate-console-blink: console-blink 0.3s linear infinite;
+}
+
+@keyframes console-blink {
+    0%,
+    49%,
+    100% {
+        opacity: 1;
+    }
+    50%,
+    99% {
+        opacity: 0;
+    }
+}
