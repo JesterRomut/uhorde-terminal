@@ -30,7 +30,7 @@
 {#each choices as choice}
     <a
         class="block"
-        href={choice.href ? choice.href : "/"}
+        href={choice.href ? choice.href : "javascript:;"}
         onclick={(event) => {
             if (!choice.onclick) return;
 

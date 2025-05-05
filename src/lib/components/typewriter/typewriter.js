@@ -39,10 +39,11 @@ export function typewriterString(e, time) {
         e,
         time,
         (e) => e.innerHTML,
-        (_, __, arr, i) => {
+        (_, innerHTML, arr, i) => {
             if (typeof arr != "string")
                 throw TypeError(`not a string, got ${arr}`);
-            return arr.slice(0, i++) + "_";
+            return arr.slice(0, i) + "_";
+            //return innerHTML.replace(/_$/, "") + arr.at(i) + "_";
         },
         (_, arr) => arr
     );

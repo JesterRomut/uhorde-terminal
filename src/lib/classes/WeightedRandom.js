@@ -1,21 +1,40 @@
 /**
+ * Range: 0-1
+ * @typedef {() => number} Random
+ */
+
+/**
  * @template T
  */
 export class WeightedRandom {
     /**@type {?Map<T, number>} */
     items = null;
+    /**@type {Random} */
+    random = Math.random;
+
     constructor() {
         this.items = new Map();
+        this.random = Math.random;
     }
     /**
      * 添加物件与权重
      * @param {T} item
-     * @param {number} weight
+     * @param {number} [weight]
      *
      * @returns {WeightedRandom<T>}
      */
-    add(item, weight) {
+    add(item, weight = 1) {
         this.items?.set(item, weight);
+        return this;
+    }
+    /**
+     *
+     * @param {Random} rng
+     *
+     * @returns {WeightedRandom<T>}
+     */
+    rng(rng) {
+        this.random = rng;
         return this;
     }
     /**
@@ -33,7 +52,7 @@ export class WeightedRandom {
     }
     /**
      * 获取按权重的随机物品
-     * @returns {T | null}
+     * @returns {T}
      */
     roll() {
         if (!this.items) throw new ReferenceError("WeightedRandom not inited!");
@@ -42,7 +61,7 @@ export class WeightedRandom {
         if (items.length == 0) throw new RangeError("WeightedRandom is empty!");
 
         let max = items[0][1];
-        let random = Math.random() * this.sum();
+        let random = this.random() * this.sum();
 
         for (let i = 0; i < items.length; i++) {
             if (random < max) {
@@ -52,7 +71,7 @@ export class WeightedRandom {
             }
             max += items[i + 1][1];
         }
-        return null;
+        throw RangeError("Roll Failed!");
     }
 }
 

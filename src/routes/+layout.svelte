@@ -16,7 +16,7 @@
 /> -->
 
 <svelte:head>
-    <title>MacOS 1.2.EFC_12492_2775293581</title>
+    <title>LogOS 1.2.EFC_12492_2775293581</title>
     <!-- <link rel="preload" href="/fonts/MapleMonoNormalNL[wght].ttf" as="font" />
     <link
         rel="preload"

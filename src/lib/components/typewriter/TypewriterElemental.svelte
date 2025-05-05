@@ -34,8 +34,8 @@
                     throw new TypeError(`Expect Array, found ${arr}`);
                 /** @type {ChildNode}*/
                 let node = arr[i][1];
-                let res = node instanceof Element ? node.outerHTML : "";
-                return innerHTML + res;
+                let res = node instanceof Element ? node.outerHTML + "_" : "";
+                return innerHTML.replace(/_$/, "") + res;
             },
             (_, arr) => {
                 if (!(arr instanceof Array))
