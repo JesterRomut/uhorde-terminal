@@ -1,35 +1,22 @@
 <script>
     import { goto } from "$app/navigation";
+    import { CustomElementUtil } from "$lib/classes/Utils.js";
     import Loader from "$lib/components/Loader.svelte";
     import Logos from "$lib/components/Logos.svelte";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
-    import TypewriterCustom from "$lib/components/typewriter/TypewriterCustom.svelte";
-    import { elasticOut } from "svelte/easing";
-    import { fade } from "svelte/transition";
+    import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
+    import { onMount } from "svelte";
 
     let { data } = $props();
-
-    //let code = data.codes.roll();
 
     let roll = $state(data.codes.roll());
 
     let showLogo = $state(false);
-    // /**
-    //  * @type {?number}
-    //  */
-    // let rollerId;
-    // onMount(() => {
-    //     rollerId = setInterval(() => {
-    //         let result = data.codes.roll();
-    //         roll = result ? result : "";
-    //     }, 2000);
-    // });
 
-    // onDestroy(() => {
-    //     if (rollerId) clearInterval(rollerId);
-    // });
-    //console.log(data);
+    onMount(() => {
+        CustomElementUtil.define("logos-logo", Logos.element);
+    });
 </script>
 
 <svelte:head>
@@ -69,11 +56,13 @@
     <br />
     {#if showLogo}
         <div class="block absolute">
-            权限验证通过。
-            <br />
-            <Logos />
-            <br />
-            LogOS v1.2.EFC_12492_2775293581
+            <TypewriterMover time={50}>
+                权限验证通过。
+                <br />
+                <logos-logo></logos-logo>
+                <br />
+                LogOS v1.2.EFC_12492_2775293581
+            </TypewriterMover>
         </div>
     {/if}
 

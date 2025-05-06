@@ -1,3 +1,5 @@
+<svelte:options customElement={{ shadow: "none" }} />
+
 <script>
     import { WeightedRandom } from "$lib/classes/WeightedRandom";
     import { onDestroy, onMount } from "svelte";
@@ -109,27 +111,20 @@
 
 {#key logo}
     <div class="inline-block">
-        <span
-            class="inline-block first-letter:font-bold text-amber-200"
-            transition:logotapper
-        >
+        <span class="inline-block text-amber-200" transition:logotapper>
             {logo?.L}
         </span>
-        <span
-            class="inline-block first-letter:font-bold text-lime-200"
-            transition:logotapper>{logo?.o}</span
+        <span class="inline-block text-lime-200" transition:logotapper
+            >{logo?.o}</span
         >
-        <span
-            class="inline-block first-letter:font-bold text-teal-200"
-            transition:logotapper>{logo?.g}</span
+        <span class="inline-block text-teal-200" transition:logotapper
+            >{logo?.g}</span
         >
-        <span
-            class="inline-block first-letter:font-bold text-sky-200"
-            transition:logotapper>{logo?.O}</span
+        <span class="inline-block text-sky-200" transition:logotapper
+            >{logo?.O}</span
         >
-        <span
-            class="inline-block first-letter:font-bold text-indigo-200"
-            transition:logotapper>{logo?.S}</span
+        <span class="inline-block text-indigo-200" transition:logotapper
+            >{logo?.S}</span
         >
     </div>
 {/key}

@@ -9,9 +9,9 @@ const codes = new WeightedRandom()
 
 /**@type {import("./$types").PageLoad} */
 export async function load({ params }) {
-    await new Promise((fulfil) => {
-        setTimeout(fulfil, 1000);
-    });
+    // await new Promise((fulfil) => {
+    //     setTimeout(fulfil, 1000);
+    // });
     return {
         codes: codes,
         //chargeBlade: ChargeBladePic,

@@ -87,6 +87,36 @@ export function typewriter(e, time, init, process, finish) {
     return { start: () => _type(e) };
 }
 
+/**
+ *
+ * @param {Element} base
+ * @param {Element} output
+ * @param {number} time
+ */
+export function typewriterMover(base, output, time) {
+    /**
+     * @type {Array<Node> | undefined}
+     */
+    let arr = undefined;
+    let i = 0;
+
+    /**@param {Element} _output*/
+    async function _type(_output) {
+        if (arr == undefined) {
+            arr = base.childNodes.values().toArray();
+        }
+        if (i < arr.length) {
+            _output.appendChild(arr[i]);
+            i++;
+            await new Promise((fulfil) => {
+                setTimeout(fulfil, time);
+            });
+            await _type(_output);
+        }
+    }
+    return { start: () => _type(output) };
+}
+
 // export async function typewriterCustom(e, time, init, process, finish) {
 //     /**
 //      * @type {{length: number} | undefined}
