@@ -1,37 +1,6 @@
 <script>
-    import Card from "$lib/components/Card.svelte";
-    import Cardboard from "$lib/components/Cardboard.svelte";
-    import "../app.css";
-
     let { children } = $props();
-    // const decent = "bg-gray-950";
-    // const accent = "bg-stone-500";
 </script>
-
-<!-- <svelte:body
-    use:classList={[
-        "bg-gray-950",
-        // `bg-[image:repeating-linear-gradient(315deg,_${accent}_1px,_transparent_1px)]`,
-        // "bg-[size:10px_10px]",
-        // "bg-fixed",
-    ]}
-/> -->
-
-<svelte:head>
-    <title>LogOS 1.2.EFC_12492_2775293581</title>
-    <!-- <link rel="preload" href="/fonts/MapleMonoNormalNL[wght].ttf" as="font" />
-    <link
-        rel="preload"
-        href="/fonts/MapleMonoNormalNL-Italic[wght].ttf"
-        as="font"
-    /> -->
-    <!-- <link
-        rel="stylesheet"
-        href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-Regular/result.css"
-    /> -->
-</svelte:head>
-<!-- 
-<Cardboard /> -->
 
 <div
     class="left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] inline-grid absolute bg-gray-950 grid-cols-[2rem_80vw_2rem] grid-rows-[2rem_80vh_2rem] [--pattern-fg:var(--color-stone-500)]"
@@ -70,22 +39,6 @@
 </div>
 
 <style>
-    /* .-screen-container {
-        grid-template-areas:
-            "overlay1"
-            "overlay2"
-            "screen";
-    }
-    .-overlay1 {
-        grid-area: overlay1;
-    }
-
-    .-overlay2 {
-        grid-area: overlay2;
-    }
-    .-screen {
-        grid-area: screen;
-    } */
     @font-face {
         src:
             url("/fonts/MapleMonoNormalNL[wght].ttf")

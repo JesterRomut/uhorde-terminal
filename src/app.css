@@ -3,6 +3,7 @@
 @layer base {
     body {
         background-color: var(--color-gray-950);
+        color: var(--color-slate-300);
     }
 
     hr {

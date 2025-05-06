@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import("./$types").PageLoad} */
 export function load({ params }) {
     if (params.page === "hello-world") {
         return {
