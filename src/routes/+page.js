@@ -1,11 +1,6 @@
 //import ChargeBladePic from "$lib/assets/IMG_2860_zh.png?enhanced";
 import { WeightedRandom } from "$lib/classes/WeightedRandom";
-
-/** @type {WeightedRandom<string>} */
-const codes = new WeightedRandom()
-    .add("因为我喜欢你，没有理由。")
-    .add("因为它们都是单个的。")
-    .add("因为根本就没有答案。");
+import { accessCodes } from "$lib/documents/accessCode";
 
 /**@type {import("./$types").PageLoad} */
 export async function load({ params }) {
@@ -13,7 +8,7 @@ export async function load({ params }) {
     //     setTimeout(fulfil, 1000);
     // });
     return {
-        codes: codes,
+        codes: accessCodes,
         //chargeBlade: ChargeBladePic,
     };
 }

@@ -1,23 +1,19 @@
 <script>
-    import { onDestroy, onMount } from "svelte";
-    import { typewriterMover } from "./typewriterMover";
-    /**
-     * @typedef {(base: Element, output: Element, time: number) => {start: () => Promise<void>}} TypewriterFn
-     */
+    import { onMount } from "svelte";
+    import { typewriterMoverDeep } from "./typewriterMover";
 
     /**
      * @typedef {Object} Props
      * @property {() => void} [onfinish]
      * @property {(reason: any) => void} [onerror]
      * @property {number} [time]
-     * @property {TypewriterFn} [fn]
      * @property {*} children
      */
 
     /**
      * @type {Props}
      */
-    let { children, time = 200, onfinish, onerror, fn } = $props();
+    let { children, time = 200, onfinish, onerror } = $props();
 
     /**
      * @type {Element | undefined}
@@ -35,18 +31,12 @@
         //console.log(terminalClone.childNodes);
         //let terminalChildren = terminal.children.
         //console.log(terminal.childNodes);
-        let typewriter;
-        if (fn) {
-            typewriter = fn(terminal, terminalClone, time);
-        } else {
-            typewriter = typewriterMover(terminal, terminalClone, time);
-        }
-        let promise = typewriter.start();
-        promise.then(() => {
+        let typer = typewriterMoverDeep(terminal, terminalClone, time).start();
+        typer.then(() => {
             terminal?.remove();
         });
-        if (onfinish) promise.then(onfinish);
-        if (onerror) promise.catch(onerror);
+        if (onfinish) typer.then(onfinish);
+        if (onerror) typer.catch(onerror);
     });
 </script>
 

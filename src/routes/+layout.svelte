@@ -1,4 +1,6 @@
 <script>
+    import Card from "$lib/components/Card.svelte";
+    import Cardboard from "$lib/components/Cardboard.svelte";
     import "../app.css";
 
     let { children } = $props();
@@ -28,6 +30,8 @@
         href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-Regular/result.css"
     /> -->
 </svelte:head>
+<!-- 
+<Cardboard /> -->
 
 <div
     class="left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] inline-grid absolute bg-gray-950 grid-cols-[2rem_80vw_2rem] grid-rows-[2rem_80vh_2rem] [--pattern-fg:var(--color-stone-500)]"

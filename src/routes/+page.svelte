@@ -55,13 +55,12 @@
     </TypewriterCustom> -->
     <br />
     {#if showLogo}
-        <div class="block absolute">
-            <TypewriterMover time={50}>
-                权限验证通过。
-                <br />
+        <div class="inline-block absolute">
+            <TypewriterMover time={20}>
+                <p class="mt-0 mb-0">权限验证通过。</p>
                 <logos-logo></logos-logo>
                 <br />
-                LogOS v1.2.EFC_12492_2775293581
+                <p class="mt-0 mb-0">LogOS v1.2.EFC_12492_2775293581</p>
             </TypewriterMover>
         </div>
     {/if}
@@ -78,7 +77,7 @@
                 },
             },
             {
-                text: "[开始 / START]",
+                text: "[初始化 / INITIALIZE]",
                 waitingTime: 1000,
                 onclick: (e) => {
                     goto("/offset/1");
