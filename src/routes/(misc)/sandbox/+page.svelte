@@ -1,5 +1,4 @@
 <script>
-    import "../../app.css";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
     import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
     import TypewriterMoverDeep from "$lib/components/typewriter/TypewriterMoverDeep.svelte";

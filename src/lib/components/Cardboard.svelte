@@ -14,7 +14,7 @@
     onmouseout={() => (hover = false)}
     onfocus={() => (hover = true)}
     onblur={() => (hover = false)}
-    class="-cardboard left-3/4 transform-[translateX(-75%)] fixed bottom-0 flex justify-center items-center"
+    class="md:-bottom-6rem -cardboard left-3/4 transform-[translateX(-75%)] fixed bottom-0 flex justify-center items-center"
 >
     {#each activeCards as card, index}
         <Card
@@ -26,8 +26,13 @@
 
 <style>
     .-cardboard {
-        bottom: -20%;
+        bottom: -8rem;
         transition: 0.5s;
+    }
+    @media only screen and (max-width: 600px) {
+        .-cardboard {
+            bottom: -5rem;
+        }
     }
     .-cardboard:hover {
         bottom: 0;
