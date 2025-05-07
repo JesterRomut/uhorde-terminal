@@ -6,10 +6,16 @@
     import { goto } from "$app/navigation";
 
     // @ts-ignore
-    import everything from "$lib/data/documents/manual.md";
+    import page0 from "./page0.md";
+    // @ts-ignore
+    import page1 from "./page1.md";
+
     import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
 
-    let finished = $state(false);
+    //let finished = $state(false);
+    let stage = $state(0);
+
+    const pages = [page0, page1];
 </script>
 
 <Loader>
@@ -20,13 +26,13 @@
             new Promise((fulfil) => {
                 setTimeout(fulfil, 500);
             }).then(() => {
-                finished = true;
+                stage = 1;
             });
         }}
     >
-        {@render everything()}
+        {@render page0()}
     </TypewriterMoverCursored>
-    {#if finished}
+    {#if stage == 1}
         <TerminalChoice
             choices={[
                 // {
@@ -37,13 +43,33 @@
                 //     },
                 // },
                 {
-                    text: "[返回 / RETURN]",
+                    text: "[继续 / CONTINUE]",
                     waitingTime: 1000,
                     onclick: (e) => {
-                        goto("/");
+                        stage = 2;
                     },
                 },
             ]}
         />
+    {/if}
+    {#if stage > 1}
+        <TypewriterMoverCursored
+            removeCursorWhenFinish={false}
+            time={100}
+            onfinish={() => {
+                new Promise((fulfil) => {
+                    setTimeout(fulfil, 500);
+                }).then(() => {
+                    stage = 3;
+                });
+            }}
+            onappend={[
+                () => {
+                    //terminal().scroll(0, 1000);
+                },
+            ]}
+        >
+            {@render page1()}
+        </TypewriterMoverCursored>
     {/if}
 </Loader>

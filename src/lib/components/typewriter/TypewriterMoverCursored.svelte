@@ -8,6 +8,8 @@
      * @typedef {Object} Props
      * @property {() => void} [onfinish]
      * @property {(reason: any) => void} [onerror]
+     *
+     * @property {((node: Node) => void)[]} [onappend]
      * @property {number} [time]
      * @property {import("svelte").Snippet} [cursor]
      * @property {boolean} [removeCursorWhenFinish]
@@ -23,6 +25,7 @@
         time = 200,
         onfinish,
         onerror,
+        onappend,
         cursor,
         removeCursorWhenFinish = true,
         fn,
@@ -54,7 +57,8 @@
                 terminal,
                 terminalClone,
                 time,
-                cursorElement
+                cursorElement,
+                onappend
             );
         }
         let promise = typewriter.start();

@@ -18,6 +18,7 @@
 >
     {#each activeCards as card, index}
         <Card
+            instance={{ type: "character/uhrwerk" }}
             bind:mouseOnList={hover}
             --card-rotation={(range / activeCards.length) * index - range / 2}
         />

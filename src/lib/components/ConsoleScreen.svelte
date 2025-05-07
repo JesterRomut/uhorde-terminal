@@ -1,5 +1,5 @@
 <script>
-    let { children } = $props();
+    let { children, screen = $bindable() } = $props();
 </script>
 
 <div
@@ -19,6 +19,7 @@
         ></div>
         <div
             class="-screen rounded-xl p-10 max-w-full max-h-full overflow-auto text-sm/7 bg-gray-950 text-slate-300"
+            bind:this={screen}
         >
             {@render children()}
         </div>

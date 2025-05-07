@@ -31,7 +31,8 @@
         </p>
     </TypewriterMoverCursored>
 
-    <CardSlot></CardSlot>
+    <CardSlot title={"指针插槽1"}></CardSlot>
+    <CardSlot title={"指针插槽2"}></CardSlot>
 
     <TerminalChoice
         choices={[

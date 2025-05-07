@@ -2,7 +2,7 @@
  * @param {Element} base
  * @param {Element} output
  * @param {number} time
- * @param {(node: Node) => void} [onappend]
+ * @param {((node: Node) => void)[]} [onappend]
  */
 export function typewriterMover(base, output, time, onappend) {
     /**
@@ -18,7 +18,7 @@ export function typewriterMover(base, output, time, onappend) {
         }
         if (i < arr.length) {
             _output.appendChild(arr[i]);
-            if (onappend) onappend(_output);
+            if (onappend) onappend.forEach((func) => func(_output));
             i++;
             await new Promise((fulfil) => {
                 setTimeout(fulfil, time);
@@ -35,12 +35,17 @@ export function typewriterMover(base, output, time, onappend) {
  * @param {Element} output
  * @param {number} time
  * @param {Element} [cursor]
+ *
+ * @param {((node: Node) => void)[]} [onappend]
  */
-export function typewriterMoverCursored(base, output, time, cursor) {
-    return typewriterMover(base, output, time, (e) => {
+export function typewriterMoverCursored(base, output, time, cursor, onappend) {
+    /**@param {Node} e */
+    let func = (e) => {
         if (!(e instanceof Element)) return;
         if (cursor) e.insertAdjacentElement("afterend", cursor);
-    });
+    };
+    if (!onappend) return typewriterMover(base, output, time, [func]);
+    return typewriterMover(base, output, time, [func, ...onappend]);
 }
 
 /**

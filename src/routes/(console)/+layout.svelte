@@ -1,10 +1,19 @@
+<script module>
+</script>
+
 <script>
     import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
+    import { onMount } from "svelte";
     import "../../app.css";
 
     let { children } = $props();
     // const decent = "bg-gray-950";
     // const accent = "bg-stone-500";
+    /**@type {Element | undefined}*/
+    let _terminal = $state();
+    onMount(() => {
+        console.log(_terminal);
+    });
 </script>
 
 <!-- <svelte:body
@@ -32,4 +41,4 @@
 <!-- 
 <Cardboard /> -->
 
-<ConsoleScreen>{@render children()}</ConsoleScreen>
+<ConsoleScreen bind:screen={_terminal}>{@render children()}</ConsoleScreen>
