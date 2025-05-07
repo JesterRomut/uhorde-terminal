@@ -1,6 +1,4 @@
 <script>
-    import Card from "$lib/components/Card.svelte";
-    import Cardboard from "$lib/components/Cardboard.svelte";
     import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
     import "../../app.css";
 

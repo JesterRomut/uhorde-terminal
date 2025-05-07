@@ -20,6 +20,8 @@
 
 @theme {
     --animate-console-blink: console-blink 0.3s linear infinite;
+    --animate-console-blink-1\/2s: console-blink 0.5s linear infinite;
+    --animate-console-blink-1s: console-blink 1s linear infinite;
 }
 
 @layer base {

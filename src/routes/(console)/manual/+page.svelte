@@ -6,19 +6,10 @@
     import { goto } from "$app/navigation";
 
     // @ts-ignore
-    import everything from "$lib/documents/manual.md";
+    import everything from "$lib/data/documents/manual.md";
     import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
-    import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
 
-    //let page = $state(0);
     let finished = $state(false);
-
-    // import Logos from "$lib/components/Logos.svelte";
-    // import { onMount } from "svelte";
-    // import { CustomElementUtil } from "$lib/classes/Utils";
-    // onMount(() => {
-    //     CustomElementUtil.define("logos-logo", Logos.element);
-    // });
 </script>
 
 <Loader>

@@ -1,6 +1,6 @@
 //import ChargeBladePic from "$lib/assets/IMG_2860_zh.png?enhanced";
 import { WeightedRandom } from "$lib/classes/WeightedRandom";
-import { accessCodes } from "$lib/documents/accessCode";
+import { accessCodes } from "$lib/data/documents/accessCode";
 
 /**@type {import("./$types").PageLoad} */
 export async function load({ params }) {

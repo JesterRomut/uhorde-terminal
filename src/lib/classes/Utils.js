@@ -1,4 +1,4 @@
-export class CustomElementUtil {
+export class CustomElementUtils {
     // /**
     //  * use in onMount
     //  * @param {CustomElementRegistry} customElements

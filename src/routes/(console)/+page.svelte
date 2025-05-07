@@ -1,6 +1,6 @@
 <script>
     import { goto } from "$app/navigation";
-    import { CustomElementUtil } from "$lib/classes/Utils.js";
+    import { CustomElementUtils } from "$lib/classes/Utils.js";
     import Loader from "$lib/components/Loader.svelte";
     import Logos from "$lib/components/Logos.svelte";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
@@ -15,7 +15,7 @@
     let showLogo = $state(false);
 
     onMount(() => {
-        CustomElementUtil.define("logos-logo", Logos.element);
+        CustomElementUtils.define("logos-logo", Logos.element);
     });
 </script>
 

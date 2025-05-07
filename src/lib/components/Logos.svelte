@@ -2,7 +2,7 @@
 
 <script>
     import { WeightedRandom } from "$lib/classes/WeightedRandom";
-    import { logos } from "$lib/documents/logos";
+    import { logos } from "$lib/data/documents/logos";
     import { onDestroy, onMount } from "svelte";
 
     /**@type {WeightedRandom<string>}*/

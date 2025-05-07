@@ -75,7 +75,7 @@
     {#if cursor}
         {@render cursor()}
     {:else}
-        <span class="animate-console-blink">_</span>
+        <span class="animate-console-blink-1s">_</span>
     {/if}
 </span>
 
