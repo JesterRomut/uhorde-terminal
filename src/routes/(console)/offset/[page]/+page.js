@@ -1,5 +1,7 @@
 import { error } from "@sveltejs/kit";
 
+export const prerender = "auto";
+
 /** @type {import("./$types").PageLoad} */
 export function load({ params }) {
     if (params.page === "hello-world") {
