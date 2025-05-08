@@ -1,7 +1,13 @@
 <script>
     import Card from "./Card.svelte";
 
-    let activeCards = [{}, {}, {}, {}, {}, {}];
+    /**
+     * @typedef {object} Props
+     * @property {import("./Card.svelte").CardInstance[]} cards
+     * */
+
+    /**@type {Props}*/
+    let { cards = $bindable() } = $props();
 
     const range = 60;
 
@@ -16,11 +22,11 @@
     onblur={() => (hover = false)}
     class="md:-bottom-6rem -cardboard fixed bottom-0 flex justify-center items-center"
 >
-    {#each activeCards as card, index}
+    {#each cards as card, index}
         <Card
-            instance={{ type: "character/uhrwerk" }}
+            instance={card}
             bind:mouseOnList={hover}
-            --card-rotation={(range / activeCards.length) * index - range / 2}
+            --card-rotation={(range / cards.length) * index - range / 2}
         />
     {/each}
 </div>

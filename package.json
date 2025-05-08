@@ -12,7 +12,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"test:e2e": "playwright test",
 		"test": "npm run test:e2e && npm run test:unit -- --run",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"machine-translate": "inlang machine translate --project project.inlang"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.49.1",
@@ -33,7 +34,9 @@
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.0.0",
 		"vite": "^6.2.6",
-		"vitest": "^3.0.0"
+		"vitest": "^3.0.0",
+		"@inlang/paraglide-js": "2.0.12",
+		"@inlang/cli": "^3.0.0"
 	},
 	"dependencies": {
 		"remark-breaks": "^4.0.0"

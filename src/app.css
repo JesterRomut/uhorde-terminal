@@ -1,6 +1,19 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
+@font-face {
+    src: url("/fonts/MapleMonoNormalNL[wght].ttf") format("truetype-variations"),
+        url("/fonts/MapleMonoNormalNL-Italic[wght].ttf")
+            format("truetype-variations");
+    font-family: "Maple";
+    font-style: normal italic;
+    font-weight: 400;
+}
+
 @layer base {
+    * {
+        font-family: Maple, "975Maru SC";
+        font-weight: normal;
+    }
     body {
         background-color: var(--color-gray-950);
         color: var(--color-slate-300);
@@ -15,6 +28,11 @@
     p {
         margin-top: 0.6em;
         margin-bottom: 0.6em;
+    }
+    img {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
     }
 }
 

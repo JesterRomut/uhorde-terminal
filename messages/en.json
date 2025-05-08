@@ -1,0 +1,5 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_message": "Hello world {username}",
+  "left_odd_bobcat_build": "Why Is a Raven Like a Writing Desk?"
+}

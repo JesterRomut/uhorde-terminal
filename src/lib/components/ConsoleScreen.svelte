@@ -40,20 +40,6 @@
 </div>
 
 <style>
-    @font-face {
-        src:
-            url("/fonts/MapleMonoNormalNL[wght].ttf")
-                format("truetype-variations"),
-            url("/fonts/MapleMonoNormalNL-Italic[wght].ttf")
-                format("truetype-variations");
-        font-family: "Maple";
-        font-style: normal italic;
-        font-weight: 400;
-    }
-    * {
-        font-family: Maple;
-        font-weight: "400";
-    }
     .-screen-container {
         align-self: stretch;
     }

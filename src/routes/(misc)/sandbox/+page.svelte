@@ -1,7 +1,5 @@
 <script>
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
-    import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
-    import TypewriterMoverDeep from "$lib/components/typewriter/TypewriterMoverDeep.svelte";
     import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
     import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
     import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
@@ -9,6 +7,15 @@
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import { goto } from "$app/navigation";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
+    import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
+    import { onMount } from "svelte";
+    import { CustomElementUtils } from "$lib/classes/Utils";
+
+    let cards = $state([{ type: "character:uhrwerk" }, { type: "m" }]);
+
+    onMount(() => {
+        CustomElementUtils.define("card-collectible", CardCollectible.element);
+    });
 </script>
 
 <ConsoleScreen>
@@ -29,6 +36,7 @@
         <p>
             但卡面也要自己画，我还不知道弄啥画风。有点想弄个黑白的这样不伤眼。
         </p>
+        <card-collectible card="character:uhrwerk"></card-collectible>
     </TypewriterMoverCursored>
 
     <CardSlot title={"指针插槽1"}></CardSlot>
@@ -47,4 +55,4 @@
     />
 </ConsoleScreen>
 
-<Cardboard />
+<Cardboard bind:cards />

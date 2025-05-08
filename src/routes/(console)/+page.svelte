@@ -7,6 +7,7 @@
     import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
     import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
     import { onMount } from "svelte";
+    import { m } from "$lib/paraglide/messages.js";
 
     let { data } = $props();
 
@@ -24,7 +25,7 @@
 </svelte:head>
 
 <Loader>
-    <span>乌鸦为什么像写字台？</span>
+    <span>{m.left_odd_bobcat_build()}</span>
 
     <div class="block h-1/12"></div>
     <span>> </span>
@@ -57,10 +58,10 @@
     {#if showLogo}
         <div class="inline-block absolute">
             <TypewriterMover time={20}>
-                <p class="mt-0 mb-0">权限验证通过。</p>
+                <p class="mt-0 mb-0">{m.smart_such_fly_catch()}</p>
                 <logos-logo></logos-logo>
                 <br />
-                <p class="mt-0 mb-0">LogOS v1.2.EFC_12492_2775293581</p>
+                <p class="mt-0 mb-0">{m.direct_major_felix_fulfill()}</p>
             </TypewriterMover>
         </div>
     {/if}

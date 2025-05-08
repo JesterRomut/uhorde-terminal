@@ -1,14 +1,15 @@
 <script>
     import { droppable } from "$lib/actions/dragdrop/droppable";
     import { globalState } from "$lib/actions/dragdrop/type.svelte";
+    import { cardRegistry } from "$lib/data/registries/cardRegistry";
     import { onMount } from "svelte";
 
-    /**@param {import("$lib/actions/dragdrop/type.svelte").DragDropState<any>} state */
+    /**@param {import("$lib/actions/dragdrop/type.svelte").DragDropState<import("./Card.svelte").CardInstance>} state */
     function handleDrop(state) {
         const { draggedItem, sourceContainer, targetContainer } = state;
         if (!targetContainer || sourceContainer === targetContainer) return;
 
-        displayText = draggedItem;
+        displayText = cardRegistry.getCard(draggedItem.type).display;
     }
 
     /**
@@ -31,11 +32,12 @@
     />
     <span
         class={"-overlap relative inline peer-checked:hidden pointer-events-none text-gray-400 "}
-        >[{title}]
+        >[{title}: {displayText}]
     </span>
 
     <span
         class={"-overlap hidden peer-checked:inline relative pointer-events-none text-amber-200"}
+        class:opacity-50={globalState.isDragging}
         >[{title}: {status}]
     </span>
 

@@ -5,71 +5,108 @@
 
     import { goto } from "$app/navigation";
 
-    // @ts-ignore
-    import page0 from "./page0.md";
-    // @ts-ignore
-    import page1 from "./page1.md";
-
     import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
 
-    //let finished = $state(false);
-    let stage = $state(0);
+    import * as intro from "./intro/Intro.svelte";
 
-    const pages = [page0, page1];
+    // @ts-ignore
+    import section0 from "./intro/section0.md";
+
+    // @ts-ignore
+    import section1 from "./intro/section1.md";
+
+    import SectionedRender from "$lib/components/SectionedRender.svelte";
+    import Dummy from "$lib/components/Dummy.svelte";
+    //import { cardboard, terminal } from "../+layout.svelte";
+    import { getContext, onMount } from "svelte";
+    import { getCardboard } from "../+layout.svelte";
+
+    const cardboard = getCardboard();
+    cardboard.cards = [{ type: "character:uhrwerk" }];
+    onMount(() => {
+        console.log(cardboard);
+        console.log(cardboard.cards);
+    });
+    //let finished = $state(false);
+    let state = $state({ index: 0 });
+
+    //const pages = [page0, page1];
+    /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
+    const greaterEqual = (s, i) => s.index >= i;
+
+    /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
+    const normalEqual = (s, i) => s.index == i;
+
+    /**@type {import("$lib/components/SectionedRender.svelte").Section[]}*/
+    const sections = [
+        {
+            content: section0,
+            wrapper: contentWrapper,
+            show: greaterEqual,
+        },
+        { wrapper: choiceContinue, show: normalEqual },
+        { wrapper: space, show: greaterEqual },
+        {
+            content: section1,
+            wrapper: contentWrapper,
+            show: greaterEqual,
+        },
+    ];
 </script>
 
-<Loader>
+{#snippet contentWrapper(
+    /**@type {state}*/ s,
+    /**@type {number}*/ i,
+    /**@type {import("svelte").Snippet | undefined}*/ c
+)}
     <TypewriterMoverCursored
-        removeCursorWhenFinish={false}
+        removeCursorWhenFinish={true}
         time={100}
         onfinish={() => {
-            new Promise((fulfil) => {
-                setTimeout(fulfil, 500);
-            }).then(() => {
-                stage = 1;
-            });
+            s.index++;
         }}
     >
-        {@render page0()}
+        {@render c?.()}
     </TypewriterMoverCursored>
-    {#if stage == 1}
-        <TerminalChoice
-            choices={[
-                // {
-                //     text: "[下一页 / NEXT PAGE]",
-                //     waitingTime: 1000,
-                //     onclick: (e) => {
-                //         goto("/");
-                //     },
-                // },
-                {
-                    text: "[继续 / CONTINUE]",
-                    waitingTime: 1000,
-                    onclick: (e) => {
-                        stage = 2;
-                    },
+{/snippet}
+{#snippet choiceContinue(
+    /**@type {state}*/ s,
+    /**@type {number}*/ i,
+    /**@type {import("svelte").Snippet | undefined}*/ c
+)}
+    <TerminalChoice
+        choices={[
+            // {
+            //     text: "[下一页 / NEXT PAGE]",
+            //     waitingTime: 1000,
+            //     onclick: (e) => {
+            //         goto("/");
+            //     },
+            // },
+            {
+                text: "[继续 / CONTINUE]",
+                waitingTime: 1000,
+                onclick: (e) => {
+                    s.index++;
                 },
-            ]}
-        />
-    {/if}
-    {#if stage > 1}
-        <TypewriterMoverCursored
-            removeCursorWhenFinish={false}
-            time={100}
-            onfinish={() => {
-                new Promise((fulfil) => {
-                    setTimeout(fulfil, 500);
-                }).then(() => {
-                    stage = 3;
-                });
-            }}
-            onappend={[
-                () => {
-                    //terminal().scroll(0, 1000);
-                },
-            ]}
-        >
-            {@render page1()}
-        </TypewriterMoverCursored>
-    {/if}
+            },
+        ]}
+    />
+{/snippet}
+
+{#snippet space(
+    /**@type {state}*/ s,
+    /**@type {number}*/ i,
+    /**@type {import("svelte").Snippet | undefined}*/ c
+)}
+    <div class="h-10"></div>
+    <Dummy
+        onmount={() => {
+            s.index++;
+        }}
+    ></Dummy>
+{/snippet}
+
+<Loader>
+    <SectionedRender bind:state options={{}} {sections} />
 </Loader>

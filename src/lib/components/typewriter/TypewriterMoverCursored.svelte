@@ -13,6 +13,7 @@
      * @property {number} [time]
      * @property {import("svelte").Snippet} [cursor]
      * @property {boolean} [removeCursorWhenFinish]
+     * @property {boolean} [showCursor]
      * @property {TypewriterCursoredFn} [fn]
      * @property {*} children
      */
@@ -28,6 +29,7 @@
         onappend,
         cursor,
         removeCursorWhenFinish = true,
+        showCursor = true,
         fn,
     } = $props();
 
@@ -36,13 +38,13 @@
      */
     let terminal;
 
-    /**@type {Element |undefined}*/
-    let cursorElement;
-
     /**
      * @type {Element | undefined}
      */
     let terminalClone;
+
+    /**@type {Element |undefined}*/
+    let cursorElement = $state();
 
     onMount(() => {
         if (!terminal) throw TypeError("terminal not bound!");

@@ -1,11 +1,14 @@
-<script>
-    import { draggable } from "$lib/actions/dragdrop/draggable";
-    import { globalState } from "$lib/actions/dragdrop/type.svelte";
-
+<script module>
     /**
      * @typedef {object} CardInstance
      * @property {string} type
      */
+</script>
+
+<script>
+    import { draggable } from "$lib/actions/dragdrop/draggable";
+    import { globalState } from "$lib/actions/dragdrop/type.svelte";
+    import { cardRegistry } from "$lib/data/registries/cardRegistry";
 
     /**@typedef {object} Props
      * @property {boolean} [mouseOnList]
@@ -27,8 +30,8 @@
      relative transform-[rotate(calc(var(--card-rotation)_*_1deg))]
       bg-[image:linear-gradient(#fff2,_transparent)]
       border-solid border-gray-950/75 border-[1px] shadow-md shadow-gray-950/25
-      backdrop-blur-md flex justify-center items-center rounded-lg m-[0_-6vw] md:m-[0_-45px]
-      hover:transform-[rotate(0)] hover:cursor-grab"
+      backdrop-blur-md grid justify-center items-center rounded-lg m-[0_-6vw] md:m-[0_-45px]
+      hover:transform-[rotate(0)] hover:cursor-grab hover:border-gray-300/75 overflow-hidden"
     class:-cardboard-hovering={mouseOnList}
     class:-card-dragging={localDragState.isDragging}
     class:-card-dragging-unselected={globalState.isDragging &&
@@ -39,10 +42,28 @@
         ref: localDragState,
     }}
 >
-    Hello, I'm a card.
+    <div>
+        {@render cardRegistry.getCard(instance.type).background()}
+    </div>
+
+    <div
+        class="w-full text-center absolute top-0 left-1/2 transform-[translateX(-50%)]"
+    >
+        {@render cardRegistry.getCard(instance.type).title()}
+    </div>
+
+    <div
+        class="w-full text-center absolute bottom-0 left-1/2 transform-[translateX(-50%)]"
+    >
+        {@render cardRegistry.getCard(instance.type).category()}
+    </div>
 </div>
 
 <style>
+    .-card div {
+        grid-area: 1/ 1/ 2/ 2;
+    }
+
     .-card {
         transition: 0.5s;
     }

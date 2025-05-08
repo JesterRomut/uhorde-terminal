@@ -1,11 +1,15 @@
 <script module>
-    export { title, background };
+    export { title, background, category };
+
+    export const display = "LogOS.lang.NullPointerException";
 </script>
 
 {#snippet title()}
-    <span>Java.lang.NullPointerException</span>
+    <div>NullPointerException</div>
 {/snippet}
 
-{#snippet background()}
-    <span>111</span>
+{#snippet category()}
+    <span>Macbeth的洗脚水</span>
 {/snippet}
+
+{#snippet background()}{/snippet}
