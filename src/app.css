@@ -1,5 +1,40 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
+
+@utility card-collectible {
+    background: linear-gradient(to right, var(--color-amber-200), transparent)
+        no-repeat left bottom;
+
+    transition: color 0.5s;
+    @media (any-hover: hover) {
+        &:hover {
+            color: var(--color-amber-200);
+            cursor: help;
+        }
+    }
+
+    animation: card-indicator 1s alternate infinite;
+}
+
+@keyframes card-indicator {
+    0% {
+        background-position-x: right;
+        background-size: 0 2px;
+    }
+    50% {
+        background-size: 100% 2px;
+    }
+    100% {
+        background-position-x: left;
+        background-size: 0 2px;
+    }
+}
+
+@utility card-collected {
+    opacity: 50%;
+    cursor: not-allowed;
+}
+
 @font-face {
     src: url("/fonts/MapleMonoNormalNL[wght].ttf") format("truetype-variations"),
         url("/fonts/MapleMonoNormalNL-Italic[wght].ttf")

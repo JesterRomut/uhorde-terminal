@@ -3,10 +3,6 @@
 
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
-    // @ts-ignore
-    import section0 from "./section0.md";
-    // @ts-ignore
-    import section1 from "./section1.md";
 </script>
 
 {#snippet sectionWrapper(

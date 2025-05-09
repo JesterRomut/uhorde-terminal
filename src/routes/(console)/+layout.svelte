@@ -16,32 +16,18 @@
     // /**@type {import("svelte").SvelteComponent | undefined}*/
     //let _cardboard = $state();
     //let _cardboardEnabled = $state(false);
-    /**@returns {{cards: (import("$lib/components/cardboard/Card.svelte").CardInstance)[]}}*/
-    export function getCardboard() {
-        return getContext("cardboard");
-    }
+
+    /**@type {Element | undefined}*/
+    let _terminal = $state();
+
+    export const terminal = () => _terminal;
 </script>
 
 <script>
-    /**@type {Element | undefined}*/
-    let _terminal = $state();
-    /**@type {import("$lib/components/cardboard/Card.svelte").CardInstance[]}*/
-    let _cards = $state([]);
-
-    setContext("cardboard", {
-        get cards() {
-            return _cards;
-        },
-        set cards(value) {
-            _cards = value;
-        },
-    });
-
     import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
     import { getContext, onMount, setContext } from "svelte";
     import "../../app.css";
     import { m } from "$lib/paraglide/messages";
-    import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
 
     let { children } = $props();
     // const decent = "bg-gray-950";
@@ -81,5 +67,3 @@
 <Cardboard /> -->
 
 <ConsoleScreen bind:screen={_terminal}>{@render children()}</ConsoleScreen>
-
-<Cardboard bind:cards={_cards}></Cardboard>

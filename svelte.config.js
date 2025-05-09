@@ -1,7 +1,6 @@
 import { mdsvex } from "mdsvex";
 import adapter from "@sveltejs/adapter-cloudflare";
 import remarkBreaks from "remark-breaks";
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
     kit: { adapter: adapter() },

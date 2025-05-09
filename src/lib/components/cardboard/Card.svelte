@@ -9,6 +9,7 @@
     import { draggable } from "$lib/actions/dragdrop/draggable";
     import { globalState } from "$lib/actions/dragdrop/type.svelte";
     import { cardRegistry } from "$lib/data/registries/cardRegistry";
+    import { fly } from "svelte/transition";
 
     /**@typedef {object} Props
      * @property {boolean} [mouseOnList]
@@ -41,21 +42,22 @@
         dragData: instance,
         ref: localDragState,
     }}
+    transition:fly={{ y: -200 }}
 >
-    <div>
+    <div class="pointer-events-none">
         {@render cardRegistry.getCard(instance.type).background()}
     </div>
 
     <div
-        class="w-full text-center absolute top-0 left-1/2 transform-[translateX(-50%)]"
+        class="w-full text-center absolute top-0 left-1/2 transform-[translateX(-50%)] overflow-hidden overflow-ellipsis whitespace-nowrap"
     >
-        {@render cardRegistry.getCard(instance.type).title()}
+        {@render cardRegistry.getCard(instance.type).title?.()}
     </div>
 
     <div
-        class="w-full text-center absolute bottom-0 left-1/2 transform-[translateX(-50%)]"
+        class="w-full text-center absolute bottom-0 left-1/2 transform-[translateX(-50%)] whitespace-nowrap hidden md:block"
     >
-        {@render cardRegistry.getCard(instance.type).category()}
+        {@render cardRegistry.getCard(instance.type).category?.()}
     </div>
 </div>
 

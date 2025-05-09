@@ -1,15 +1,15 @@
 <script module>
     export { title, background, category };
 
-    export const display = "#52 (Uhrwerk)";
+    export const display = "#ℵ0 (Amen-Gleph)";
 </script>
 
 <script>
-    import UhrwerkPic from "$lib/assets/cards/characters/uhrwerk.png?enhanced";
+    import Aleph0 from "$lib/assets/cards/characters/amen_gleph.png?enhanced";
 </script>
 
 {#snippet title()}
-    <span class="block bg-black">钨尔维克</span>
+    <span class="block bg-black">阿门-葛列夫</span>
 {/snippet}
 {#snippet category()}
     <span class="inline-block relative px-3 bottom-3 bg-black">实体</span>
@@ -18,7 +18,7 @@
 {#snippet background()}
     <enhanced:img
         class="invert mix-blend-lighten opacity-70 bg-black"
-        src={UhrwerkPic}
+        src={Aleph0}
         alt=""
     ></enhanced:img>
 {/snippet}

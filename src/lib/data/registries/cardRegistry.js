@@ -1,8 +1,8 @@
 /**
  * @typedef {object} CardData
- * @property {import("svelte").Snippet} title
+ * @property {import("svelte").Snippet} [title]
  * @property {import("svelte").Snippet} background
- * @property {import("svelte").Snippet} category
+ * @property {import("svelte").Snippet} [category]
  * @property {string} display slot text
  */
 
@@ -28,3 +28,6 @@ export const missingNo = missing;
 
 import * as uhrwerk from "../cards/characters/Uhrwerk.svelte";
 cardRegistry.set("character:uhrwerk", uhrwerk);
+
+import * as amenGleph from "../cards/characters/AmenGleph.svelte";
+cardRegistry.set("character:amen_gleph", amenGleph);

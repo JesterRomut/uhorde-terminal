@@ -12,6 +12,33 @@ import { globalState } from "./type.svelte.js";
  * @typedef {import("./type.svelte.js").DragDropOptions<any> & _DraggableOptions<any>} DraggableOptions
  */
 
+const isEventSupported = (function () {
+    let TAGNAMES = {
+        select: "input",
+        change: "input",
+        submit: "form",
+        reset: "form",
+        error: "img",
+        load: "img",
+        abort: "img",
+    };
+    /**
+     * @param {string} eventName
+     */
+    function isEventSupported(eventName) {
+        // @ts-ignore
+        let el = document.createElement(TAGNAMES[eventName] || "div");
+        eventName = "on" + eventName;
+        let isSupported = eventName in el;
+        if (!isSupported) {
+            el.setAttribute(eventName, "return;");
+            isSupported = typeof el[eventName] == "function";
+        }
+        el = null;
+        return isSupported;
+    }
+    return isEventSupported;
+})();
 /**
  * Credit: https://github.com/thisuxhq/sveltednd
  * I love you
@@ -22,11 +49,15 @@ import { globalState } from "./type.svelte.js";
  * @param {DraggableOptions<T>} options
  */
 export function draggable(node, options) {
+    let oldStylePos = node.style.position;
+
     let /**@type {number}*/ initialX, /**@type {number}*/ initialY;
 
     let state = options.globalState || globalState;
 
     options.ref.isDragging = false;
+
+    let dragSupported = () => isEventSupported("dragstart");
 
     /**
      *
@@ -129,12 +160,57 @@ export function draggable(node, options) {
         state.targetContainer = null;
     }
 
+    /**@param {TouchEvent} event */
+    function handleTouchStart(event) {
+        let touchLocation = event.targetTouches[0];
+
+        initialX = touchLocation.clientX;
+        initialY = touchLocation.clientY;
+
+        options.ref.isDragging = true;
+
+        state.isDragging = true;
+        state.draggedItem = options.dragData;
+        state.sourceContainer = options.container;
+        state.targetContainer = null;
+    }
+
+    /**@param {TouchEvent} event */
+    function handleTouchMove(event) {
+        if (!state.isDragging) return;
+
+        let touchLocation = event.targetTouches[0];
+
+        //oldStylePos = node.style.position;
+        // node.style.position = "fixed";
+        // node.style.left = touchLocation.clientX + "px";
+        // node.style.top = touchLocation.clientY + "px";
+
+        options.ref.isDragging = false;
+
+        state.isDragging = false;
+        state.draggedItem = null;
+        state.sourceContainer = "";
+        state.targetContainer = null;
+    }
+
+    /**@param {TouchEvent} event */
+    function handleTouchEnd(event) {
+        console.log(event);
+        node.style.position = oldStylePos;
+        node.style.left = "auto";
+        node.style.top = "auto";
+    }
+
     node.draggable = !options.disabled;
     node.addEventListener("dragstart", handleDragStart);
     node.addEventListener("dragend", handleDragEnd);
     node.addEventListener("pointerdown", handlePointerDown);
     node.addEventListener("pointermove", handlePointerMove);
     node.addEventListener("pointerup", handlePointerUp);
+    node.addEventListener("touchstart", handleTouchStart);
+    node.addEventListener("touchmove", handleTouchMove);
+    node.addEventListener("touchend", handleTouchEnd);
 
     return {
         /**@param {DraggableOptions<T>} newOptions  */
@@ -149,6 +225,9 @@ export function draggable(node, options) {
             node.removeEventListener("pointerdown", handlePointerDown);
             node.removeEventListener("pointermove", handlePointerMove);
             node.removeEventListener("pointerup", handlePointerUp);
+            node.removeEventListener("touchstart", handleTouchStart);
+            node.removeEventListener("touchmove", handleTouchMove);
+            node.removeEventListener("touchend", handleTouchEnd);
         },
     };
 }

@@ -14,6 +14,8 @@
      * @property {ShowConditionFn} [show]
      * @property {import("svelte").Snippet<[SectionedRenderState, number, import("svelte").Snippet<any>|undefined]>} wrapper
      */
+
+    export { emptyWrapper };
 </script>
 
 <script>
@@ -33,3 +35,11 @@
         {@render s.wrapper(state, i, s.content)}
     {/if}
 {/each}
+
+{#snippet emptyWrapper(
+    /**@type {SectionedRenderState}*/ s,
+    /**@type {number}*/ i,
+    /**@type {import("svelte").Snippet | undefined}*/ c
+)}
+    {@render c?.()}
+{/snippet}
