@@ -185,13 +185,6 @@ export function draggable(node, options) {
         // node.style.position = "fixed";
         // node.style.left = touchLocation.clientX + "px";
         // node.style.top = touchLocation.clientY + "px";
-
-        options.ref.isDragging = false;
-
-        state.isDragging = false;
-        state.draggedItem = null;
-        state.sourceContainer = "";
-        state.targetContainer = null;
     }
 
     /**@param {TouchEvent} event */
@@ -200,6 +193,13 @@ export function draggable(node, options) {
         node.style.position = oldStylePos;
         node.style.left = "auto";
         node.style.top = "auto";
+
+        options.ref.isDragging = false;
+
+        state.isDragging = false;
+        state.draggedItem = null;
+        state.sourceContainer = "";
+        state.targetContainer = null;
     }
 
     node.draggable = !options.disabled;
