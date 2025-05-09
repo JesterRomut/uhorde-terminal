@@ -12,7 +12,7 @@
     <span class="block bg-black">阿门-葛列夫</span>
 {/snippet}
 {#snippet category()}
-    <span class="inline-block relative px-3 bottom-3 bg-black">实体</span>
+    <span class="inline-block relative px-3 bottom-3 bg-black">教程角色</span>
 {/snippet}
 
 {#snippet background()}

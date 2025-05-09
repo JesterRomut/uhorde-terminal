@@ -72,12 +72,12 @@ export function droppable(node, options) {
         if (event.dataTransfer) {
             event.dataTransfer.dropEffect = "move";
         }
+        //node.innerHTML = `${JSON.stringify(state.draggedItem)}`;
 
         options.callbacks?.onDragOver?.(state);
     }
-
     /**@param {DragEvent} event  */
-    async function handleDrop(event) {
+    function handleDrop(event) {
         if (options.disabled) return;
         event.preventDefault();
 
@@ -85,18 +85,14 @@ export function droppable(node, options) {
         if (options.dragoverClass)
             node.classList.remove(...options.dragoverClass);
 
-        try {
-            if (event.dataTransfer) {
-                const dragData = JSON.parse(
-                    event.dataTransfer.getData("text/plain")
-                );
-                state.draggedItem = dragData;
-            }
-
-            await options.callbacks?.onDrop?.(state);
-        } catch (error) {
-            console.error("Drop handling failed:", error);
+        if (event.dataTransfer) {
+            const dragData = JSON.parse(
+                event.dataTransfer.getData("text/plain")
+            );
+            state.draggedItem = dragData;
         }
+
+        options.callbacks?.onDrop?.(state);
     }
 
     /**@param {Event} event  */
@@ -137,6 +133,12 @@ export function droppable(node, options) {
 
         options.callbacks?.onDrop?.(state);
     }
+
+    // /**@param {TouchEvent} event */
+    // function handleTouchStart(event) {}
+
+    // /**@param {TouchEvent} event */
+    // function handleTouchEnd(event) {}
 
     node.addEventListener("dragenter", handleDragEnter);
     node.addEventListener("dragleave", handleDragLeave);

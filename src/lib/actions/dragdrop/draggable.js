@@ -160,47 +160,47 @@ export function draggable(node, options) {
         state.targetContainer = null;
     }
 
-    /**@param {TouchEvent} event */
-    function handleTouchStart(event) {
-        let touchLocation = event.targetTouches[0];
+    // /**@param {TouchEvent} event */
+    // function handleTouchStart(event) {
+    //     let touchLocation = event.targetTouches[0];
 
-        initialX = touchLocation.clientX;
-        initialY = touchLocation.clientY;
+    //     initialX = touchLocation.clientX;
+    //     initialY = touchLocation.clientY;
 
-        options.ref.isDragging = true;
+    //     options.ref.isDragging = true;
 
-        state.isDragging = true;
-        state.draggedItem = options.dragData;
-        state.sourceContainer = options.container;
-        state.targetContainer = null;
-    }
+    //     state.isDragging = true;
+    //     state.draggedItem = options.dragData;
+    //     state.sourceContainer = options.container;
+    //     state.targetContainer = null;
+    // }
 
-    /**@param {TouchEvent} event */
-    function handleTouchMove(event) {
-        if (!state.isDragging) return;
+    // /**@param {TouchEvent} event */
+    // function handleTouchMove(event) {
+    //     if (!state.isDragging) return;
 
-        let touchLocation = event.targetTouches[0];
+    //     let touchLocation = event.targetTouches[0];
 
-        //oldStylePos = node.style.position;
-        // node.style.position = "fixed";
-        // node.style.left = touchLocation.clientX + "px";
-        // node.style.top = touchLocation.clientY + "px";
-    }
+    //     //oldStylePos = node.style.position;
+    //     // node.style.position = "fixed";
+    //     // node.style.left = touchLocation.clientX + "px";
+    //     // node.style.top = touchLocation.clientY + "px";
+    // }
 
-    /**@param {TouchEvent} event */
-    function handleTouchEnd(event) {
-        console.log(event);
-        node.style.position = oldStylePos;
-        node.style.left = "auto";
-        node.style.top = "auto";
+    // /**@param {TouchEvent} event */
+    // function handleTouchEnd(event) {
+    //     console.log(event);
+    //     node.style.position = oldStylePos;
+    //     node.style.left = "auto";
+    //     node.style.top = "auto";
 
-        options.ref.isDragging = false;
+    //     options.ref.isDragging = false;
 
-        state.isDragging = false;
-        state.draggedItem = null;
-        state.sourceContainer = "";
-        state.targetContainer = null;
-    }
+    //     state.isDragging = false;
+    //     state.draggedItem = null;
+    //     state.sourceContainer = "";
+    //     state.targetContainer = null;
+    // }
 
     node.draggable = !options.disabled;
     node.addEventListener("dragstart", handleDragStart);
@@ -208,9 +208,9 @@ export function draggable(node, options) {
     node.addEventListener("pointerdown", handlePointerDown);
     node.addEventListener("pointermove", handlePointerMove);
     node.addEventListener("pointerup", handlePointerUp);
-    node.addEventListener("touchstart", handleTouchStart);
-    node.addEventListener("touchmove", handleTouchMove);
-    node.addEventListener("touchend", handleTouchEnd);
+    // node.addEventListener("touchstart", handleTouchStart);
+    // node.addEventListener("touchmove", handleTouchMove);
+    // node.addEventListener("touchend", handleTouchEnd);
 
     return {
         /**@param {DraggableOptions<T>} newOptions  */
@@ -225,9 +225,9 @@ export function draggable(node, options) {
             node.removeEventListener("pointerdown", handlePointerDown);
             node.removeEventListener("pointermove", handlePointerMove);
             node.removeEventListener("pointerup", handlePointerUp);
-            node.removeEventListener("touchstart", handleTouchStart);
-            node.removeEventListener("touchmove", handleTouchMove);
-            node.removeEventListener("touchend", handleTouchEnd);
+            // node.removeEventListener("touchstart", handleTouchStart);
+            // node.removeEventListener("touchmove", handleTouchMove);
+            // node.removeEventListener("touchend", handleTouchEnd);
         },
     };
 }

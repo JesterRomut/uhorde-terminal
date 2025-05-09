@@ -48,21 +48,21 @@
 
 依然不能。这是超指数塔。但这个数量级相对祂来言，还是与零无异。
 
-那么，设3↑↑↑↑3为G<sub>1</sub>，G<sub>2</sub>=3↑<sup>G<sub>1</sub></sup>3，G<sub>3</sub>=3↑<sup>G<sub>2</sub></sup>3。如此迭代，直到G<sub>64</sub>个宇宙。可以到达祂的极限了吗？
+那么，设3↑↑↑↑3为G<sub>1</sub>，G<sub>2</sub>=3↑<sup>G<sub>1</sub></sup>3，G<sub>3</sub>=3↑<sup>G<sub>2</sub></sup>3。如此迭代，直到G<sub>64</sub>个n↑<sup>n</sup>n。可以到达祂的极限了吗？
 
 依然不能。这是葛立恒数。但这个数量级相对祂来言，还是与零无异。
 
 那么，将其迭代到G<sub>葛立恒数</sub>、G<sub>G<sub>葛立恒数</sub></sub>、G<sub>G<sub>G<sub>葛立恒数</sub></sub></sub>……一直到GGG...（共葛立恒数个G）...G<sub>G<sub>G<sub>葛立恒数</sub></sub></sub>。设其为fΦ1，fΦ2=GGG...（共fΦ1个G）...G<sub>G<sub>G<sub>葛立恒数</sub></sub></sub>，fΦ3=GGG...（共fΦ2个G）...G<sub>G<sub>G<sub>葛立恒数</sub></sub></sub>。这样，fΦ<sub>Φ</sub>1=fΦfΦfΦ...fΦfΦfΦ1（共fΦ1项），fΦ<sub>Φ</sub>n=fΦfΦfΦ...fΦfΦfΦ<sub>Φ</sub>n-1（共fΦ<sub>Φ</sub>n-1项）。
-那么，fΦ<sub>Φ<sub>Φ</sub></sub>1=fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>...fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>1（共fΦ<sub>Φ</sub>1项）。fΦ<sub>Φ<sub>Φ</sub></sub>n=fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>...fΦ<sub>Φ</sub>fΦ<sub>Φ<sub>Φ</sub></sub>n-1（共fΦ<sub>Φ<sub>Φ</sub></sub>n-1项）。现在有fΦ<sub>Φ<sub>Φ<sub>Φ<sub>Φ</sub></sub></sub></sub>... （共187,196个Φ）...Φ<sub>Φ<sub>Φ<sub>Φ<sub>Φ</sub></sub></sub></sub>1个宇宙。可以到达祂的极限了吗？
+那么，fΦ<sub>Φ<sub>Φ</sub></sub>1=fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>...fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>1（共fΦ<sub>Φ</sub>1项）。fΦ<sub>Φ<sub>Φ</sub></sub>n=fΦ<sub>Φ</sub>fΦ<sub>Φ</sub>...fΦ<sub>Φ</sub>fΦ<sub>Φ<sub>Φ</sub></sub>n-1（共fΦ<sub>Φ<sub>Φ</sub></sub>n-1项）。现在有fΦ<sub>Φ<sub>Φ<sub>Φ<sub>Φ</sub></sub></sub></sub>... （共187,196个Φ）...Φ<sub>Φ<sub>Φ<sub>Φ<sub>Φ</sub></sub></sub></sub>1个n↑<sup>n</sup>n。可以到达祂的极限了吗？
 
 依然不能。你是想描述TREE(3)吧？但这个数量级相对祂来言，还是与零无异。
 
 那到底该如何运算，才能让这个数量级接近祂呢？
 
-答案是不可能。祂弹指间可毁灭的宇宙数量，是一个不可数的正规强极限基数，也就是一个不可达基数，不可透过比其更小之基数的基数算术法则运算而得到。就像再多比祂弱小的神明总和起来，都无法成为祂。
+答案是不可能。祂弹指间可毁灭的宇宙数量，是一个不可数的正规强极限基数，也就是一个不可达基数，不可透过比其更小之基数的基数算术法则运算而得到。就像再多比祂弱小的神明如何叠加力量，都无法成为祂。
 有些学者并不要求不可达基数不可数。在这种情况下，大名鼎鼎的ℵ0——所有自然数的个数，就足以成为一个不可达基数。
 
-噢——我明白了。这是一个不可数正则的强极限基数个宇宙的神。
+噢——我明白了。这是一个不可数正则的强极限基数的神。
 
 ……
 
