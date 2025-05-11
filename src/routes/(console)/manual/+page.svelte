@@ -1,18 +1,5 @@
-<script module>
+<script>
     /**@typedef {import("$lib/components/SectionedRender.svelte").SectionedRenderState} state*/
-
-    /**@type {import("svelte").Snippet[]}*/
-    const stories = [];
-
-    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
-    await (async () => {
-        for (let i = 0; i < story.length; i++) {
-            stories.push(
-                (await import(`./story.sectioned/${story[i]}.md`)).default
-            );
-        }
-    })();
 
     /**
      * @readonly
@@ -33,9 +20,7 @@
      * @property {string} [card.dead]
      * @property {"replace"} action
      */
-</script>
 
-<script>
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
     import Loader from "$lib/components/Loader.svelte";
@@ -66,6 +51,7 @@
 
     import { terminal } from "../+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
+    import importSync from "import-sync";
 
     /**@param {Event} event*/
     function handleCardCollect(event) {
@@ -108,6 +94,22 @@
                 state.index++;
                 break;
         }
+    }
+
+    /**@type {import("svelte").Snippet[]}*/
+    const stories = [];
+
+    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+    // await (async () => {
+    //     for (let i = 0; i < story.length; i++) {
+    //         stories.push(
+    //             (await import(`./story.sectioned/${story[i]}.md`)).default
+    //         );
+    //     }
+    // })();
+    for (let i = 0; i < story.length; i++) {
+        stories.push(importSync(`./story.sectioned/${story[i]}.md`).default);
     }
 
     //const pages = [page0, page1];
