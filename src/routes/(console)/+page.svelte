@@ -4,10 +4,12 @@
     import Loader from "$lib/components/Loader.svelte";
     import Logos from "$lib/components/Logos.svelte";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-    import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
     import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
     import { onMount } from "svelte";
     import { m } from "$lib/paraglide/messages.js";
+    import ByteSeparator from "$lib/components/ByteSeparator.svelte";
+    import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
+    import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
 
     let { data } = $props();
 
@@ -29,11 +31,12 @@
 
     <div class="block h-1/12"></div>
     <span>> </span>
-    <Typewriter
+    <TypewriterMoverCursored
+        fn={typewriterMoverCursoredDeep}
         time={100}
         onfinish={() => {
             showLogo = true;
-        }}>{roll}</Typewriter
+        }}><ByteSeparator>{roll}</ByteSeparator></TypewriterMoverCursored
     >
     <!-- <TypewriterCustom
         time={100}

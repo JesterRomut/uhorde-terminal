@@ -1,3 +1,40 @@
+<script module>
+    /**@typedef {import("$lib/components/SectionedRender.svelte").SectionedRenderState} state*/
+
+    /**@type {import("svelte").Snippet[]}*/
+    const stories = [];
+
+    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+    await (async () => {
+        for (let i = 0; i < story.length; i++) {
+            stories.push(
+                (await import(`./story.sectioned/${story[i]}.md`)).default
+            );
+        }
+    })();
+
+    /**
+     * @readonly
+     * @enum {string}
+     */
+    const CardActions = {
+        OBTAIN: "obtain",
+        KILL: "kill",
+    };
+
+    /**@typedef {object} CardObtainAction
+     * @property {import("$lib/components/cardboard/Card.svelte").CardInstance} card
+     * @property {"obtain"} action
+     */
+    /**@typedef {object} CardKillAction
+     * @property {object} card
+     * @property {string} card.from
+     * @property {string} [card.dead]
+     * @property {"replace"} action
+     */
+</script>
+
 <script>
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
@@ -22,13 +59,10 @@
     import intro from "./intro.md";
 
     // @ts-ignore
-    import tutor0 from "./tutor0.md";
+    import tutor from "./tutor.md";
 
     // @ts-ignore
-    import tutor1 from "./tutor1.md";
-
-    // @ts-ignore
-    import section1 from "./intro/section1.md";
+    import section0 from "./story.sectioned/0.md";
 
     import { terminal } from "../+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
@@ -43,7 +77,30 @@
             throw new TypeError(`card not found, event.detail: ${detail}`);
         let card = cardCollection.get(detail);
         if (!card) throw new TypeError(`expect card, got ${card}`);
-        cardboard.cards.push(card);
+
+        switch (card.action) {
+            case CardActions.OBTAIN:
+                cardboard.cards.push(/**@type {CardObtainAction}*/ (card).card);
+                break;
+            case CardActions.KILL:
+                let { card: match } = /**@type {CardKillAction}*/ (card);
+
+                console.log(cardboard.cards.values().toArray());
+
+                console.log(
+                    cardboard.cards.findIndex((value) => {
+                        return value.type == match.from;
+                    })
+                );
+                let index = cardboard.cards.findIndex((value) => {
+                    return value.type == match.from;
+                });
+                if (index == -1) return;
+                cardboard.cards[index].type =
+                    match.dead || `${match.from}:dead`;
+                console.log(cardboard.cards);
+                break;
+        }
         cardCollectState.set(detail, true);
 
         switch (detail) {
@@ -52,24 +109,6 @@
                 break;
         }
     }
-
-    /**
-     * @type {Node | undefined}
-     */
-    let body;
-
-    cardboard.cards = [];
-    onMount(() => {
-        CustomElementUtils.define("card-collectible", CardCollectible.element);
-        //CustomElementUtils.define("card-slot", CardSlot.element);
-
-        body?.addEventListener("card-collected", handleCardCollect);
-    });
-    onDestroy(() => {
-        body?.removeEventListener("card-collected", handleCardCollect);
-    });
-    //let finished = $state(false);
-    let state = $state({ index: 0 });
 
     //const pages = [page0, page1];
     /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
@@ -90,7 +129,7 @@
         },
         { wrapper: choiceTutorial, show: normalEqual },
         {
-            content: tutor0,
+            content: tutor,
             wrapper: emptyWrapper,
             show: greaterEqual,
         },
@@ -99,17 +138,63 @@
             show: greaterEqual,
         },
         { wrapper: space, show: greaterEqual },
+        ...stories.slice(undefined, -1).map((snippet, index) => {
+            return {
+                content: snippet,
+                wrapper: storyWrapper,
+                show: greaterEqual,
+            };
+        }),
+        { wrapper: choiceContinue, show: normalEqual },
+        { wrapper: spaceKillCharacter, show: greaterEqual },
         {
-            content: section1,
-            wrapper: contentWrapperSlow,
+            content: stories[stories.length - 1],
+            wrapper: storyWrapper,
             show: greaterEqual,
         },
     ];
 
     const cardCollection = new Map([
-        ["tutor", { type: "character:amen_gleph" }],
+        [
+            "tutor",
+            {
+                action: CardActions.OBTAIN,
+                card: { type: "character:amen_gleph" },
+            },
+        ],
+        [
+            "tutor_kill",
+            {
+                action: CardActions.KILL,
+                card: {
+                    from: "character:amen_gleph",
+                    //replace: { type: "character:amen_gleph:dead" },
+                },
+            },
+        ],
     ]);
-    const cardCollectState = new Map([["tutor", false]]);
+    const cardCollectState = new Map([
+        ["tutor", false],
+        ["tutor_kill", false],
+    ]);
+
+    /**
+     * @type {Node | undefined}
+     */
+    let body;
+
+    cardboard.cards = []; //{ type: "character:amen_gleph:dead" }
+    onMount(() => {
+        CustomElementUtils.define("card-collectible", CardCollectible.element);
+        //CustomElementUtils.define("card-slot", CardSlot.element);
+
+        body?.addEventListener("card-collected", handleCardCollect);
+    });
+    onDestroy(() => {
+        body?.removeEventListener("card-collected", handleCardCollect);
+    });
+    //let finished = $state(false);
+    let state = $state({ index: 0 });
 </script>
 
 <svelte:body bind:this={body} />
@@ -130,7 +215,7 @@
     </TypewriterMoverCursored>
 {/snippet}
 
-{#snippet contentWrapperSlow(
+{#snippet storyWrapper(
     /**@type {state}*/ s,
     /**@type {number}*/ i,
     /**@type {import("svelte").Snippet | undefined}*/ c
@@ -213,6 +298,24 @@
     <Dummy
         onmount={() => {
             s.index++;
+        }}
+    ></Dummy>
+{/snippet}
+
+{#snippet spaceKillCharacter(
+    /**@type {state}*/ s,
+    /**@type {number}*/ i,
+    /**@type {import("svelte").Snippet | undefined}*/ c
+)}
+    <div class="h-10"></div>
+    <Dummy
+        onmount={() => {
+            s.index++;
+            const customEvent = new CustomEvent("card-collected", {
+                detail: "tutor_kill",
+                bubbles: true,
+            });
+            body?.dispatchEvent(customEvent);
         }}
     ></Dummy>
 {/snippet}

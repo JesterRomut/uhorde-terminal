@@ -19,6 +19,6 @@
     <enhanced:img
         class="invert mix-blend-lighten opacity-70 bg-black"
         src={UhrwerkPic}
-        alt=""
+        alt={display}
     ></enhanced:img>
 {/snippet}

@@ -31,3 +31,6 @@ cardRegistry.set("character:uhrwerk", uhrwerk);
 
 import * as amenGleph from "../cards/characters/AmenGleph.svelte";
 cardRegistry.set("character:amen_gleph", amenGleph);
+
+import * as amenGlephDead from "../cards/characters/AmenGlephDead.svelte";
+cardRegistry.set("character:amen_gleph:dead", amenGlephDead);

@@ -4,9 +4,17 @@ import tailwindcss from "@tailwindcss/vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 import { enhancedImages } from "@sveltejs/enhanced-img";
+import svg from "@poppanator/sveltekit-svg";
 
 export default defineConfig({
     plugins: [
+        {
+            name: "markdown-splitter",
+            configureServer(server) {
+                // 开发服务器启动时运行拆分脚本
+                require("./script/split_markdown.js");
+            },
+        },
         paraglideVitePlugin({
             project: "./project.inlang",
             outdir: "./src/lib/paraglide",
@@ -15,6 +23,7 @@ export default defineConfig({
         tailwindcss(),
         enhancedImages(),
         sveltekit(),
+        svg(),
     ],
     test: {
         workspace: [

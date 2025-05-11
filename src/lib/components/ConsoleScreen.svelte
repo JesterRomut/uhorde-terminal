@@ -3,7 +3,7 @@
 </script>
 
 <div
-    class="left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] inline-grid absolute bg-gray-950 grid-cols-[2rem_80vw_2rem] grid-rows-[2rem_80vh_2rem] [--pattern-fg:var(--color-stone-500)]"
+    class="left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] inline-grid absolute bg-gray-950 grid-cols-[0_98vw_0] md:grid-cols-[2rem_80vw_2rem] grid-rows-[2rem_80vh_2rem] [--pattern-fg:var(--color-stone-500)]"
 >
     <div
         class="inline-grid -screen-container col-start-2 row-start-2 w-full h-full p-2 bg-stone-500 place-items-stretch"
