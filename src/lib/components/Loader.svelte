@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import LoaderSpinner from "./LoaderSpinner.svelte";
+    import LoadingText from "./LoadingText.svelte";
 
     let { children } = $props();
 
@@ -11,7 +11,7 @@
 </script>
 
 {#if isLoading}
-    <LoaderSpinner /> 加载中...
+    <LoadingText />
 {:else if children}
     {@render children()}
 {:else}

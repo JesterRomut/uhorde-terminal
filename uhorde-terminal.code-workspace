@@ -4,8 +4,12 @@
 			"path": "."
 		},
 		{
-			"name": "story (story)",
-			"path": "src/routes/(console)/manual/story"
+			"name": "Lib",
+			"path": "src/lib"
+		},
+		{
+			"name": "Routes",
+			"path": "src/routes"
 		}
 	],
 	"settings": {}

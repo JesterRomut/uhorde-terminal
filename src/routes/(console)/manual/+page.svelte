@@ -51,6 +51,7 @@
 
     import { terminal } from "../+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
+    import LoadingText from "$lib/components/LoadingText.svelte";
 
     /**@param {Event} event*/
     function handleCardCollect(event) {
@@ -325,7 +326,9 @@
     ></Dummy>
 {/snippet}
 <Loader>
-    {#await storyPromise then value}
+    {#await storyPromise}
+        <LoadingText></LoadingText>
+    {:then value}
         <SectionedRender bind:state options={{}} {sections} />
     {/await}
 </Loader>

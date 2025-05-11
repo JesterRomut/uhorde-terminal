@@ -1,8 +1,8 @@
-<script>
-    const spinner = {
-        interval: 10,
-        frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
-    };
+<!-- <script>
+    // const spinner = {
+    //     interval: 10,
+    //     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
+    // };
 
     // let intervalId = setInterval(() => {
     //     console.log(curIndex);
@@ -12,9 +12,9 @@
     //         curIndex = 0;
     //     }
     // }, 100);
-</script>
+</script> -->
 
-<span class="-spinner"></span>
+<span class="-spinner"></span> 加载中...
 
 <style>
     .-spinner:after {
