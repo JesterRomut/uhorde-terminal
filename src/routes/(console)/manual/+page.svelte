@@ -51,7 +51,6 @@
 
     import { terminal } from "../+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
-    import importSync from "import-sync";
 
     /**@param {Event} event*/
     function handleCardCollect(event) {
@@ -95,22 +94,9 @@
                 break;
         }
     }
-
-    /**@type {import("svelte").Snippet[]}*/
-    const stories = [];
-
-    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
-    // await (async () => {
-    //     for (let i = 0; i < story.length; i++) {
-    //         stories.push(
-    //             (await import(`./story.sectioned/${story[i]}.md`)).default
-    //         );
-    //     }
-    // })();
-    for (let i = 0; i < story.length; i++) {
-        stories.push(importSync(`./story.sectioned/${story[i]}.md`).default);
-    }
+    // for (let i = 0; i < story.length; i++) {
+    //     stories.push(importSync(`./story.sectioned/${story[i]}.md`).default);
+    // }
 
     //const pages = [page0, page1];
     /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
@@ -140,21 +126,38 @@
             show: greaterEqual,
         },
         { wrapper: space, show: greaterEqual },
-        ...stories.slice(undefined, -1).map((snippet, index) => {
-            return {
-                content: snippet,
+    ];
+
+    /**@type {import("svelte").Snippet[]}*/
+    const stories = [];
+
+    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+    let storyPromise = (async () => {
+        for (let i = 0; i < story.length; i++) {
+            stories.push(
+                (await import(`./story.sectioned/${story[i]}.md`)).default
+            );
+        }
+    })();
+    storyPromise.then(() => {
+        sections.push(
+            ...stories.slice(undefined, -1).map((snippet, index) => {
+                return {
+                    content: snippet,
+                    wrapper: storyWrapper,
+                    show: greaterEqual,
+                };
+            }),
+            { wrapper: choiceContinue, show: normalEqual },
+            { wrapper: spaceKillCharacter, show: greaterEqual },
+            {
+                content: stories[stories.length - 1],
                 wrapper: storyWrapper,
                 show: greaterEqual,
-            };
-        }),
-        { wrapper: choiceContinue, show: normalEqual },
-        { wrapper: spaceKillCharacter, show: greaterEqual },
-        {
-            content: stories[stories.length - 1],
-            wrapper: storyWrapper,
-            show: greaterEqual,
-        },
-    ];
+            }
+        );
+    });
 
     const cardCollection = new Map([
         [
@@ -321,7 +324,8 @@
         }}
     ></Dummy>
 {/snippet}
-
 <Loader>
-    <SectionedRender bind:state options={{}} {sections} />
+    {#await storyPromise then value}
+        <SectionedRender bind:state options={{}} {sections} />
+    {/await}
 </Loader>
