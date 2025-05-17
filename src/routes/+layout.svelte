@@ -1,20 +1,5 @@
-<script module>
-    /**@type {import("$lib/components/cardboard/Card.svelte").CardInstance[]}*/
-    let _cards = $state([]);
-
-    export const cardboard = {
-        get cards() {
-            return _cards;
-        },
-        set cards(value) {
-            _cards = value;
-        },
-    };
-</script>
-
 <script>
     import { page } from "$app/state";
-    import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
     import { locales, localizeHref } from "$lib/paraglide/runtime";
 
     import { onMount } from "svelte";
@@ -45,5 +30,3 @@
         <a href={localizeHref(page.url.pathname, { locale })}>{locale}</a>
     {/each}
 </div>
-
-<Cardboard bind:cards={_cards}></Cardboard>

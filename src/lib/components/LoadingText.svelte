@@ -13,8 +13,16 @@
     //     }
     // }, 100);
 </script> -->
+<script>
+    let { children = null } = $props();
+</script>
 
-<span class="-spinner"></span> 加载中...
+<span class="-spinner"></span>
+{#if children}
+    {@render children?.()}
+{:else}
+    加载中...
+{/if}
 
 <style>
     .-spinner:after {

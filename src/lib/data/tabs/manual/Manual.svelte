@@ -1,4 +1,8 @@
 <script>
+    /**@type {{data: import("./manual").Data, context: import("$lib/data/types").AppState}}*/
+    let { data, context: appState } = $props();
+    let { cards, terminal } = appState;
+    let { stories } = data;
     /**@typedef {import("$lib/components/SectionedRender.svelte").SectionedRenderState} state*/
 
     /**
@@ -11,7 +15,7 @@
     };
 
     /**@typedef {object} CardObtainAction
-     * @property {import("$lib/components/cardboard/Card.svelte").CardInstance} card
+     * @property {import("$lib/data/types").CardInstance} card
      * @property {"obtain"} action
      */
     /**@typedef {object} CardKillAction
@@ -37,7 +41,7 @@
     import { getContext, onDestroy, onMount } from "svelte";
     import { CustomElementUtils } from "$lib/classes/Utils";
     import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
-    import { cardboard } from "../../+layout.svelte";
+    //import { cardboard } from "../../../../routes/+layout.svelte";
     //import { cardCollectibleElement } from "$lib/elements/card-collectible";
 
     // @ts-ignore
@@ -49,7 +53,7 @@
     // @ts-ignore
     import section0 from "./story.sectioned/0.md";
 
-    import { terminal } from "../+layout.svelte";
+    //import { terminal } from "../../../../routes/(app)/+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
     import LoadingText from "$lib/components/LoadingText.svelte";
     import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
@@ -66,27 +70,33 @@
         let card = cardCollection.get(detail);
         if (!card) throw new TypeError(`expect card, got ${card}`);
 
+        //let cardboard = cardboardFn();
         switch (card.action) {
             case CardActions.OBTAIN:
-                cardboard.cards.push(/**@type {CardObtainAction}*/ (card).card);
+                //cardboard.cards.push(/**@type {CardObtainAction}*/ (card).card);
+                $cards = $cards.concat(
+                    /**@type {CardObtainAction}*/ (card).card
+                );
                 break;
             case CardActions.KILL:
                 let { card: match } = /**@type {CardKillAction}*/ (card);
 
-                console.log(cardboard.cards.values().toArray());
+                // console.log(cardboard.cards.values().toArray());
 
-                console.log(
-                    cardboard.cards.findIndex((value) => {
-                        return value.type == match.from;
-                    })
-                );
-                let index = cardboard.cards.findIndex((value) => {
+                // console.log(
+                //     cardboard.cards.findIndex((value) => {
+                //         return value.type == match.from;
+                //     })
+                // );
+                let index = $cards.findIndex((value) => {
                     return value.type == match.from;
                 });
                 if (index == -1) return;
-                cardboard.cards[index].type =
-                    match.dead || `${match.from}:dead`;
-                console.log(cardboard.cards);
+                //$cards[index] = { type: match.dead || `${match.from}:dead` };
+                $cards = $cards.toSpliced(index, 1, {
+                    type: match.dead || `${match.from}:dead`,
+                });
+                //console.log(cardboard.cards);
                 break;
         }
         cardCollectState.set(detail, true);
@@ -131,36 +141,34 @@
         { wrapper: space, show: greaterEqual },
     ];
 
-    /**@type {import("svelte").Snippet[]}*/
-    const stories = [];
+    // /**@type {import("svelte").Snippet[]}*/
+    // const stories = [];
 
-    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    // const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
-    let storyPromise = (async () => {
-        for (let i = 0; i < story.length; i++) {
-            stories.push(
-                (await import(`./story.sectioned/${story[i]}.md`)).default
-            );
-        }
-    })();
-    storyPromise.then(() => {
-        sections.push(
-            ...stories.slice(undefined, -1).map((snippet, index) => {
-                return {
-                    content: snippet,
-                    wrapper: storyWrapper,
-                    show: greaterEqual,
-                };
-            }),
-            { wrapper: choiceContinue, show: normalEqual },
-            { wrapper: spaceKillCharacter, show: greaterEqual },
-            {
-                content: stories[stories.length - 1],
+    // let storyPromise = (async () => {
+    //     for (let i = 0; i < story.length; i++) {
+    //         stories.push(
+    //             (await import(`./story.sectioned/${story[i]}.md`)).default
+    //         );
+    //     }
+    // })();
+    sections.push(
+        ...stories.slice(undefined, -1).map((snippet, index) => {
+            return {
+                content: snippet,
                 wrapper: storyWrapper,
                 show: greaterEqual,
-            }
-        );
-    });
+            };
+        }),
+        { wrapper: choiceContinue, show: normalEqual },
+        { wrapper: spaceKillCharacter, show: greaterEqual },
+        {
+            content: stories[stories.length - 1],
+            wrapper: storyWrapper,
+            show: greaterEqual,
+        }
+    );
 
     const cardCollection = new Map([
         [
@@ -191,7 +199,7 @@
      */
     let body;
 
-    cardboard.cards = []; //{ type: "character:amen_gleph:dead" }
+    $cards = []; //{ type: "character:amen_gleph:dead" }
     onMount(() => {
         CustomElementUtils.define("card-collectible", CardCollectible.element);
         //CustomElementUtils.define("card-slot", CardSlot.element);
@@ -335,10 +343,5 @@
         }}
     ></Dummy>
 {/snippet}
-<Loader>
-    {#await storyPromise}
-        <LoadingText></LoadingText>
-    {:then value}
-        <SectionedRender bind:state options={{}} {sections} />
-    {/await}
-</Loader>
+
+<SectionedRender bind:state options={{}} {sections} />

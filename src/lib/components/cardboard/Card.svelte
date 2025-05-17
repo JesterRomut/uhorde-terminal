@@ -1,10 +1,3 @@
-<script module>
-    /**
-     * @typedef {object} CardInstance
-     * @property {string} type
-     */
-</script>
-
 <script>
     import { draggable } from "$lib/actions/dragdrop/draggable";
     import { globalState } from "$lib/actions/dragdrop/type.svelte";
@@ -14,7 +7,7 @@
     /**@typedef {object} Props
      * @property {boolean} [mouseOnList]
      * @property {boolean} [disabled]
-     * @property {CardInstance} instance
+     * @property {import("$lib/data/types").CardInstance} instance
      */
     /**@type {Props}*/
     let {
