@@ -52,6 +52,8 @@
     import { terminal } from "../+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
     import LoadingText from "$lib/components/LoadingText.svelte";
+    import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
+    import Prose from "$lib/components/Prose.svelte";
 
     /**@param {Event} event*/
     function handleCardCollect(event) {
@@ -210,15 +212,21 @@
     /**@type {number}*/ i,
     /**@type {import("svelte").Snippet | undefined}*/ c
 )}
-    <TypewriterMoverCursored
-        removeCursorWhenFinish={true}
-        time={80}
-        onfinish={() => {
-            s.index++;
-        }}
-    >
-        {@render c?.()}
-    </TypewriterMoverCursored>
+    <!-- <article
+        class="prose prose-sm prose-console max-w-none prose-hr:border-t-[var(--tw-prose-body)] prose-hr:border-t-[2px] prose-hr:mt-[0.6em] prose-hr:mb-[2em] prose-headings:mt-[0.2em]"
+    > -->
+    <Prose>
+        <TypewriterMoverCursored
+            removeCursorWhenFinish={true}
+            time={80}
+            onfinish={() => {
+                s.index++;
+            }}
+        >
+            {@render c?.()}
+        </TypewriterMoverCursored>
+    </Prose>
+    <!-- </article> -->
 {/snippet}
 
 {#snippet storyWrapper(
@@ -226,26 +234,28 @@
     /**@type {number}*/ i,
     /**@type {import("svelte").Snippet | undefined}*/ c
 )}
-    <TypewriterMoverCursored
-        removeCursorWhenFinish={true}
-        time={600}
-        onfinish={() => {
-            new Promise((fulfil) => {
-                setTimeout(fulfil, 300);
-            }).then(() => {
-                s.index++;
-            });
-        }}
-        onappend={[
-            (/**@type {Node}*/ node) => {
-                let terminalElement = terminal();
-                if (!terminalElement) return;
-                terminalElement.scrollTop = terminalElement.scrollHeight;
-            },
-        ]}
-    >
-        {@render c?.()}
-    </TypewriterMoverCursored>
+    <Prose>
+        <TypewriterMoverCursored
+            removeCursorWhenFinish={true}
+            time={600}
+            onfinish={() => {
+                new Promise((fulfil) => {
+                    setTimeout(fulfil, 300);
+                }).then(() => {
+                    s.index++;
+                });
+            }}
+            onappend={[
+                (/**@type {Node}*/ node) => {
+                    let terminalElement = terminal();
+                    if (!terminalElement) return;
+                    terminalElement.scrollTop = terminalElement.scrollHeight;
+                },
+            ]}
+        >
+            {@render c?.()}
+        </TypewriterMoverCursored>
+    </Prose>
 {/snippet}
 {#snippet choiceTutorial(
     /**@type {state}*/ s,

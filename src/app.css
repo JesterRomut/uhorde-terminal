@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
+@config "./tailwind.config.js";
 
 @utility card-collectible {
     background: linear-gradient(to right, var(--color-amber-200), transparent)
@@ -53,7 +54,7 @@
         background-color: var(--color-gray-950);
         color: var(--color-slate-300);
     }
-
+/* 
     hr {
         border-top: 2px solid var(--color-slate-300);
         margin-top: 0.6em;
@@ -63,21 +64,13 @@
     p {
         margin-top: 0.6em;
         margin-bottom: 0.6em;
-    }
+    } */
     img {
         image-rendering: pixelated;
         image-rendering: -moz-crisp-edges;
         image-rendering: crisp-edges;
     }
-}
-
-@theme {
-    --animate-console-blink: console-blink 0.3s linear infinite;
-    --animate-console-blink-1\/2s: console-blink 0.5s linear infinite;
-    --animate-console-blink-1s: console-blink 1s linear infinite;
-}
-
-@layer base {
+/*     
     h1 {
         font-size: var(--text-2xl);
     }
@@ -87,6 +80,26 @@
     h3 {
         font-size: var(--text-lg);
     }
+
+    blockquote {
+        font-style: italic;
+        color: var(--tw-prose-quotes);
+        border-inline-start-width: 0.25rem;
+        border-inline-start-color: var(--tw-prose-quote-borders);
+        padding-inline-start: 1em;
+      }
+      blockquote p:first-of-type::before {
+        content: open-quote;
+      }
+      blockquote p:last-of-type::after {
+        content: close-quote;
+      } */
+}
+
+@theme {
+    --animate-console-blink: console-blink 0.3s linear infinite;
+    --animate-console-blink-1\/2s: console-blink 0.5s linear infinite;
+    --animate-console-blink-1s: console-blink 1s linear infinite;
 }
 
 @keyframes console-blink {
