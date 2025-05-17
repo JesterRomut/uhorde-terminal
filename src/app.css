@@ -1,115 +1,19 @@
 @import "tailwindcss";
-@plugin '@tailwindcss/typography';
-@config "./tailwind.config.js";
-
-@utility card-collectible {
-    background: linear-gradient(to right, var(--color-amber-200), transparent)
-        no-repeat left bottom;
-
-    transition: color 0.5s;
-    @media (any-hover: hover) {
-        &:hover {
-            color: var(--color-amber-200);
-            cursor: help;
-        }
-    }
-
-    animation: card-indicator 1s alternate infinite;
-}
-
-@keyframes card-indicator {
-    0% {
-        background-position-x: right;
-        background-size: 0 2px;
-    }
-    50% {
-        background-size: 100% 2px;
-    }
-    100% {
-        background-position-x: left;
-        background-size: 0 2px;
-    }
-}
-
-@utility card-collected {
-    opacity: 50%;
-    cursor: not-allowed;
-}
-
-@font-face {
-    src: url("/fonts/MapleMonoNormalNL[wght].ttf") format("truetype-variations"),
-        url("/fonts/MapleMonoNormalNL-Italic[wght].ttf")
-            format("truetype-variations");
-    font-family: "Maple";
-    font-style: normal italic;
-    font-weight: 400;
-}
-
-@layer base {
-    * {
-        font-family: Maple, "975Maru SC";
-        font-weight: normal;
-    }
-    body {
-        background-color: var(--color-gray-950);
-        color: var(--color-slate-300);
-    }
+@plugin "@tailwindcss/typography";
 /* 
-    hr {
-        border-top: 2px solid var(--color-slate-300);
-        margin-top: 0.6em;
-        margin-bottom: 1em;
-    }
-
-    p {
-        margin-top: 0.6em;
-        margin-bottom: 0.6em;
-    } */
-    img {
-        image-rendering: pixelated;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: crisp-edges;
-    }
-/*     
-    h1 {
-        font-size: var(--text-2xl);
-    }
-    h2 {
-        font-size: var(--text-xl);
-    }
-    h3 {
-        font-size: var(--text-lg);
-    }
-
-    blockquote {
-        font-style: italic;
-        color: var(--tw-prose-quotes);
-        border-inline-start-width: 0.25rem;
-        border-inline-start-color: var(--tw-prose-quote-borders);
-        padding-inline-start: 1em;
-      }
-      blockquote p:first-of-type::before {
-        content: open-quote;
-      }
-      blockquote p:last-of-type::after {
-        content: close-quote;
-      } */
+:root {
+    --background-rgb: 214, 219, 220;
+    --foreground-rgb: 0, 0, 0;
 }
 
-@theme {
-    --animate-console-blink: console-blink 0.3s linear infinite;
-    --animate-console-blink-1\/2s: console-blink 0.5s linear infinite;
-    --animate-console-blink-1s: console-blink 1s linear infinite;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-rgb: 0, 0, 0;
+        --foreground-rgb: 255, 255, 255;
+    }
 }
 
-@keyframes console-blink {
-    0%,
-    49%,
-    100% {
-        opacity: 1;
-    }
-    50%,
-    99% {
-        opacity: 0;
-    }
-}
+body {
+    background: rgb(var(--background-rgb));
+    color: rgb(var(--foreground-rgb));
+} */

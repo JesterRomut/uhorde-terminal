@@ -2,14 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"name": "Lib",
-			"path": "src/lib"
-		},
-		{
-			"name": "Routes",
-			"path": "src/routes"
 		}
 	],
 	"settings": {}
