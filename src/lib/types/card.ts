@@ -1,4 +1,4 @@
-import type { CardId } from "../cards";
+import type { CardId } from "../data/cards";
 
 // const CardActions = {
 //     OBTAIN: "obtain",

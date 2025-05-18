@@ -1,6 +1,6 @@
 <script lang="ts">
     import { cardRegistry, type CardId } from "$lib/data/cards";
-    import type { AppState } from "$lib/data/types";
+    import type { AppState } from "$lib/types";
     import { goto, invalidate } from "$app/navigation";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
 

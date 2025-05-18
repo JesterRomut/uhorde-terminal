@@ -5,7 +5,7 @@
         type DragDropState,
     } from "$lib/actions/dragdrop/type.svelte";
     import { cardRegistry } from "$lib/data/cards";
-    import type { CardInstance } from "$lib/data/types/card";
+    import type { CardInstance } from "$lib/types/card";
 
     // interface InsertResult {
     //     valid: boolean;

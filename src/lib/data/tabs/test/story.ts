@@ -1,5 +1,15 @@
-import { content, contentAlt, contentForked } from "./BeautifulStory.svelte";
-import type { StoryNode, MultipleStoryNodes } from "./types";
+import {
+    content,
+    contentAlt,
+    contentForked,
+    wrapper1,
+} from "./BeautifulStory.svelte";
+import {
+    type StoryNode,
+    type MultipleStoryNodes,
+    type StoryNodeWrapped,
+    isWrappedStoryNode,
+} from "../../../types/story";
 
 const end: StoryNode = {
     content: content,
@@ -16,7 +26,8 @@ const next: StoryNode = {
     next: end,
 };
 
-export const entry: StoryNode = {
-    content: contentForked,
+export const entry: StoryNodeWrapped = {
+    content: wrapper1,
+    children: contentForked,
     next: { one: next, two: other } as MultipleStoryNodes,
 };

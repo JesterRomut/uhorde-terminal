@@ -11,7 +11,7 @@
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import { typewriterCursoredDeep } from "$lib/components/typewriter/typewriter";
     import type { Data } from "./tab";
-    import type { AppState } from "$lib/data/types";
+    import type { AppState } from "$lib/types";
 
     let { data, context }: { data: Data; context: AppState } = $props();
     let roll = $state(data.codes.roll());

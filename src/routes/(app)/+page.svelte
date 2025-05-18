@@ -5,8 +5,8 @@
     import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
     import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
     import DebugBar from "$lib/components/DebugBar.svelte";
-    import type { CardInstance } from "$lib/data/types/card";
-    import type { AppState } from "$lib/data/types";
+    import type { CardInstance } from "$lib/types/card";
+    import type { AppState } from "$lib/types";
     import { page } from "$app/state";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
 

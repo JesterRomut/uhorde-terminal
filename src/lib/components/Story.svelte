@@ -1,21 +1,23 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
     import {
         isSingleStoryNode,
+        isWrappedStoryNode,
         type MultipleStoryNodes,
         type StoryNavigator,
         type StoryNode,
-    } from "./types";
+    } from "../types/story";
     import { writable, type Writable } from "svelte/store";
 
     interface Props {
         stack: Writable<StoryNode[]>;
+        navigator?: (node: StoryNode) => StoryNavigator;
     }
-    let { stack = $bindable(writable([])) }: Props = $props();
+    let { stack = $bindable(writable([])), navigator = $bindable() }: Props =
+        $props();
 
     //let stack: Writable<StoryNode[]> = writable([entry]);
 
-    const navigator: (node: StoryNode) => StoryNavigator = (node) => {
+    navigator = (node) => {
         const next = () => {
             if (!node.next) {
                 return () => {};
@@ -46,9 +48,18 @@
 </script>
 
 {#snippet wrapper(node: StoryNode)}
-    {@render node.content(navigator(node))}
+    {#if navigator}
+        {#if isWrappedStoryNode(node)}
+            {@render node.content(navigator(node), node.children)}
+        {:else}
+            {@render node.content(navigator(node))}
+        {/if}
+    {:else}
+        Expect navigatorFn, got {navigator}
+    {/if}
 {/snippet}
 
 {#each $stack as thing}
+    {@debug thing}
     {@render wrapper(thing)}
 {/each}

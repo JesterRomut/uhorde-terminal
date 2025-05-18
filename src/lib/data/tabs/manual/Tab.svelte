@@ -1,50 +1,105 @@
 <script lang="ts">
-    import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-
-    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
-
-    import SectionedRender, {
-        emptyWrapper,
-        type Section,
-        type SectionedRenderState,
-        type ShowConditionFn,
-    } from "$lib/components/SectionedRender.svelte";
+    import { writable, type Writable } from "svelte/store";
+    import Story from "$lib/components/Story.svelte";
+    import type {
+        StoryNavigator,
+        StoryNavigatorSingle,
+        StoryNode,
+    } from "../../../types/story";
     import Dummy from "$lib/components/Dummy.svelte";
-    //import { cardboard, terminal } from "../+layout.svelte";
-    import { onDestroy, onMount, type Snippet } from "svelte";
-    import { CustomElementUtils } from "$lib/classes/Utils";
-    import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
-    //import { cardboard } from "../../../../routes/+layout.svelte";
-    //import { cardCollectibleElement } from "$lib/elements/card-collectible";
 
     // @ts-ignore
     import intro from "./intro.md";
 
     // @ts-ignore
     import tutor from "./tutor.md";
-
-    //import { terminal } from "../../../../routes/(app)/+layout.svelte";
-    import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
     import Prose from "$lib/components/Prose.svelte";
-    import type { AppState } from "$lib/data/types";
-    import type { Data } from "./tab";
+    import TerminalChoice from "$lib/components/TerminalChoice.svelte";
+    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
+    import { CustomElementUtils } from "$lib/classes/Utils";
+    import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
+    import { onDestroy, onMount } from "svelte";
     import {
         CardActions,
         type CardAction,
         type CardObtainAction,
         type CardReplaceAction,
-    } from "$lib/data/types/card";
+    } from "$lib/types/card";
+    import type { Data } from "./tab";
+    import type { AppState } from "$lib/types";
+    import Error from "../../../../routes/+error.svelte";
 
     let { data, context: appState }: { data: Data; context: AppState } =
         $props();
     let { cards, terminal } = appState;
     let { stories } = data;
 
+    const nodes: StoryNode[] = stories.map((content) => ({
+        content: content,
+        next: undefined,
+    }));
+
+    // 建立链表关系（从第一个节点开始）
+    for (let i = 0; i < nodes.length - 1; i++) {
+        nodes[i].next = nodes[i + 1];
+    }
+
+    // 最终入口节点（根据实际需求调整）
+    const storyEntryNode = nodes[0];
+    console.log(nodes);
+
+    // const storyEntryNode: StoryNode = {
+    //     content: introWrapped,
+    //     next: undefined,
+    // };
+
+    const tutorNode: StoryNode = {
+        content: tutor,
+        next: storyEntryNode,
+    };
+    const introChoiceBeginStory: StoryNode = {
+        content: choiceTutorial,
+        next: tutorNode,
+    };
+
+    const entryNode: StoryNode = {
+        content: introWrapped,
+        next: introChoiceBeginStory,
+    };
+
+    let stack: Writable<StoryNode[]> = $state(writable([entryNode]));
+    let navigator: ((node: StoryNode) => StoryNavigator) | undefined = $state();
+
+    let body: Node | undefined;
+
+    const cardCollection = new Map<string, CardAction>([
+        [
+            "tutor",
+            {
+                action: CardActions.OBTAIN,
+                card: { type: "character:amen_gleph" },
+            },
+        ],
+        [
+            "tutor_kill",
+            {
+                action: CardActions.REPLACE,
+                card: {
+                    from: "character:amen_gleph",
+                    to: "character:amen_gleph:dead",
+                },
+            },
+        ],
+    ]);
+    const cardCollectState = new Map([
+        ["tutor", false],
+        ["tutor_kill", false],
+    ]);
+
     function handleCardCollect(event: Event) {
         if (!(event instanceof CustomEvent)) return;
 
-        /**@type {{detail: string}}*/
-        let { detail } = event;
+        let { detail }: { detail: string } = event;
         if (!cardCollection.has(detail))
             throw new TypeError(`card not found, event.detail: ${detail}`);
         let card = cardCollection.get(detail);
@@ -81,97 +136,21 @@
 
         switch (detail) {
             case "tutor":
-                state.index++;
+                let currentStoryNode = $stack.at(-1);
+                if (!currentStoryNode)
+                    throw new TypeError(
+                        `expect StoryNode, got ${currentStoryNode}`
+                    );
+                if (!navigator)
+                    throw new TypeError(`expect navigator, got ${navigator}`);
+                navigator(currentStoryNode).next();
                 break;
         }
     }
-    // for (let i = 0; i < story.length; i++) {
-    //     stories.push(importSync(`./story.sectioned/${story[i]}.md`).default);
-    // }
 
-    //const pages = [page0, page1];
-    //const greaterEqual = (s, i) => s.index >= i && s.index < 2;
-
-    const normalEqual: ShowConditionFn = (s, i) => s.index == i;
-
-    const greaterEqual: ShowConditionFn = (s, i) => s.index >= i;
-
-    const sections: Section[] = [
-        {
-            content: intro,
-            wrapper: contentWrapper,
-            show: (s, i) => greaterEqual(s, i) && s.index < 2,
-        },
-        { wrapper: choiceTutorial, show: normalEqual },
-        {
-            content: tutor,
-            wrapper: emptyWrapper,
-            show: greaterEqual,
-        },
-        {
-            wrapper: cardSlot,
-            show: greaterEqual,
-        },
-        { wrapper: space, show: greaterEqual },
-    ];
-
-    // /**@type {import("svelte").Snippet[]}*/
-    // const stories = [];
-
-    // const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
-    // let storyPromise = (async () => {
-    //     for (let i = 0; i < story.length; i++) {
-    //         stories.push(
-    //             (await import(`./story.sectioned/${story[i]}.md`)).default
-    //         );
-    //     }
-    // })();
-    sections.push(
-        ...stories.slice(undefined, -1).map((snippet, index) => {
-            return {
-                content: snippet,
-                wrapper: storyWrapper,
-                show: greaterEqual,
-            };
-        }),
-        { wrapper: choiceContinue, show: normalEqual },
-        { wrapper: spaceKillCharacter, show: greaterEqual },
-        {
-            content: stories[stories.length - 1],
-            wrapper: storyWrapper,
-            show: greaterEqual,
-        }
-    );
-
-    const cardCollection = new Map<string, CardAction>([
-        [
-            "tutor",
-            {
-                action: CardActions.OBTAIN,
-                card: { type: "character:amen_gleph" },
-            },
-        ],
-        [
-            "tutor_kill",
-            {
-                action: CardActions.REPLACE,
-                card: {
-                    from: "character:amen_gleph",
-                    to: "character:amen_gleph:dead",
-                },
-            },
-        ],
-    ]);
-    const cardCollectState = new Map([
-        ["tutor", false],
-        ["tutor_kill", false],
-    ]);
-
-    let body: Node | undefined;
-
-    $cards = []; //{ type: "character:amen_gleph:dead" }
     onMount(() => {
+        $cards = [];
+
         CustomElementUtils.define("card-collectible", CardCollectible.element);
         //CustomElementUtils.define("card-slot", CardSlot.element);
 
@@ -180,131 +159,37 @@
     onDestroy(() => {
         body?.removeEventListener("card-collected", handleCardCollect);
     });
-    //let finished = $state(false);
-    let state = $state({ index: 0 });
 </script>
 
 <svelte:body bind:this={body} />
 
-{#snippet contentWrapper(
-    s: SectionedRenderState,
-    i: number,
-    c: Snippet | undefined
-)}
-    <!-- <article
-        class="prose prose-sm prose-console max-w-none prose-hr:border-t-[var(--tw-prose-body)] prose-hr:border-t-[2px] prose-hr:mt-[0.6em] prose-hr:mb-[2em] prose-headings:mt-[0.2em]"
-    > -->
+{#snippet introWrapped(navigator: StoryNavigatorSingle)}
     <Prose>
         <TypewriterCursored
             removeCursorWhenFinish={true}
             time={80}
             onfinish={() => {
-                s.index++;
+                navigator.next();
             }}
         >
-            {@render c?.()}
+            {@render intro()}
         </TypewriterCursored>
     </Prose>
-    <!-- </article> -->
 {/snippet}
 
-{#snippet storyWrapper(
-    s: SectionedRenderState,
-    i: number,
-    c: Snippet | undefined
-)}
-    <Prose>
-        <TypewriterCursored
-            removeCursorWhenFinish={true}
-            time={600}
-            onfinish={() => {
-                new Promise((fulfil) => {
-                    setTimeout(fulfil, 300);
-                }).then(() => {
-                    s.index++;
-                });
-            }}
-            onappend={[
-                (/**@type {Node}*/ node) => {
-                    let terminalElement = terminal();
-                    if (!terminalElement) return;
-                    terminalElement.scrollTop = terminalElement.scrollHeight;
-                },
-            ]}
-        >
-            {@render c?.()}
-        </TypewriterCursored>
-    </Prose>
-{/snippet}
-{#snippet choiceTutorial(
-    s: SectionedRenderState,
-    i: number,
-    c: Snippet | undefined
-)}
+{#snippet choiceTutorial(navigator: StoryNavigatorSingle)}
     <TerminalChoice
         choices={[
             {
                 text: "[教程 / TUTORIAL]",
                 waitingTime: 1000,
                 onclick: (e) => {
-                    s.index++;
+                    navigator.clear();
+                    navigator.next();
                 },
             },
         ]}
     />
 {/snippet}
-{#snippet choiceContinue(
-    s: SectionedRenderState,
-    i: number,
-    c: Snippet | undefined
-)}
-    <TerminalChoice
-        choices={[
-            {
-                text: "[继续 / CONTINUE]",
-                waitingTime: 1000,
-                onclick: (e) => {
-                    s.index++;
-                },
-            },
-        ]}
-    />
-{/snippet}
-{#snippet cardSlot(s: SectionedRenderState, i: number, c: Snippet | undefined)}
-    <CardSlot
-        title="观察"
-        oninsert={(card) => {
-            s.index++;
-            return { valid: true };
-        }}
-    ></CardSlot>
-{/snippet}
 
-{#snippet space(s: SectionedRenderState, i: number, c: Snippet | undefined)}
-    <div class="h-10"></div>
-    <Dummy
-        onmount={() => {
-            s.index++;
-        }}
-    ></Dummy>
-{/snippet}
-
-{#snippet spaceKillCharacter(
-    s: SectionedRenderState,
-    i: number,
-    c: Snippet | undefined
-)}
-    <div class="h-10"></div>
-    <Dummy
-        onmount={() => {
-            s.index++;
-            const customEvent = new CustomEvent("card-collected", {
-                detail: "tutor_kill",
-                bubbles: true,
-            });
-            body?.dispatchEvent(customEvent);
-        }}
-    ></Dummy>
-{/snippet}
-
-<SectionedRender bind:state options={{}} {sections} />
+<Story bind:stack bind:navigator></Story>

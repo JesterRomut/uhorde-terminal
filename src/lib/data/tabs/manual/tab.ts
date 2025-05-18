@@ -5,19 +5,17 @@ export interface Data {
 }
 //
 /**@returns {Promise<Data>} */
-export default async function load() {
+export default async function load(): Promise<Data> {
     // const codes = await import("$lib/data/documents/accessCode");
     // return {
     //     codes: codes.accessCodes,
     // };
     const stories: Snippet[] = [];
-    const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    const storyIndex = Array.from({ length: 15 }, (_, i) => i);
 
     await (async () => {
-        for (let i = 0; i < story.length; i++) {
-            stories.push(
-                (await import(`./story.sectioned/${story[i]}.md`)).default
-            );
+        for (const i of storyIndex) {
+            stories.push((await import(`./story.sectioned/${i}.md`)).default);
         }
     })();
     return { stories: stories };
