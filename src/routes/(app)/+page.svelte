@@ -9,6 +9,7 @@
     import type { AppState } from "$lib/types";
     import { page } from "$app/state";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
+    import { browser } from "$app/environment";
 
     let tab = writable<TabId>("main");
     let entry = $derived(tabRegistry.get($tab));
@@ -19,10 +20,10 @@
 
     const cards: Writable<CardInstance[]> = writable([]);
 
-    let debugMode = $derived(page.url.searchParams.has("debug"));
+    let { data } = $props();
 </script>
 
-{#if debugMode}
+{#if data.debug}
     <DebugBar
         context={{
             cards: cards,
