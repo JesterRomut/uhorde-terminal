@@ -1,8 +1,10 @@
 <script lang="ts">
-    import VerbObjectSlots from "$lib/components/cardslot/VerbObjectSlots.svelte";
+    import { writable, type Writable } from "svelte/store";
     import Story from "./Story.svelte";
+    import { entry } from "./story";
+    import type { StoryNode } from "./types";
+
+    let stack: Writable<StoryNode[]> = writable([entry]);
 </script>
 
-11111
-<VerbObjectSlots></VerbObjectSlots>
-<Story></Story>
+<Story bind:stack></Story>

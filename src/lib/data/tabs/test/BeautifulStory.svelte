@@ -4,7 +4,7 @@
         StoryNavigator,
         StoryNavigatorForked,
         StoryNode,
-    } from "./story";
+    } from "./types";
 
     export { content, contentForked, contentAlt };
 </script>

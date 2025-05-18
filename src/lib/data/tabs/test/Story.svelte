@@ -1,47 +1,54 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
     import {
-        entry,
         isSingleStoryNode,
         type MultipleStoryNodes,
         type StoryNavigator,
-        type StoryNavigatorForked,
-        type StoryNavigatorSingle,
         type StoryNode,
-    } from "./story";
+    } from "./types";
+    import { writable, type Writable } from "svelte/store";
 
-    let stack: StoryNode[] = $state([entry]);
+    interface Props {
+        stack: Writable<StoryNode[]>;
+    }
+    let { stack = $bindable(writable([])) }: Props = $props();
 
-    const getNavigator: (node: StoryNode) => StoryNavigator = (node) => {
-        console.log(node.next);
-        console.log(stack);
-        if (!node.next) {
-            console.log("end");
-            return {
-                next() {},
-            } as StoryNavigatorSingle;
-        }
-        if (!isSingleStoryNode(node.next)) {
-            return {
-                next(to: string) {
-                    stack.push((node.next as MultipleStoryNodes)[to]);
-                },
-            } as StoryNavigatorForked;
-        }
+    //let stack: Writable<StoryNode[]> = writable([entry]);
+
+    const navigator: (node: StoryNode) => StoryNavigator = (node) => {
+        const next = () => {
+            if (!node.next) {
+                return () => {};
+            }
+            if (!isSingleStoryNode(node.next)) {
+                return (to: string) => {
+                    $stack = $stack.concat(
+                        (node.next as MultipleStoryNodes)[to]
+                    );
+                };
+            }
+            return () => {
+                $stack = $stack.concat(node.next as StoryNode);
+            };
+        };
 
         return {
-            next() {
-                console.log(node.next);
-                stack.push(node.next as StoryNode);
+            stack: stack,
+            next: next(),
+            keep: (start?: number, end?: number) => {
+                $stack = $stack.slice(start, end);
             },
-        } as StoryNavigatorSingle;
+            clear: () => {
+                $stack = [];
+            },
+        } as StoryNavigator;
     };
 </script>
 
 {#snippet wrapper(node: StoryNode)}
-    {@render node.content(getNavigator(node))}
+    {@render node.content(navigator(node))}
 {/snippet}
 
-{#each stack as thing}
+{#each $stack as thing}
     {@render wrapper(thing)}
 {/each}
