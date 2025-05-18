@@ -1,16 +1,19 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"name": "Lib",
-			"path": "src/lib"
-		},
-		{
-			"name": "Routes",
-			"path": "src/routes"
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "name": "Lib",
+            "path": "src/lib"
+        },
+        {
+            "name": "Routes",
+            "path": "src/routes"
+        }
+    ],
+    "settings": {
+        "typescript.tsdk": "./node_modules/typescript/lib",
+        "editor.formatOnSave": true
+    }
 }

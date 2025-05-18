@@ -1,26 +1,19 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
-    import { typewriterMoverCursored } from "./typewriterMover";
-    /**
-     * @typedef {(base: Element, output: Element, time: number, cursor:Element) => {start: () => Promise<void>}} TypewriterCursoredFn
-     */
-    /**
-     * @typedef {Object} Props
-     * @property {() => void} [onfinish]
-     * @property {(reason: any) => void} [onerror]
-     *
-     * @property {((node: Node) => void)[]} [onappend]
-     * @property {number} [time]
-     * @property {import("svelte").Snippet} [cursor]
-     * @property {boolean} [removeCursorWhenFinish]
-     * @property {boolean} [showCursor]
-     * @property {TypewriterCursoredFn} [fn]
-     * @property {*} children
-     */
+    import { typewriterCursored, type TypewriterCursoredFn } from "./typewriter";
+    //type TypewriterCursoredFn = (base: Element, output: Element, time: number, cursor: Element) => { start: () => Promise<void>; };
+    interface Props {
+        onfinish?: () => void;
+        onerror?: (reason: any) => void;
+        onappend?: ((node: Node) => void)[];
+        time?: number;
+        cursor?: import("svelte").Snippet;
+        removeCursorWhenFinish?: boolean;
+        showCursor?: boolean;
+        fn?: TypewriterCursoredFn;
+        children: any;
+    }
 
-    /**
-     * @type {Props}
-     */
     let {
         children,
         time = 200,
@@ -31,20 +24,13 @@
         removeCursorWhenFinish = true,
         showCursor = true,
         fn,
-    } = $props();
+    }: Props = $props();
 
-    /**
-     * @type {Element | undefined}
-     */
-    let terminal;
+    let terminal: Element | undefined;
 
-    /**
-     * @type {Element | undefined}
-     */
-    let terminalClone;
+    let terminalClone: Element | undefined;
 
-    /**@type {Element |undefined}*/
-    let cursorElement = $state();
+    let cursorElement: Element | undefined = $state();
 
     onMount(() => {
         if (!terminal) throw TypeError("terminal not bound!");
@@ -55,7 +41,7 @@
         if (fn) {
             typewriter = fn(terminal, terminalClone, time, cursorElement);
         } else {
-            typewriter = typewriterMoverCursored(
+            typewriter = typewriterCursored(
                 terminal,
                 terminalClone,
                 time,

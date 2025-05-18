@@ -5,6 +5,7 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 import { enhancedImages } from "@sveltejs/enhanced-img";
 import svg from "@poppanator/sveltekit-svg";
+import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
 
 export default defineConfig({
     plugins: [
@@ -24,6 +25,7 @@ export default defineConfig({
         enhancedImages(),
         sveltekit(),
         svg(),
+        UnpluginTypia(),
     ],
     test: {
         workspace: [

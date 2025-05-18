@@ -1,13 +1,12 @@
-<script>
+<script lang="ts">
+    import type { CardInstance } from "$lib/data/types/card";
     import Card from "./Card.svelte";
 
-    /**
-     * @typedef {object} Props
-     * @property {import("./Card.svelte").CardInstance[]} cards
-     * */
+    interface Props {
+        cards: CardInstance[];
+    }
 
-    /**@type {Props}*/
-    let { cards = $bindable() } = $props();
+    let { cards = $bindable() }: Props = $props();
 
     const range = 60;
 

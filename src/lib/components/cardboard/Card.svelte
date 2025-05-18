@@ -1,20 +1,21 @@
-<script>
+<script lang="ts">
     import { draggable } from "$lib/actions/dragdrop/draggable";
     import { globalState } from "$lib/actions/dragdrop/type.svelte";
-    import { cardRegistry } from "$lib/data/registries/cardRegistry";
+    import { cardRegistry } from "$lib/data/cards";
+    import type { CardInstance } from "$lib/data/types/card";
     import { fly } from "svelte/transition";
 
-    /**@typedef {object} Props
-     * @property {boolean} [mouseOnList]
-     * @property {boolean} [disabled]
-     * @property {import("$lib/data/types").CardInstance} instance
-     */
-    /**@type {Props}*/
+    interface Props {
+        mouseOnList?: boolean;
+        disabled?: boolean;
+        instance: CardInstance;
+    }
+
     let {
         instance,
         mouseOnList = $bindable(true),
         disabled = $bindable(false),
-    } = $props();
+    }: Props = $props();
 
     let localDragState = $state({ isDragging: false });
 </script>
@@ -38,19 +39,19 @@
     transition:fly={{ y: -200 }}
 >
     <div class="pointer-events-none">
-        {@render cardRegistry.getCard(instance.type).background()}
+        {@render cardRegistry.get(instance.type).background()}
     </div>
 
     <div
         class="w-full text-center absolute top-0 left-1/2 transform-[translateX(-50%)] overflow-hidden overflow-ellipsis whitespace-nowrap"
     >
-        {@render cardRegistry.getCard(instance.type).title?.()}
+        {@render cardRegistry.get(instance.type).title?.()}
     </div>
 
     <div
         class="w-full text-center absolute bottom-0 left-1/2 transform-[translateX(-50%)] whitespace-nowrap hidden md:block"
     >
-        {@render cardRegistry.getCard(instance.type).category?.()}
+        {@render cardRegistry.get(instance.type).category?.()}
     </div>
 </div>
 

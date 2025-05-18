@@ -1,7 +1,8 @@
-/**
- * @typedef {object} Data
- *  @property {import("svelte").Snippet[]} stories
- */
+import type { Snippet } from "svelte";
+
+export interface Data {
+    stories: Snippet[];
+}
 //
 /**@returns {Promise<Data>} */
 export default async function load() {
@@ -9,8 +10,7 @@ export default async function load() {
     // return {
     //     codes: codes.accessCodes,
     // };
-    /**@type {import("svelte").Snippet[]}*/
-    const stories = [];
+    const stories: Snippet[] = [];
     const story = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
     await (async () => {

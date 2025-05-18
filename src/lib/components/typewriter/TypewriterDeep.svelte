@@ -1,29 +1,19 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
-    import { typewriterMoverDeep } from "./typewriterMover";
+    import { typewriterDeep } from "./typewriter";
 
-    /**
-     * @typedef {Object} Props
-     * @property {() => void} [onfinish]
-     * @property {(reason: any) => void} [onerror]
-     * @property {number} [time]
-     * @property {*} children
-     */
+    interface Props {
+        onfinish?: () => void;
+        onerror?: (reason: any) => void;
+        time?: number;
+        children: any;
+    }
 
-    /**
-     * @type {Props}
-     */
-    let { children, time = 200, onfinish, onerror } = $props();
+    let { children, time = 200, onfinish, onerror }: Props = $props();
 
-    /**
-     * @type {Element | undefined}
-     */
-    let terminal;
+    let terminal: Element | undefined;
 
-    /**
-     * @type {Element | undefined}
-     */
-    let terminalClone;
+    let terminalClone: Element | undefined;
 
     onMount(() => {
         if (!terminal) throw TypeError("terminal not bound!");
@@ -31,7 +21,7 @@
         //console.log(terminalClone.childNodes);
         //let terminalChildren = terminal.children.
         //console.log(terminal.childNodes);
-        let typer = typewriterMoverDeep(terminal, terminalClone, time).start();
+        let typer = typewriterDeep(terminal, terminalClone, time).start();
         typer.then(() => {
             terminal?.remove();
         });

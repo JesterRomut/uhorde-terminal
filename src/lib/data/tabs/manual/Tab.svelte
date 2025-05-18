@@ -1,44 +1,17 @@
-<script>
-    /**@type {{data: import("./manual").Data, context: import("$lib/data/types").AppState}}*/
-    let { data, context: appState } = $props();
-    let { cards, terminal } = appState;
-    let { stories } = data;
-    /**@typedef {import("$lib/components/SectionedRender.svelte").SectionedRenderState} state*/
-
-    /**
-     * @readonly
-     * @enum {string}
-     */
-    const CardActions = {
-        OBTAIN: "obtain",
-        KILL: "kill",
-    };
-
-    /**@typedef {object} CardObtainAction
-     * @property {import("$lib/data/types").CardInstance} card
-     * @property {"obtain"} action
-     */
-    /**@typedef {object} CardKillAction
-     * @property {object} card
-     * @property {string} card.from
-     * @property {string} [card.dead]
-     * @property {"replace"} action
-     */
-
+<script lang="ts">
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-    import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
-    import Loader from "$lib/components/Loader.svelte";
 
-    import { goto } from "$app/navigation";
-
-    import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
+    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
 
     import SectionedRender, {
         emptyWrapper,
+        type Section,
+        type SectionedRenderState,
+        type ShowConditionFn,
     } from "$lib/components/SectionedRender.svelte";
     import Dummy from "$lib/components/Dummy.svelte";
     //import { cardboard, terminal } from "../+layout.svelte";
-    import { getContext, onDestroy, onMount } from "svelte";
+    import { onDestroy, onMount, type Snippet } from "svelte";
     import { CustomElementUtils } from "$lib/classes/Utils";
     import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
     //import { cardboard } from "../../../../routes/+layout.svelte";
@@ -50,17 +23,24 @@
     // @ts-ignore
     import tutor from "./tutor.md";
 
-    // @ts-ignore
-    import section0 from "./story.sectioned/0.md";
-
     //import { terminal } from "../../../../routes/(app)/+layout.svelte";
     import CardSlot from "$lib/components/cardboard/CardSlot.svelte";
-    import LoadingText from "$lib/components/LoadingText.svelte";
-    import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
     import Prose from "$lib/components/Prose.svelte";
+    import type { AppState } from "$lib/data/types";
+    import type { Data } from "./tab";
+    import {
+        CardActions,
+        type CardAction,
+        type CardObtainAction,
+        type CardReplaceAction,
+    } from "$lib/data/types/card";
 
-    /**@param {Event} event*/
-    function handleCardCollect(event) {
+    let { data, context: appState }: { data: Data; context: AppState } =
+        $props();
+    let { cards, terminal } = appState;
+    let { stories } = data;
+
+    function handleCardCollect(event: Event) {
         if (!(event instanceof CustomEvent)) return;
 
         /**@type {{detail: string}}*/
@@ -74,12 +54,10 @@
         switch (card.action) {
             case CardActions.OBTAIN:
                 //cardboard.cards.push(/**@type {CardObtainAction}*/ (card).card);
-                $cards = $cards.concat(
-                    /**@type {CardObtainAction}*/ (card).card
-                );
+                $cards = $cards.concat((card as CardObtainAction).card);
                 break;
-            case CardActions.KILL:
-                let { card: match } = /**@type {CardKillAction}*/ (card);
+            case CardActions.REPLACE:
+                let { card: match } = card as CardReplaceAction;
 
                 // console.log(cardboard.cards.values().toArray());
 
@@ -94,7 +72,7 @@
                 if (index == -1) return;
                 //$cards[index] = { type: match.dead || `${match.from}:dead` };
                 $cards = $cards.toSpliced(index, 1, {
-                    type: match.dead || `${match.from}:dead`,
+                    type: match.to,
                 });
                 //console.log(cardboard.cards);
                 break;
@@ -112,17 +90,13 @@
     // }
 
     //const pages = [page0, page1];
-    /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
     //const greaterEqual = (s, i) => s.index >= i && s.index < 2;
 
-    /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
-    const normalEqual = (s, i) => s.index == i;
+    const normalEqual: ShowConditionFn = (s, i) => s.index == i;
 
-    /**@type {import("$lib/components/SectionedRender.svelte").ShowConditionFn}*/
-    const greaterEqual = (s, i) => s.index >= i;
+    const greaterEqual: ShowConditionFn = (s, i) => s.index >= i;
 
-    /**@type {import("$lib/components/SectionedRender.svelte").Section[]}*/
-    const sections = [
+    const sections: Section[] = [
         {
             content: intro,
             wrapper: contentWrapper,
@@ -170,7 +144,7 @@
         }
     );
 
-    const cardCollection = new Map([
+    const cardCollection = new Map<string, CardAction>([
         [
             "tutor",
             {
@@ -181,10 +155,10 @@
         [
             "tutor_kill",
             {
-                action: CardActions.KILL,
+                action: CardActions.REPLACE,
                 card: {
                     from: "character:amen_gleph",
-                    //replace: { type: "character:amen_gleph:dead" },
+                    to: "character:amen_gleph:dead",
                 },
             },
         ],
@@ -194,10 +168,7 @@
         ["tutor_kill", false],
     ]);
 
-    /**
-     * @type {Node | undefined}
-     */
-    let body;
+    let body: Node | undefined;
 
     $cards = []; //{ type: "character:amen_gleph:dead" }
     onMount(() => {
@@ -216,15 +187,15 @@
 <svelte:body bind:this={body} />
 
 {#snippet contentWrapper(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
+    s: SectionedRenderState,
+    i: number,
+    c: Snippet | undefined
 )}
     <!-- <article
         class="prose prose-sm prose-console max-w-none prose-hr:border-t-[var(--tw-prose-body)] prose-hr:border-t-[2px] prose-hr:mt-[0.6em] prose-hr:mb-[2em] prose-headings:mt-[0.2em]"
     > -->
     <Prose>
-        <TypewriterMoverCursored
+        <TypewriterCursored
             removeCursorWhenFinish={true}
             time={80}
             onfinish={() => {
@@ -232,18 +203,18 @@
             }}
         >
             {@render c?.()}
-        </TypewriterMoverCursored>
+        </TypewriterCursored>
     </Prose>
     <!-- </article> -->
 {/snippet}
 
 {#snippet storyWrapper(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
+    s: SectionedRenderState,
+    i: number,
+    c: Snippet | undefined
 )}
     <Prose>
-        <TypewriterMoverCursored
+        <TypewriterCursored
             removeCursorWhenFinish={true}
             time={600}
             onfinish={() => {
@@ -262,13 +233,13 @@
             ]}
         >
             {@render c?.()}
-        </TypewriterMoverCursored>
+        </TypewriterCursored>
     </Prose>
 {/snippet}
 {#snippet choiceTutorial(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
+    s: SectionedRenderState,
+    i: number,
+    c: Snippet | undefined
 )}
     <TerminalChoice
         choices={[
@@ -283,9 +254,9 @@
     />
 {/snippet}
 {#snippet choiceContinue(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
+    s: SectionedRenderState,
+    i: number,
+    c: Snippet | undefined
 )}
     <TerminalChoice
         choices={[
@@ -299,11 +270,7 @@
         ]}
     />
 {/snippet}
-{#snippet cardSlot(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
-)}
+{#snippet cardSlot(s: SectionedRenderState, i: number, c: Snippet | undefined)}
     <CardSlot
         title="观察"
         oninsert={(card) => {
@@ -313,11 +280,7 @@
     ></CardSlot>
 {/snippet}
 
-{#snippet space(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
-)}
+{#snippet space(s: SectionedRenderState, i: number, c: Snippet | undefined)}
     <div class="h-10"></div>
     <Dummy
         onmount={() => {
@@ -327,9 +290,9 @@
 {/snippet}
 
 {#snippet spaceKillCharacter(
-    /**@type {state}*/ s,
-    /**@type {number}*/ i,
-    /**@type {import("svelte").Snippet | undefined}*/ c
+    s: SectionedRenderState,
+    i: number,
+    c: Snippet | undefined
 )}
     <div class="h-10"></div>
     <Dummy

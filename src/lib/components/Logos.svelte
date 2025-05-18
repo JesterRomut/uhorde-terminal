@@ -1,20 +1,59 @@
 <svelte:options customElement={{ shadow: "none" }} />
 
-<script>
-    import { WeightedRandom } from "$lib/classes/WeightedRandom";
-    import { logos } from "$lib/data/documents/logos";
+<script lang="ts">
+    import WeightedRandom from "$lib/classes/WeightedRandom";
     import { onDestroy, onMount } from "svelte";
+    interface Logos {
+        L: string;
+        o: string;
+        g: string;
+        O: string;
+        S: string;
+    }
 
-    /**@type {WeightedRandom<string>}*/
-    const puncList = new WeightedRandom();
-    puncList.add("#").add("$").add("@").add("%").add("&");
+    export const logos = new WeightedRandom<Logos>();
+    logos
+        .add({
+            L: "Liminal",
+            o: "Object",
+            g: "Gatekeeper",
+            O: "Of",
+            S: "Stories",
+        })
+        .add({
+            L: "Library",
+            o: "Of",
+            g: "Guessing",
+            O: "Omni",
+            S: "Science",
+        })
+        .add({
+            L: "Logfile",
+            o: "Oriented",
+            g: "Global",
+            O: "Operating",
+            S: "System",
+        })
+        .add({
+            L: "Lead,",
+            o: "Oversight,",
+            g: "Gauge,",
+            O: "Ordiance,",
+            S: "Sustain",
+        })
+        .add({
+            L: "Light",
+            o: "Of",
+            g: "God",
+            O: "Overcoming",
+            S: "Sin",
+        });
 
-    /**
-     * @param {HTMLElement} node
-     * @param {object} [params]
-     * @param {number} [params.speed]
-     */
-    function logotapper(node, params) {
+    // /**@type {WeightedRandom<string>}*/
+    // const puncList = new WeightedRandom();
+    // puncList.add("#").add("$").add("@").add("%").add("&");
+
+    function logotapper(node: HTMLElement, params?: { speed?: number }) {
         let speed = params?.speed || 1;
         const valid =
             node.childNodes.length === 1 &&
@@ -31,7 +70,7 @@
 
         return {
             duration,
-            tick: (/** @type {number} */ t) => {
+            tick: (/** @type {number} */ t: number) => {
                 const i = ~~(text.length * t);
                 node.textContent = text.slice(0, i);
             },
@@ -41,7 +80,7 @@
     let logo = $state(logos.roll());
 
     /**@type {number | undefined}*/
-    let timer;
+    let timer: number | undefined;
 
     const time = 3000;
 

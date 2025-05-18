@@ -1,4 +1,4 @@
-<script module>
+<!-- <script module>
     // export const terminal = () => _terminal;
     // /**@type {Element | undefined}*/
     // let _terminal = $state();
@@ -17,17 +17,6 @@
     //let _cardboard = $state();
     //let _cardboardEnabled = $state(false);
 
-    /**@type {Element | undefined}*/
-    let _terminal = $state();
-
-    export const terminal = () => _terminal;
-
-    /**@type {import("$lib/data/types").CardInstance[]}*/
-    //let _cards = $state([]);
-
-    /**@type {import("svelte/store").Writable<import("$lib/data/types").CardInstance[]>}*/
-    export const cards = writable([]);
-
     // export const cardboard = {
     //     get cards() {
     //         return _cards;
@@ -36,15 +25,12 @@
     //         _cards = value;
     //     },
     // };
-</script>
+</script> -->
 
 <script>
-    import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
-    import { getContext, onMount, setContext } from "svelte";
+    import { onMount } from "svelte";
     import "../../app.css";
     import { m } from "$lib/paraglide/messages";
-    import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
-    import { writable } from "svelte/store";
 
     let { children } = $props();
     // const decent = "bg-gray-950";
@@ -82,7 +68,4 @@
 </svelte:head>
 <!-- 
 <Cardboard /> -->
-
-<ConsoleScreen bind:screen={_terminal}>{@render children()}</ConsoleScreen>
-
-<Cardboard bind:cards={$cards}></Cardboard>
+{@render children()}

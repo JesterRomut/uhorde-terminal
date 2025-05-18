@@ -1,18 +1,19 @@
-<script>
+<script lang="ts">
     import { goto } from "$app/navigation";
     import { CustomElementUtils } from "$lib/classes/Utils.js";
     import Loader from "$lib/components/Loader.svelte";
     import Logos from "$lib/components/Logos.svelte";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-    import TypewriterMover from "$lib/components/typewriter/TypewriterMover.svelte";
+    import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
     import { onMount } from "svelte";
     import { m } from "$lib/paraglide/messages.js";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
-    import TypewriterMoverCursored from "$lib/components/typewriter/TypewriterMoverCursored.svelte";
-    import { typewriterMoverCursoredDeep } from "$lib/components/typewriter/typewriterMover";
+    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
+    import { typewriterCursoredDeep } from "$lib/components/typewriter/typewriter";
+    import type { Data } from "./tab";
+    import type { AppState } from "$lib/data/types";
 
-    /**@type {{data: import("./main").Data, context: import("$lib/data/types").AppState}}*/
-    let { data, context } = $props();
+    let { data, context }: { data: Data; context: AppState } = $props();
     let roll = $state(data.codes.roll());
 
     let showLogo = $state(false);
@@ -26,12 +27,12 @@
 
 <div class="block h-1/12"></div>
 <span>> </span>
-<TypewriterMoverCursored
-    fn={typewriterMoverCursoredDeep}
+<TypewriterCursored
+    fn={typewriterCursoredDeep}
     time={100}
     onfinish={() => {
         showLogo = true;
-    }}><ByteSeparator>{roll}</ByteSeparator></TypewriterMoverCursored
+    }}><ByteSeparator>{roll}</ByteSeparator></TypewriterCursored
 >
 <!-- <TypewriterCustom
         time={100}
@@ -55,12 +56,12 @@
 <br />
 {#if showLogo}
     <div class="inline-block absolute">
-        <TypewriterMover time={20}>
+        <Typewriter time={20}>
             <p class="mt-0 mb-0">{m.smart_such_fly_catch()}</p>
             <logos-logo></logos-logo>
             <br />
             <p class="mt-0 mb-0">{m.direct_major_felix_fulfill()}</p>
-        </TypewriterMover>
+        </Typewriter>
     </div>
 {/if}
 
