@@ -1,7 +1,7 @@
 <script lang="ts">
     import {
         isSingleStoryNode,
-        isWrappedStoryNode,
+        isArgumentedStoryNode,
         type MultipleStoryNodes,
         type StoryNavigator,
         type StoryNode,
@@ -49,8 +49,8 @@
 
 {#snippet wrapper(node: StoryNode)}
     {#if navigator}
-        {#if isWrappedStoryNode(node)}
-            {@render node.content(navigator(node), node.children)}
+        {#if isArgumentedStoryNode(node)}
+            {@render node.content(navigator(node), node.arguments)}
         {:else}
             {@render node.content(navigator(node))}
         {/if}
@@ -60,6 +60,5 @@
 {/snippet}
 
 {#each $stack as thing}
-    {@debug thing}
     {@render wrapper(thing)}
 {/each}

@@ -11,18 +11,16 @@ export interface StoryNode {
     next?: StoryNode | MultipleStoryNodes;
 }
 
-export interface StoryNodeWrapped extends StoryNode {
-    content:
-        | Snippet<[StoryNavigator, Snippet<[StoryNavigator]>]>
-        | ((...args: any[]) => any);
-
-    children: Snippet<[StoryNavigator]> | ((...args: any[]) => any);
+export interface StoryNodeArgumented<T extends unknown[] = unknown[]>
+    extends StoryNode {
+    content: Snippet<[StoryNavigator, T]> | ((...args: any[]) => any);
+    arguments: T;
 }
 
 // export type AnyStoryNode = StoryNode | StoryNodeWrapped;
 
 export const isSingleStoryNode = typia.createIs<StoryNode>();
-export const isWrappedStoryNode = typia.createIs<StoryNodeWrapped>();
+export const isArgumentedStoryNode = typia.createIs<StoryNodeArgumented>();
 //export const isMultipleNodes = typia.createValidate<MultipleStoryNodes>();
 
 export interface StoryNavigator {

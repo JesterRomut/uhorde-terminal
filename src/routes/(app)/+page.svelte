@@ -6,7 +6,7 @@
     import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
     import DebugBar from "$lib/components/DebugBar.svelte";
     import type { CardInstance } from "$lib/types/card";
-    import type { AppState } from "$lib/types";
+    import type { TabContext, TabNavigator } from "$lib/types/tab.js";
     import { page } from "$app/state";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
     import { browser } from "$app/environment";
@@ -21,36 +21,30 @@
     const cards: Writable<CardInstance[]> = writable([]);
 
     let { data } = $props();
+
+    const navigator: () => TabNavigator = () => {
+        return {
+            context: {
+                cards: cards,
+                terminal: terminal,
+                tab: tab,
+            },
+            goto(id) {
+                tab.set(id);
+            },
+        };
+    };
 </script>
 
 {#if data.debug}
-    <DebugBar
-        context={{
-            cards: cards,
-            terminal: terminal,
-            tab: tab,
-        } as AppState}
-    />
+    <DebugBar navigator={navigator()} />
 {/if}
 <ConsoleScreen bind:screen={_terminal}>
-    {#if entry}
-        {#await entry.load()}
-            <LoadingText>加载资源...</LoadingText>
-        {:then loaded}
-            {#await entry.tab()}
-                <LoadingText>加载页面...</LoadingText>
-            {:then Tab}
-                <Tab.default
-                    data={loaded as any}
-                    context={{
-                        cards: cards,
-                        terminal: terminal,
-                        tab: tab,
-                    } as AppState}
-                ></Tab.default>
-            {/await}
-        {/await}
-    {/if}
+    {#await Promise.all([entry.load(), entry.tab()])}
+        <LoadingText>加载中...</LoadingText>
+    {:then [data, Tab]}
+        <Tab.default {data} navigator={navigator()}></Tab.default>
+    {/await}
 </ConsoleScreen>
 
 <Cardboard bind:cards={$cards}></Cardboard>

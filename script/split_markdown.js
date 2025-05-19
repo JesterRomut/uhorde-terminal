@@ -1,64 +1,66 @@
 import fs from "fs";
 import path from "path";
 import chokidar from "chokidar";
-import { Glob, glob } from "glob";
+import { Glob } from "glob";
 
-// 配置参数
 const config = {
-    // sourceFile: path.resolve("src/lib/novels/original.md"), // 源文件路径
-    // outputDir: path.resolve("src/lib/content/novel"), // 输出目录
-    //sectionPattern: /^##\s+(.+)$/gm,
     pattern: /^#####\s+(.+)$/gm,
-    //sectionPattern: /^#####\s+\+(.*)$/gm,
+    //pattern: /^#####\s+\+(.+)$/gm,
     match: "**/*.sectioned.md",
     ignore: "node_modules/**",
 };
 
-const entries = new Set();
+//const entries = new Set();
 
 /**
  * @param {string} content
  */
 function splitContent(content) {
+    /**@type {{content: string, title: string | null }[]} */
     const sections = [];
-    //const pattern = /^##\s+.+$/gm;
-    let lastEnd = 0;
-
-    // 查找所有章节标题位置
+    /**@type {{start: number, end: number, title: string | null }[]} */
+    const headings = [];
     let match;
+
+    // 收集所有标题信息
     while ((match = config.pattern.exec(content)) !== null) {
         const titleStart = match.index;
         const titleEnd = titleStart + match[0].length;
+        /**@type {string | null} */
+        let title = match[1].trim(); // 直接提取+号后的内容
+        if (title.startsWith("+")) {
+            title = title.slice(1);
+            if (title.length < 1) {
+                title = null;
+            }
+        }
+        headings.push({ start: titleStart, end: titleEnd, title: title });
+    }
 
-        // 提取前一章节内容（从上次结束到本次标题开始）
-        if (titleStart > lastEnd) {
+    // 处理第一个标题前的内容
+    if (headings.length > 0 && headings[0].start > 0) {
+        sections.push({
+            content: content.slice(0, headings[0].start).trim(),
+            title: null,
+        });
+    }
+
+    // 处理每个标题后的内容
+    headings.forEach((heading, index) => {
+        const nextStart = headings[index + 1]?.start || content.length;
+        const sectionContent = content.slice(heading.end, nextStart).trim();
+        if (sectionContent) {
             sections.push({
-                content: content.slice(lastEnd, titleStart).trim(),
+                content: sectionContent,
+                title: heading.title,
             });
         }
-
-        // 记录当前标题结束位置
-        lastEnd = titleEnd;
-    }
-
-    // 添加最后一章内容
-    const finalContent = content.slice(lastEnd).trim();
-    if (finalContent) {
-        sections.push({ content: finalContent });
-    }
+    });
 
     return sections;
 }
 
-// 处理文件
 function processFile() {
-    // glob(config.match, {
-    //     ignore: config.ignore,
-    // }).then((result) => {
-    //     console.log(result)
-    // }).catch((error) => {
-    //     console.error("处理文件失败:", error);
-    // });
     let count = 0;
     //try {
     (async () => {
@@ -67,6 +69,15 @@ function processFile() {
         })) {
             const content = fs.readFileSync(entry, "utf-8");
             const sections = splitContent(content);
+
+            // 统计标题出现次数
+            const titleStats = sections.reduce(
+                (/**@type {Object.<string, number>}*/ acc, { title }) => {
+                    if (title) acc[title] = (acc[title] || 0) + 1;
+                    return acc;
+                },
+                {}
+            );
 
             const basename = path.basename(entry, ".md");
             const dirname = path.dirname(entry);
@@ -78,26 +89,44 @@ function processFile() {
             } catch {
                 fs.mkdirSync(outputDir + path.sep, { recursive: true });
             }
-            if (!fs.existsSync(outputDir + path.sep)) {
-            }
-
+            // if (!fs.existsSync(outputDir + path.sep)) {
+            // }
+            // 生成文件名计数器
+            /**@type {Object.<string, number>}*/
+            const titleCounters = {};
             sections.forEach((section, index) => {
-                const filename = path.join(outputDir, `${index}.md`);
-                fs.writeFileSync(filename, section.content); // 不再写入标题
+                let filename;
+                //console.log(section.title);
+                if (section.title) {
+                    //console.log(section.title);
+                    const count = titleCounters[section.title] || 0;
+                    const total = titleStats[section.title];
+
+                    filename =
+                        total > 1
+                            ? `${section.title}${count}.md`
+                            : `${section.title}.md`;
+
+                    titleCounters[section.title] = count + 1;
+                } else {
+                    filename = `${index}.md`;
+                    //console.log(filename);
+                }
+
+                fs.writeFileSync(
+                    path.join(outputDir, filename),
+                    section.content
+                );
             });
 
-            console.log(`✅ 生成 ${sections.length} 个章节文件`);
-            count++;
-            entries.add(entry);
+            // sections.forEach((section, index) => {
+            //     const filename = path.join(outputDir, `${index}.md`);
+            //     fs.writeFileSync(filename, section.content); // 不再写入标题
+            // });
 
-            // // 开发环境监听模式
-            // if (process.env.NODE_ENV === "development") {
-            //     chokidar
-            //         .watch(entry)
-            //         .on("add", processFile)
-            //         .on("change", processFile)
-            //         .on("unlink", () => console.log("源文件被删除"));
-            // }
+            console.log(`✅ ${basename}: 生成 ${sections.length} 个章节文件`);
+            count++;
+            // entries.add(entry);
         }
     })()
         .then(() => {
@@ -106,21 +135,23 @@ function processFile() {
         .catch((error) => {
             console.error("处理文件失败:", error);
         });
-    // } catch (error) {
-    //     console.error("处理文件失败:", error);
-    // }
 }
 
-// 立即执行一次
 processFile();
-
-// 开发环境监听模式
 if (process.env.NODE_ENV === "development") {
-    entries.forEach((entry) => {
-        chokidar
-            .watch(entry)
-            .on("add", processFile)
-            .on("change", processFile)
-            .on("unlink", () => console.log("源文件被删除"));
-    });
+    chokidar
+        .watch(config.match)
+        .on("add", processFile)
+        .on("change", processFile)
+        .on("unlink", (path) => console.log(`源文件被删除: ${path}`));
 }
+
+// if (process.env.NODE_ENV === "development") {
+//     entries.forEach((entry) => {
+//         chokidar
+//             .watch(entry)
+//             .on("add", processFile)
+//             .on("change", processFile)
+//             .on("unlink", () => console.log("源文件被删除"));
+//     });
+// }

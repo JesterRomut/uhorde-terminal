@@ -1,10 +1,11 @@
 <script lang="ts">
     import { cardRegistry, type CardId } from "$lib/data/cards";
-    import type { AppState } from "$lib/types";
     import { goto, invalidate } from "$app/navigation";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
+    import type { TabNavigator } from "$lib/types/tab";
 
-    let { context }: { context: AppState } = $props();
+    let { navigator }: { navigator: TabNavigator } = $props();
+    let { context } = navigator;
     let { cards } = context;
 
     let showPanel = $state(false);
@@ -29,7 +30,8 @@
         href="javascript:;"
         class="hover:text-amber-200"
         onclick={() => {
-            if (gotoValue) context.tab.set(gotoValue as TabId);
+            //if (gotoValue) context.tab.set(gotoValue as TabId);
+            if (gotoValue) navigator.goto(gotoValue as TabId);
         }}>GOTO</a
     >
     <select bind:value={gotoValue}>

@@ -11,9 +11,9 @@
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import { typewriterCursoredDeep } from "$lib/components/typewriter/typewriter";
     import type { Data } from "./tab";
-    import type { AppState } from "$lib/types";
+    import type { TabProps } from "$lib/types/tab";
 
-    let { data, context }: { data: Data; context: AppState } = $props();
+    let { data, navigator }: TabProps & { data: Data } = $props();
     let roll = $state(data.codes.roll());
 
     let showLogo = $state(false);
@@ -74,7 +74,8 @@
             waitingTime: 1000,
             onclick: (e) => {
                 //goto("/manual");
-                context.tab.set("manual");
+                navigator.goto("manual");
+                //context.tab.set("manual");
             },
         },
         {

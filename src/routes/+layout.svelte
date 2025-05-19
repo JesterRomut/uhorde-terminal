@@ -6,21 +6,21 @@
 
     let { children } = $props();
 
-    onMount(() => {
-        import("mobile-drag-drop").then(async (module) => {
-            const { polyfill } = module;
-            // optional import of scroll behaviour
-            const { scrollBehaviourDragImageTranslateOverride } = await import(
-                "mobile-drag-drop/scroll-behaviour"
-            );
-            // options are optional ;)
-            polyfill({
-                // use this to make use of the scroll behaviour
-                dragImageTranslateOverride:
-                    scrollBehaviourDragImageTranslateOverride,
-            });
-        });
-    });
+    // onMount(() => {
+    //     import("mobile-drag-drop").then(async (module) => {
+    //         const { polyfill } = module;
+    //         // optional import of scroll behaviour
+    //         const { scrollBehaviourDragImageTranslateOverride } = await import(
+    //             "mobile-drag-drop/scroll-behaviour"
+    //         );
+    //         // options are optional ;)
+    //         polyfill({
+    //             // use this to make use of the scroll behaviour
+    //             dragImageTranslateOverride:
+    //                 scrollBehaviourDragImageTranslateOverride,
+    //         });
+    //     });
+    // });
 </script>
 
 {@render children()}

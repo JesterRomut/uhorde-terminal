@@ -33,9 +33,10 @@
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.4",
+    "@types/node": "^22.15.19",
     "glob": "^11.0.2",
     "jsdom": "^26.0.0",
-    "mdsvex": "^0.12.3",
+    "mdsvex": "^0.12.6",
     "remark-breaks": "^4.0.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
@@ -46,7 +47,6 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
-    "mobile-drag-drop": "^3.0.0-rc.0",
     "typia": "^9.3.0"
   }
 }

@@ -7,9 +7,10 @@ import {
 import {
     type StoryNode,
     type MultipleStoryNodes,
-    type StoryNodeWrapped,
-    isWrappedStoryNode,
+    type StoryNodeArgumented,
+    type StoryNavigator,
 } from "../../../types/story";
+import type { Snippet } from "svelte";
 
 const end: StoryNode = {
     content: content,
@@ -26,8 +27,8 @@ const next: StoryNode = {
     next: end,
 };
 
-export const entry: StoryNodeWrapped = {
+export const entry: StoryNodeArgumented<[Snippet<[StoryNavigator]>]> = {
     content: wrapper1,
-    children: contentForked,
+    arguments: [contentForked],
     next: { one: next, two: other } as MultipleStoryNodes,
 };

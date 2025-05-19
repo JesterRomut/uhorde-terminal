@@ -26,12 +26,10 @@
         type CardReplaceAction,
     } from "$lib/types/card";
     import type { Data } from "./tab";
-    import type { AppState } from "$lib/types";
-    import Error from "../../../../routes/+error.svelte";
+    import type { TabProps } from "$lib/types/tab";
 
-    let { data, context: appState }: { data: Data; context: AppState } =
-        $props();
-    let { cards, terminal } = appState;
+    let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
+    let { cards, terminal } = tabNavigator.context;
     let { stories } = data;
 
     const nodes: StoryNode[] = stories.map((content) => ({
@@ -68,7 +66,8 @@
     };
 
     let stack: Writable<StoryNode[]> = $state(writable([entryNode]));
-    let navigator: ((node: StoryNode) => StoryNavigator) | undefined = $state();
+    let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
+        $state();
 
     let body: Node | undefined;
 
@@ -143,7 +142,7 @@
                     );
                 if (!navigator)
                     throw new TypeError(`expect navigator, got ${navigator}`);
-                navigator(currentStoryNode).next();
+                storyNavigator?.(currentStoryNode).next();
                 break;
         }
     }
@@ -192,4 +191,4 @@
     />
 {/snippet}
 
-<Story bind:stack bind:navigator></Story>
+<Story bind:stack bind:navigator={storyNavigator}></Story>
