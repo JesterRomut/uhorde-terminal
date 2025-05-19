@@ -15,7 +15,8 @@
     "test": "npm run test:e2e && npm run test:unit -- --run",
     "test:unit": "vitest",
     "machine-translate": "inlang machine translate --project project.inlang",
-    "split-markdown": "node script/split_markdown.js"
+    "split-markdown": "npm run purge-markdown && node script/split_markdown.js",
+    "purge-markdown": "node script/purge_markdown.js"
   },
   "devDependencies": {
     "@inlang/cli": "^3.0.0",

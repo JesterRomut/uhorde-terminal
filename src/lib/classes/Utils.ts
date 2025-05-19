@@ -9,7 +9,7 @@ export class CustomElementUtils {
     ) {
         if (customElements.get(name)) return;
         if (!constructor) throw TypeError(`Can't build ${name}!`);
-        customElements.define("logos-logo", constructor, options);
+        customElements.define(name, constructor, options);
     }
 }
 

@@ -40,11 +40,19 @@
     <DebugBar navigator={navigator()} />
 {/if}
 <ConsoleScreen bind:screen={_terminal}>
-    {#await Promise.all([entry.load(), entry.tab()])}
-        <LoadingText>加载中...</LoadingText>
-    {:then [data, Tab]}
-        <Tab.default {data} navigator={navigator()}></Tab.default>
-    {/await}
+    {#if entry.load}
+        {#await Promise.all([entry.load(), entry.tab()])}
+            <LoadingText>加载中...</LoadingText>
+        {:then [data, Tab]}
+            <Tab.default {data} navigator={navigator()}></Tab.default>
+        {/await}
+    {:else}
+        {#await entry.tab()}
+            <LoadingText>加载中...</LoadingText>
+        {:then Tab}
+            <Tab.default navigator={navigator()}></Tab.default>
+        {/await}
+    {/if}
 </ConsoleScreen>
 
 <Cardboard bind:cards={$cards}></Cardboard>

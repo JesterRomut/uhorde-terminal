@@ -1,32 +1,18 @@
 <script lang="ts">
-    import { writable, type Writable } from "svelte/store";
-    import Story from "$lib/components/Story.svelte";
-    import type {
-        StoryNavigator,
-        StoryNavigatorSingle,
-        StoryNode,
-    } from "../../../types/story";
-    import Dummy from "$lib/components/Dummy.svelte";
-
-    // @ts-ignore
-    import intro from "./intro.md";
-
-    // @ts-ignore
-    import tutor from "./tutor.md";
-    import Prose from "$lib/components/Prose.svelte";
-    import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import { CustomElementUtils } from "$lib/classes/Utils";
-    import CardCollectible from "$lib/components/cardboard/CardCollectible.svelte";
-    import { onDestroy, onMount } from "svelte";
     import {
         CardActions,
         type CardAction,
         type CardObtainAction,
         type CardReplaceAction,
     } from "$lib/types/card";
-    import type { Data } from "./tab";
+    import type { StoryNavigator, StoryNode } from "$lib/types/story";
     import type { TabProps } from "$lib/types/tab";
+    import { onMount, onDestroy } from "svelte";
+    import type { Data } from "./tab";
+    import CardCollectible from "$lib/components/cardboard/CardCollectibleElement.svelte";
+    import { writable, type Writable } from "svelte/store";
+    import Story from "$lib/components/Story.svelte";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
@@ -44,32 +30,11 @@
 
     // 最终入口节点（根据实际需求调整）
     const storyEntryNode = nodes[0];
-    console.log(nodes);
-
-    // const storyEntryNode: StoryNode = {
-    //     content: introWrapped,
-    //     next: undefined,
-    // };
-
-    const tutorNode: StoryNode = {
-        content: tutor,
-        next: storyEntryNode,
-    };
-    const introChoiceBeginStory: StoryNode = {
-        content: choiceTutorial,
-        next: tutorNode,
-    };
-
-    const entryNode: StoryNode = {
-        content: introWrapped,
-        next: introChoiceBeginStory,
-    };
-
-    let stack: Writable<StoryNode[]> = $state(writable([entryNode]));
-    let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
-        $state();
 
     let body: Node | undefined;
+
+    let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
+        $state();
 
     const cardCollection = new Map<string, CardAction>([
         [
@@ -153,42 +118,15 @@
         CustomElementUtils.define("card-collectible", CardCollectible.element);
         //CustomElementUtils.define("card-slot", CardSlot.element);
 
-        body?.addEventListener("card-collected", handleCardCollect);
+        body?.addEventListener("story-event", handleCardCollect);
     });
     onDestroy(() => {
-        body?.removeEventListener("card-collected", handleCardCollect);
+        body?.removeEventListener("story-event", handleCardCollect);
     });
+
+    let stack: Writable<StoryNode[]> = $state(writable([storyEntryNode]));
 </script>
 
 <svelte:body bind:this={body} />
-
-{#snippet introWrapped(navigator: StoryNavigatorSingle)}
-    <Prose>
-        <TypewriterCursored
-            removeCursorWhenFinish={true}
-            time={80}
-            onfinish={() => {
-                navigator.next();
-            }}
-        >
-            {@render intro()}
-        </TypewriterCursored>
-    </Prose>
-{/snippet}
-
-{#snippet choiceTutorial(navigator: StoryNavigatorSingle)}
-    <TerminalChoice
-        choices={[
-            {
-                text: "[教程 / TUTORIAL]",
-                waitingTime: 1000,
-                onclick: (e) => {
-                    navigator.clear();
-                    navigator.next();
-                },
-            },
-        ]}
-    />
-{/snippet}
 
 <Story bind:stack bind:navigator={storyNavigator}></Story>

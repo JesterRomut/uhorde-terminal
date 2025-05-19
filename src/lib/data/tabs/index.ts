@@ -2,10 +2,10 @@ import Registry from "$lib/classes/Registry";
 
 interface TabRegistryData {
     tab: () => Promise<any>;
-    load: () => Promise<any>;
+    load?: () => Promise<any>;
 }
 
-const tab = (tab: () => Promise<any>, load: () => Promise<object>) => {
+const tab = (tab: () => Promise<any>, load?: () => Promise<object>) => {
     return {
         tab: tab,
         load: load,
@@ -21,17 +21,25 @@ export const tabRegistry = Registry.object()
         )
     )
     .register(
-        "manual",
+        "tutorial",
         tab(
-            async () => import("$lib/data/tabs/manual/Tab.svelte"),
-            async () => (await import("$lib/data/tabs/manual/tab")).default()
+            async () => import("$lib/data/tabs/tutorial/Tab.svelte")
+            //async () => (await import("$lib/data/tabs/tutorial/tab")).default()
+        )
+    )
+    .register(
+        "tutorial/intro",
+        tab(
+            async () => import("$lib/data/tabs/tutorial/intro/Tab.svelte"),
+            async () =>
+                (await import("$lib/data/tabs/tutorial/intro/tab")).default()
         )
     )
     .register(
         "test",
         tab(
-            async () => import("$lib/data/tabs/test/Tab.svelte"),
-            async () => (await import("$lib/data/tabs/test/tab")).default()
+            async () => import("$lib/data/tabs/test/Tab.svelte")
+            //async () => (await import("$lib/data/tabs/test/tab")).default()
         )
     );
 

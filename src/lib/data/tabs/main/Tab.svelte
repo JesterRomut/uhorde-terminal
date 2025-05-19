@@ -34,31 +34,13 @@
         showLogo = true;
     }}><ByteSeparator>{roll}</ByteSeparator></TypewriterCursored
 >
-<!-- <TypewriterCustom
-        time={100}
-        onfinish={() => {
-            showLogo = true;
-        }}
-        init={(e) => e.innerHTML}
-        process={(_, __, arr, i) => {
-            if (typeof arr != "string")
-                throw TypeError(`not a string, got ${arr}`);
-            return `[${arr.slice(0, i)}_]`;
-        }}
-        finish={(_, arr) => {
-            if (typeof arr != "string")
-                throw TypeError(`not a string, got ${arr}`);
-            return arr;
-        }}
-    >
-        {roll}
-    </TypewriterCustom> -->
 <br />
 {#if showLogo}
     <div class="inline-block absolute">
         <Typewriter time={20}>
             <p class="mt-0 mb-0">{m.smart_such_fly_catch()}</p>
-            <logos-logo></logos-logo>
+            <!-- <logos-logo></logos-logo> -->
+            <Logos></Logos>
             <br />
             <p class="mt-0 mb-0">{m.direct_major_felix_fulfill()}</p>
         </Typewriter>
@@ -74,7 +56,7 @@
             waitingTime: 1000,
             onclick: (e) => {
                 //goto("/manual");
-                navigator.goto("manual");
+                navigator.goto("tutorial");
                 //context.tab.set("manual");
             },
         },

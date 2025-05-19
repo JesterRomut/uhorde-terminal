@@ -11,11 +11,11 @@ export default async function load(): Promise<Data> {
     //     codes: codes.accessCodes,
     // };
     const stories: Snippet[] = [];
-    const storyIndex = Array.from({ length: 15 }, (_, i) => i);
+    const storyIndex = Array.from({ length: 16 }, (_, i) => i);
 
     await (async () => {
         for (const i of storyIndex) {
-            stories.push((await import(`./story.sectioned/${i}.md`)).default);
+            stories.push((await import(`./content.sectioned/${i}.md`)).default);
         }
     })();
     return { stories: stories };

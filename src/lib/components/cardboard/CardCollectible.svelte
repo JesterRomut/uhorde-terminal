@@ -1,65 +1,72 @@
-<svelte:options customElement={{ tag: "card-collectible", shadow: "none" }} />
+<script lang="ts">
+    import type { Snippet } from "svelte";
+    import { onDestroy, onMount } from "svelte";
 
-<script>
-    import { onMount } from "svelte";
-    //import { cardboard } from "../../../routes/+layout.svelte";
+    let { children, event }: { children: Snippet; event: string } = $props();
 
-    let { card } = $props();
+    let element: Element | undefined;
 
-    /**@type {Element | undefined}*/
-    let anchor;
+    let disabled = $state(false);
 
-    /**
-     * @type {Node | undefined}
-     */
-    let body;
+    let body: Node | undefined;
 
     /**@param {MouseEvent} event */
-    function handleClick(event) {
-        if (!card) throw new TypeError(`expect card, got ${card}`);
+    function handleClick(event: MouseEvent) {
+        if (!event) throw new TypeError(`expect card, got ${event}`);
         if (!body) throw new TypeError(`expect body, got ${body}`);
-        //cardboard.cards.push({ type: card });
 
-        if (!anchor?.parentElement)
-            throw new TypeError(
-                `expect parentElement, got ${anchor?.parentElement}`
-            );
-        const customEvent = new CustomEvent("card-collected", {
-            detail: card,
+        if (!element) throw new TypeError(`expect Element, got ${element}`);
+        const customEvent = new CustomEvent("story-event", {
+            detail: event,
             bubbles: true,
         });
         body.dispatchEvent(customEvent);
 
-        anchor.parentElement.classList.remove("card-collectible");
-        anchor.parentElement.classList.add("card-collected");
+        disabled = true;
+    }
 
-        anchor?.parentElement?.removeEventListener("click", handleClick);
+    function handleStoryEvent(event: Event) {
+        if (!(event instanceof CustomEvent)) return;
+        if (event.detail == event) disabled = true;
     }
 
     onMount(() => {
-        anchor?.parentElement?.removeEventListener("click", handleClick);
-
-        //if (!cardboard) return;
-
-        if (!anchor) throw new TypeError(`expect anchor, got ${anchor}`);
-
-        let { parentElement } = anchor;
-        if (!parentElement)
-            throw new TypeError(`expect parentElement, got ${parentElement}`);
-
-        if (parentElement.classList.contains("card-collected")) return;
-
-        // if (cardboard.cards.find((c) => c.type == card)) {
-        //     parentElement.classList.remove("card-collectible");
-        //     parentElement.classList.add("card-collected");
-        //     return;
-        // }
-
-        parentElement.classList.add("card-collectible");
-        parentElement.addEventListener("click", handleClick);
+        body?.addEventListener("story-event", handleStoryEvent);
     });
+    onDestroy(() => {
+        body?.removeEventListener("story-event", handleStoryEvent);
+    });
+    // onMount(() => {
+    //     anchor?.parentElement?.removeEventListener("click", handleClick);
+
+    //     //if (!cardboard) return;
+
+    //     if (!anchor) throw new TypeError(`expect anchor, got ${anchor}`);
+
+    //     let { parentElement } = anchor;
+    //     if (!parentElement)
+    //         throw new TypeError(`expect parentElement, got ${parentElement}`);
+
+    //     if (parentElement.classList.contains("card-collected")) return;
+
+    //     // if (cardboard.cards.find((c) => c.type == card)) {
+    //     //     parentElement.classList.remove("card-collectible");
+    //     //     parentElement.classList.add("card-collected");
+    //     //     return;
+    //     // }
+
+    //     parentElement.classList.add("card-collectible");
+    //     parentElement.addEventListener("click", handleClick);
+    // });
 </script>
 
 <svelte:body bind:this={body} />
 
-<div class="hidden" bind:this={anchor}></div>
+<!-- svelte-ignore a11y_invalid_attribute -->
+<a
+    href="javascript:;"
+    bind:this={element}
+    class:card-collectible={!disabled}
+    class:card-collected={disabled}
+    onclick={handleClick}>{@render children()}</a
+>
