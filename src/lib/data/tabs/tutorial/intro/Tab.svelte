@@ -1,28 +1,25 @@
 <script lang="ts">
     import { CustomElementUtils } from "$lib/classes/Utils";
     import {
-        CardActions,
-        type CardAction,
-        type CardObtainAction,
-        type CardReplaceAction,
-    } from "$lib/types/card";
-    import {
         type StoryNavigator,
         type StoryNode,
         type StoryNodes,
-    } from "$lib/types/story";
+    } from "$lib/components/story/types";
     import type { TabProps } from "$lib/types/tab";
     import { onMount, onDestroy, type Snippet } from "svelte";
     import type { Data } from "./tab";
     import CardCollectible from "$lib/components/cardboard/CardCollectibleElement.svelte";
     import { writable, type Writable } from "svelte/store";
-    import Story from "$lib/components/Story.svelte";
+    import Story from "$lib/components/story/Story.svelte";
     import Prose from "$lib/components/Prose.svelte";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
+    import VerbObjectSlots from "$lib/components/cardslot/VerbNounSlots.svelte";
+    import Registry from "$lib/classes/Registry";
+    import type { CardInstance } from "$lib/components/cardboard/types";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
-    let { stories, tutor } = data;
+    let { stories, tutor0, tutor1 } = data.content;
 
     const nodes: StoryNode[] = stories.map((content) => ({
         content: contentWrapper,
@@ -40,8 +37,13 @@
 
     const story: StoryNodes = {
         entry: {
-            content: tutor,
-            next: storyEntryNode,
+            content: tutor0,
+            next: () => story.got_card,
+        },
+        got_card: {
+            content: tutorCardSlot,
+            arguments: [tutor1],
+            next: undefined,
         },
     };
 
@@ -50,72 +52,32 @@
     let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
         $state();
 
-    //TODO 这个也要大改
-    const cardCollection = new Map<string, CardAction>([
-        [
-            "tutor",
-            {
-                action: CardActions.OBTAIN,
-                card: { type: "character:amen_gleph" },
-            },
-        ],
-        [
-            "tutor_kill",
-            {
-                action: CardActions.REPLACE,
-                card: {
-                    from: "character:amen_gleph",
-                    to: "character:amen_gleph:dead",
-                },
-            },
-        ],
-    ]);
-    const cardCollectState = new Map([
-        ["tutor", false],
-        ["tutor_kill", false],
-    ]);
+    function giveCard(card: CardInstance) {
+        $cards = $cards.concat(card);
+    }
 
-    function handleCardCollect(event: Event) {
-        console.log(event);
-        if (!(event instanceof CustomEvent)) return;
+    const storyEvents = Registry.object()
+        .register("tutor", {
+            action: () => {
+                giveCard(
+                    storyEvents.get("tutor_kill").completed
+                        ? { type: "character:amen_gleph:dead" }
+                        : { type: "character:amen_gleph" }
+                );
 
-        let { detail }: { detail: string } = event;
-        if (!cardCollection.has(detail))
-            throw new TypeError(`card not found, event.detail: ${detail}`);
-        let card = cardCollection.get(detail);
-        if (!card) throw new TypeError(`expect card, got ${card}`);
+                new Promise((fulfill) => {
+                    setTimeout(fulfill, 200);
+                }).then(() => {
+                    giveCard({ type: "action:observe" });
+                });
 
-        //let cardboard = cardboardFn();
-        switch (card.action) {
-            case CardActions.OBTAIN:
-                //cardboard.cards.push(/**@type {CardObtainAction}*/ (card).card);
-                $cards = $cards.concat((card as CardObtainAction).card);
-                break;
-            case CardActions.REPLACE:
-                let { card: match } = card as CardReplaceAction;
-
-                // console.log(cardboard.cards.values().toArray());
-
-                // console.log(
-                //     cardboard.cards.findIndex((value) => {
-                //         return value.type == match.from;
-                //     })
+                //console.log(storyEvents.get("tutor_kill").completed);
+                // $cards = $cards.concat(
+                //     storyEvents.get("tutor_kill").completed
+                //         ? { type: "character:amen_gleph:dead" }
+                //         : { type: "character:amen_gleph" }
                 // );
-                let index = $cards.findIndex((value) => {
-                    return value.type == match.from;
-                });
-                if (index == -1) return;
-                //$cards[index] = { type: match.dead || `${match.from}:dead` };
-                $cards = $cards.toSpliced(index, 1, {
-                    type: match.to,
-                });
-                //console.log(cardboard.cards);
-                break;
-        }
-        cardCollectState.set(detail, true);
 
-        switch (detail) {
-            case "tutor":
                 let currentStoryNode = $stack.at(-1);
                 if (!currentStoryNode)
                     throw new TypeError(
@@ -124,14 +86,40 @@
                 if (!navigator)
                     throw new TypeError(`expect navigator, got ${navigator}`);
                 storyNavigator?.(currentStoryNode).next();
-                break;
-        }
+            },
+            completed: false,
+        })
+        .register("tutor_kill", {
+            action: () => {
+                $cards = $cards.concat({ type: "character:amen_gleph" });
+                let index = $cards.findIndex((value) => {
+                    return value.type == "character:amen_gleph";
+                });
+                if (index == -1) return;
+                //$cards[index] = { type: match.dead || `${match.from}:dead` };
+                $cards = $cards.toSpliced(index, 1, {
+                    type: "character:amen_gleph:dead",
+                });
+            },
+            completed: false,
+        });
+    function handleCardCollect(event: Event) {
+        if (!(event instanceof CustomEvent)) return;
+        let { detail }: { detail: string } = event;
+        let storyEvent = storyEvents.get(
+            detail as keyof typeof storyEvents.registry
+        );
+        if (!storyEvent)
+            throw new TypeError(`event not found, event.detail: ${detail}`);
+        if (storyEvent.completed) return;
+        storyEvent.action();
+        storyEvent.completed = true;
     }
 
     onMount(() => {
         $cards = [];
 
-        CustomElementUtils.define("card-collectible", CardCollectible.element);
+        // CustomElementUtils.define("card-collectible", CardCollectible.element);
         //CustomElementUtils.define("card-slot", CardSlot.element);
 
         body?.addEventListener("story-event", handleCardCollect);
@@ -162,4 +150,12 @@
             {@render arg[0](navigator)}
         </TypewriterCursored>
     </Prose>
+{/snippet}
+
+{#snippet tutorCardSlot(
+    navigator: StoryNavigator,
+    arg: [Snippet<[StoryNavigator]>]
+)}
+    <VerbObjectSlots />
+    {@render arg[0](navigator)}
 {/snippet}

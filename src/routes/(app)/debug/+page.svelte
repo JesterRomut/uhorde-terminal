@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
-    import { typewriterCursoredDeep } from "$lib/components/typewriter/typewriter";
+    import { typewriterCursoredDeep } from "$lib/components/typewriter";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import type { PageData } from "./$types";
 

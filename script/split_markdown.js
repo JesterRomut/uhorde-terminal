@@ -9,6 +9,8 @@ const config = {
     ignore: "node_modules/**",
 };
 
+/**@type {Set<string>} */
+const entries = new Set();
 /**
  * @param {string} content
  */
@@ -84,18 +86,13 @@ function splitContent(content) {
     }));
 }
 
-/**@type {string[]} */
-const filesToBeWatched = [];
-
-async function processFile() {
+function processFile() {
     let count = 0;
     //try {
     (async () => {
         for await (const entry of new Glob(config.match, {
             ignore: config.ignore,
         })) {
-            filesToBeWatched.push(entry);
-
             const content = fs.readFileSync(entry, "utf-8");
             const sections = splitContent(content);
 
@@ -141,6 +138,7 @@ async function processFile() {
             });
             console.log(`✅ ${basename}: 生成 ${sections.length} 个章节文件`);
             count++;
+            entries.add(entry);
         }
     })()
         .then(() => {
@@ -151,12 +149,14 @@ async function processFile() {
         });
 }
 
-processFile().then(() => {
-    if (process.env.NODE_ENV === "development") {
+processFile();
+
+if (process.env.NODE_ENV === "development") {
+    entries.forEach((entry) => {
         chokidar
-            .watch(filesToBeWatched)
+            .watch(entry)
             .on("add", processFile)
             .on("change", processFile)
-            .on("unlink", (path) => console.log(`源文件被删除: ${path}`));
-    }
-});
+            .on("unlink", () => console.log("源文件被删除"));
+    });
+}

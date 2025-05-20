@@ -7,10 +7,10 @@
  /
  /** 
  * 
- * @typedef {import("./type.svelte.js").DragDropOptions<any> & _DroppableOptions<any>} DroppableOptions
+ * @typedef {import("./types.js").DragDropOptions<any> & _DroppableOptions<any>} DroppableOptions
  */
 
-import { globalState } from "./type.svelte.js";
+import { globalState } from "./global.svelte.js";
 
 /**
  * Credit: https://github.com/thisuxhq/sveltednd

@@ -4,7 +4,7 @@
         type StoryNavigator,
         type StoryNode,
         isSingleNextStoryNode,
-    } from "../types/story";
+    } from "./types";
     import { writable, type Writable } from "svelte/store";
 
     interface Props {

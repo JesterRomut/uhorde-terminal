@@ -1,11 +1,13 @@
 <script lang="ts">
     import { droppable } from "$lib/actions/dragdrop/droppable";
     import {
-        globalState,
+        type DragDropCallback,
         type DragDropState,
-    } from "$lib/actions/dragdrop/type.svelte";
-    import { cardRegistry } from "$lib/data/cards";
-    import type { CardInstance } from "$lib/types/card";
+    } from "$lib/actions/dragdrop/types";
+    import { globalState } from "$lib/actions/dragdrop/global.svelte.js";
+    import { cardRegistry, type CardData, type CardId } from "$lib/data/cards";
+    import type { CardInstance } from "$lib/components/cardboard/types";
+    import type { DisplayTextsOptions, HandleDropFn } from "./types";
 
     // interface InsertResult {
     //     valid: boolean;
@@ -15,22 +17,15 @@
         const { draggedItem, sourceContainer, targetContainer } = state;
         if (!targetContainer || sourceContainer === targetContainer) return;
 
-        item = cardRegistry.get(draggedItem.type).display;
-        let result = oninsert(state);
-        state = result || state;
-    }
-
-    type DisplayTextFn = (item: string) => string;
-
-    interface DisplayTextsOptions {
-        empty: DisplayTextFn;
-        filled: DisplayTextFn;
-        dragging: DisplayTextFn;
+        item = draggedItem;
+        // let result = oninsert(state);
+        // state = result || state;
     }
 
     interface Props {
         texts?: DisplayTextsOptions;
-        oninsert: (state: DragDropState<CardInstance>) => any;
+        callbacks?: DragDropCallback<CardInstance>;
+        item?: CardInstance | undefined;
         disabled?: boolean;
     }
 
@@ -39,18 +34,24 @@
             empty: () => `[指针插槽: 空]`,
             filled: (item) => `[指针插槽：${item}]`,
             dragging: () => `[指针插槽: 待输入……]`,
+            tooltip: () => `指针插槽：可插入任意指针`,
         },
-        oninsert,
+        item = $bindable(),
+        callbacks = {
+            onDrop: handleDrop,
+        },
         disabled = $bindable(false),
     }: Props = $props();
 
+    let card = $derived(item ? cardRegistry.get(item.type) : null);
     //let displayText = $state("空");
-    let item = $state("");
     let displayTextInactive = $derived(
-        item ? texts.filled(item) : texts.empty(item)
+        item ? texts.filled(card?.display) : texts.empty()
     );
     let displayText = $derived(
-        globalState.isDragging ? texts.dragging(item) : displayTextInactive
+        globalState.isDragging
+            ? texts.dragging(card?.display)
+            : displayTextInactive
     );
 
     //let disabled = $state(false);
@@ -68,6 +69,8 @@
             type="radio"
             name="card-slot"
             defaultChecked="true"
+            aria-label={texts.tooltip()}
+            data-title={texts.tooltip()}
         />
         <span
             class={"-overlap relative inline peer-checked:hidden pointer-events-none text-gray-400 "}
@@ -85,7 +88,7 @@
                 <span
                     use:droppable={{
                         container: "card-slot",
-                        callbacks: { onDrop: handleDrop },
+                        callbacks: callbacks,
                         disabled: disabled,
                     }}
                     class="fixed p-2 z-11 left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] bg-black text-center animate-[console-blink_0.5s_infinite]"

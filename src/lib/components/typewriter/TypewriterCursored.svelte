@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { typewriterCursored, type TypewriterCursoredFn } from "./typewriter";
+    import { typewriterCursored } from ".";
+    import { type TypewriterCursoredFn } from "./types";
     //type TypewriterCursoredFn = (base: Element, output: Element, time: number, cursor: Element) => { start: () => Promise<void>; };
     interface Props {
         onfinish?: () => void;

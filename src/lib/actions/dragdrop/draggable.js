@@ -1,4 +1,4 @@
-import { globalState } from "./type.svelte.js";
+import { globalState } from "./global.svelte.js";
 
 /**
  * @template {unknown} T
@@ -9,7 +9,7 @@ import { globalState } from "./type.svelte.js";
  /
  /** 
  * 
- * @typedef {import("./type.svelte.js").DragDropOptions<any> & _DraggableOptions<any>} DraggableOptions
+ * @typedef {import("./types.js").DragDropOptions<any> & _DraggableOptions<any>} DraggableOptions
  */
 
 const isEventSupported = (function () {

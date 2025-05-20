@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { typewriter, type TypewriterFn } from "./typewriter";
+    import { typewriter } from ".";
+    import { type TypewriterFn } from "./types";
     //type TypewriterFn = (base: Element, output: Element, time: number) => { start: () => Promise<void>; };
 
     interface Props {
@@ -11,7 +12,6 @@
         children: any;
     }
 
-    
     let { children, time = 200, onfinish, onerror, fn }: Props = $props();
 
     let terminal: Element | undefined;

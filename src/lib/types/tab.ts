@@ -1,5 +1,5 @@
 import type { Writable } from "svelte/store";
-import type { CardInstance } from "./card";
+import type { CardInstance } from "../components/cardboard/types";
 import type { TabId } from "../data/tabs";
 
 export interface TabContext {

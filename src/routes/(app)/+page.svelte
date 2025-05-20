@@ -4,8 +4,8 @@
     import ConsoleScreen from "$lib/components/ConsoleScreen.svelte";
     import Cardboard from "$lib/components/cardboard/Cardboard.svelte";
     import DebugBar from "$lib/components/DebugBar.svelte";
-    import type { CardInstance } from "$lib/types/card";
-    import type { TabNavigator } from "$lib/types/tab.js";
+    import type { CardInstance } from "$lib/components/cardboard/types";
+    import type { TabNavigator } from "$lib/types/tab";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
 
     let tab = writable<TabId>("main");

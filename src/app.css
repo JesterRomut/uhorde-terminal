@@ -46,15 +46,39 @@
 }
 
 @layer base {
+    [data-title]:hover:after {
+        opacity: 1;
+        visibility: visible;
+    }
+    [data-title]:after {
+        content: attr(data-title);
+        @apply bg-[image:linear-gradient(#0002,_transparent)] shadow-md shadow-gray-950/25
+        backdrop-blur-md text-slate-300 rounded-sm fixed px-2 py-1 text-xs left-1/2 transform-[translateX(-50%)] top-[2em]
+        max-w-[100vw] z-99999;
+
+        opacity: 0;
+        visibility: hidden;
+    }
+    [data-title]:hover::before {
+        content: " ";
+        @apply absolute bottom-3/5 left-1/2 z-100000 ml-[-5px] border-solid;
+        border-width: 5px;
+        border-color: var(--color-slate-300) transparent transparent transparent;
+    }
+    [data-title] {
+        @apply relative;
+    }
+}
+
+@layer base {
     * {
         font-family: Maple, "975Maru SC";
         font-weight: normal;
     }
     body {
-        background-color: var(--color-gray-950);
-        color: var(--color-slate-300);
+        @apply bg-gray-950 text-slate-300;
     }
-/* 
+    /* 
     hr {
         border-top: 2px solid var(--color-slate-300);
         margin-top: 0.6em;
@@ -70,7 +94,7 @@
         image-rendering: -moz-crisp-edges;
         image-rendering: crisp-edges;
     }
-/*     
+    /*     
     h1 {
         font-size: var(--text-2xl);
     }

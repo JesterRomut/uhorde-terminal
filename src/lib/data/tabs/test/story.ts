@@ -11,9 +11,9 @@ import {
     type StoryNavigator,
     type AnyStoryNode,
     type NextStoryNode,
-} from "../../../types/story";
+} from "../../../components/story/types";
 import type { Snippet } from "svelte";
-import Story from "$lib/components/Story.svelte";
+import Story from "$lib/components/story/Story.svelte";
 import typia from "typia";
 
 const end: StoryNode = {
@@ -61,6 +61,6 @@ export const story: Record<string, AnyStoryNode> = {
     },
 };
 
-console.log(typia.validate<NextStoryNode>(story.entry.next));
-console.log(typia.validate<NextStoryNode>(story.next.next));
-console.log(typia.validate<NextStoryNode>(story.other.next));
+// console.log(typia.validate<NextStoryNode>(story.entry.next));
+// console.log(typia.validate<NextStoryNode>(story.next.next));
+// console.log(typia.validate<NextStoryNode>(story.other.next));

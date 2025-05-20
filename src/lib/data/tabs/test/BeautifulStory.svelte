@@ -5,9 +5,9 @@
         StoryNavigator,
         StoryNavigatorForked,
         StoryNode,
-    } from "../../../types/story";
+    } from "../../../components/story/types";
     import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
-    import { typewriterDeep } from "$lib/components/typewriter/typewriter";
+    import { typewriterDeep } from "$lib/components/typewriter";
     export { content, contentForked, contentAlt, wrapper1 };
 </script>
 

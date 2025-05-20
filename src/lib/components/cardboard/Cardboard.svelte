@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { CardInstance } from "$lib/types/card";
+    import type { CardInstance } from "$lib/components/cardboard/types";
     import Card from "./Card.svelte";
 
     interface Props {

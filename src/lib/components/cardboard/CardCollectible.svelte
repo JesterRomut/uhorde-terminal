@@ -2,7 +2,8 @@
     import type { Snippet } from "svelte";
     import { onDestroy, onMount } from "svelte";
 
-    let { children, event }: { children: Snippet; event: string } = $props();
+    let { children, event: eventId }: { children: Snippet; event: string } =
+        $props();
 
     let element: Element | undefined;
 
@@ -17,7 +18,7 @@
 
         if (!element) throw new TypeError(`expect Element, got ${element}`);
         const customEvent = new CustomEvent("story-event", {
-            detail: event,
+            detail: eventId,
             bubbles: true,
         });
         body.dispatchEvent(customEvent);
@@ -36,28 +37,6 @@
     onDestroy(() => {
         body?.removeEventListener("story-event", handleStoryEvent);
     });
-    // onMount(() => {
-    //     anchor?.parentElement?.removeEventListener("click", handleClick);
-
-    //     //if (!cardboard) return;
-
-    //     if (!anchor) throw new TypeError(`expect anchor, got ${anchor}`);
-
-    //     let { parentElement } = anchor;
-    //     if (!parentElement)
-    //         throw new TypeError(`expect parentElement, got ${parentElement}`);
-
-    //     if (parentElement.classList.contains("card-collected")) return;
-
-    //     // if (cardboard.cards.find((c) => c.type == card)) {
-    //     //     parentElement.classList.remove("card-collectible");
-    //     //     parentElement.classList.add("card-collected");
-    //     //     return;
-    //     // }
-
-    //     parentElement.classList.add("card-collectible");
-    //     parentElement.addEventListener("click", handleClick);
-    // });
 </script>
 
 <svelte:body bind:this={body} />

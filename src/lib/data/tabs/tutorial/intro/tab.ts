@@ -1,9 +1,15 @@
 import type { Snippet } from "svelte";
-import tutor from "./content.sectioned/tutor.md";
+import tutor0 from "./content.sectioned/tutor0.md";
+import tutor1 from "./content.sectioned/tutor1.md";
+
+interface Content {
+    stories: unknown[];
+    tutor0: any;
+    tutor1: any;
+}
 
 export interface Data {
-    stories: unknown[];
-    tutor: any;
+    content: Content;
 }
 
 function batchImport<T>(importFn: (i: number) => Promise<T>, count: number) {
@@ -26,14 +32,17 @@ export default async function load(): Promise<Data> {
     //     }
     // })();
     return {
-        stories: (
-            await Promise.all(
-                batchImport(
-                    (i) => import(`./content.sectioned/story${i}.md`),
-                    14
+        content: {
+            stories: (
+                await Promise.all(
+                    batchImport(
+                        (i) => import(`./content.sectioned/story${i}.md`),
+                        14
+                    )
                 )
-            )
-        ).map((value) => value.default),
-        tutor: tutor,
+            ).map((value) => value.default),
+            tutor0: tutor0,
+            tutor1: tutor1,
+        },
     };
 }

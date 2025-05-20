@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { typewriterDeep } from "./typewriter";
+    import { typewriterDeep } from ".";
 
     interface Props {
         onfinish?: () => void;

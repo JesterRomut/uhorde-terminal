@@ -1,12 +1,12 @@
 <script lang="ts">
     import { writable, type Writable } from "svelte/store";
-    import Story from "$lib/components/Story.svelte";
+    import Story from "$lib/components/story/Story.svelte";
     import type {
         AnyStoryNode,
         StoryNavigator,
         StoryNavigatorSingle,
         StoryNode,
-    } from "../../../types/story";
+    } from "../../../components/story/types";
 
     import intro from "./intro.md";
 

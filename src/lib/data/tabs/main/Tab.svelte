@@ -9,7 +9,7 @@
     import { m } from "$lib/paraglide/messages.js";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
-    import { typewriterCursoredDeep } from "$lib/components/typewriter/typewriter";
+    import { typewriterCursoredDeep } from "$lib/components/typewriter";
     import type { Data } from "./tab";
     import type { TabProps } from "$lib/types/tab";
 
@@ -19,7 +19,7 @@
     let showLogo = $state(false);
 
     onMount(() => {
-        CustomElementUtils.define("logos-logo", Logos.element);
+        // CustomElementUtils.define("logos-logo", Logos.element);
     });
 </script>
 
