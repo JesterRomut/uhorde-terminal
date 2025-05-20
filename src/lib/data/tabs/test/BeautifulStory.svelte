@@ -7,8 +7,6 @@
         StoryNode,
     } from "../../../types/story";
     import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
-
-    import Revelation from "./revelation.md";
     import { typewriterDeep } from "$lib/components/typewriter/typewriter";
     export { content, contentForked, contentAlt, wrapper1 };
 </script>
@@ -42,9 +40,9 @@
 {/snippet}
 
 {#snippet contentForked(navigator: StoryNavigatorForked)}
-    <Typewriter time={100} fn={typewriterDeep}
+    <!-- <Typewriter time={100} fn={typewriterDeep}
         >{@render Revelation()}</Typewriter
-    >
+    > -->
     Forked
     <!-- {@render node.next?.content?.(node.next)} -->
     <Dummy

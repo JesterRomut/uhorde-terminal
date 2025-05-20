@@ -2,13 +2,17 @@ import type { Snippet } from "svelte";
 import typia from "typia";
 import type { Writable } from "svelte/store";
 
-export interface MultipleStoryNodes {
-    [index: string]: StoryNode;
-}
+export type NextStoryNode = StoryNode | (() => StoryNode);
+
+// export interface MultipleNextStoryNodes {
+//     [index: string]: NextStoryNode;
+// }
+
+export type MultipleNextStoryNodes = Record<string, NextStoryNode>;
 
 export interface StoryNode {
     content: Snippet<[StoryNavigator]> | ((...args: any[]) => any);
-    next?: StoryNode | MultipleStoryNodes;
+    next?: NextStoryNode | MultipleNextStoryNodes;
 }
 
 export interface StoryNodeArgumented<T extends unknown[] = unknown[]>
@@ -17,11 +21,13 @@ export interface StoryNodeArgumented<T extends unknown[] = unknown[]>
     arguments: T;
 }
 
+export type AnyStoryNode = StoryNode | StoryNodeArgumented;
+export type StoryNodes = Record<string, AnyStoryNode>;
+
 // export type AnyStoryNode = StoryNode | StoryNodeWrapped;
 
-export const isSingleStoryNode = typia.createIs<StoryNode>();
+export const isSingleNextStoryNode = typia.createIs<NextStoryNode>();
 export const isArgumentedStoryNode = typia.createIs<StoryNodeArgumented>();
-//export const isMultipleNodes = typia.createValidate<MultipleStoryNodes>();
 
 export interface StoryNavigator {
     next: (...args: any[]) => void;

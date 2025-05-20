@@ -24,8 +24,4 @@ export default class Registry<T extends object> {
     static object(): Registry<{}> {
         return new Registry({});
     }
-
-    // static map<K>(): Registry<Map<string, K>> {
-    //     return new Registry(new Map<string, K>());
-    // }
 }

@@ -1,7 +1,9 @@
+import type { Snippet } from "svelte";
+
 export interface CardData {
-    title?: import("svelte").Snippet;
-    background: import("svelte").Snippet;
-    category?: import("svelte").Snippet;
+    title?: Snippet;
+    background: Snippet;
+    category?: Snippet;
     display: string;
 }
 
@@ -18,6 +20,7 @@ import * as amenGlephDead from "./characters/AmenGlephDead.svelte";
 import * as observe from "./actions/Observe.svelte";
 
 import Registry from "$lib/classes/Registry";
+
 //export const cardRegistry = new CardRegistry();
 export const cardRegistry = Registry.object()
     .register("character:uhrwerk", uhrwerk)

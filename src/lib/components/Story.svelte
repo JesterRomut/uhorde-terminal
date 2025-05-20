@@ -1,10 +1,9 @@
 <script lang="ts">
     import {
-        isSingleStoryNode,
         isArgumentedStoryNode,
-        type MultipleStoryNodes,
         type StoryNavigator,
         type StoryNode,
+        isSingleNextStoryNode,
     } from "../types/story";
     import { writable, type Writable } from "svelte/store";
 
@@ -22,15 +21,22 @@
             if (!node.next) {
                 return () => {};
             }
-            if (!isSingleStoryNode(node.next)) {
-                return (to: string) => {
-                    $stack = $stack.concat(
-                        (node.next as MultipleStoryNodes)[to]
-                    );
+            if (isSingleNextStoryNode(node.next)) {
+                let nextNodeTyped = node.next;
+                return () => {
+                    let nextNode = nextNodeTyped;
+                    if (typeof nextNode === "function") nextNode = nextNode();
+                    //if (!nextNode) throw new TypeError();
+                    $stack = $stack.concat(nextNode);
+                    //console.log(nextNode);
                 };
             }
-            return () => {
-                $stack = $stack.concat(node.next as StoryNode);
+            let nextNodeTyped = node.next;
+            return (to: string) => {
+                let nextNode = nextNodeTyped[to];
+                if (typeof nextNode === "function") nextNode = nextNode();
+                $stack = $stack.concat(nextNode);
+                //console.log(nextNode);
             };
         };
 

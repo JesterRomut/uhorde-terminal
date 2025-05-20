@@ -1,7 +1,11 @@
+---
+layout: story
+---
 ##### +tutor
 接下来，你将体验一段事先录制好的叙事。
 
-<card-collectible card="tutor">阿门-葛列夫</card-collectible>，是我们的教程角色，获取其指针。
+[阿门-葛列夫](tutor)，是我们的教程角色，获取其指针。
+<!-- <card-collectible card="tutor">阿门-葛列夫</card-collectible>，是我们的教程角色，获取其指针。 -->
 ##### +tutor-got-card
 看见这个标志了吗？有些操作会改变对象的状态，因此导致指针失效，需要重新获取。在你的视角，就是这份指针被“消耗”了。
 

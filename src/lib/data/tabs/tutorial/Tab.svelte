@@ -2,6 +2,7 @@
     import { writable, type Writable } from "svelte/store";
     import Story from "$lib/components/Story.svelte";
     import type {
+        AnyStoryNode,
         StoryNavigator,
         StoryNavigatorSingle,
         StoryNode,
@@ -14,25 +15,36 @@
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import type { TabProps } from "$lib/types/tab";
+    import { onMount } from "svelte";
+    import { tabRegistry } from "..";
 
     let { navigator: tabNavigator }: TabProps = $props();
     //let { cards, terminal } = tabNavigator.context;
 
-    // const storyEntryNode: StoryNode = {
-    //     content: introWrapped,
-    //     next: undefined,
+    const story: Record<string, AnyStoryNode> = {
+        entry: {
+            content: introWrapped,
+            next: () => story.choice,
+        },
+        choice: {
+            content: choiceTutorial,
+        },
+    };
+
+    // const introChoiceBeginStory: StoryNode = {
+    //     content: choiceTutorial,
     // };
 
-    const introChoiceBeginStory: StoryNode = {
-        content: choiceTutorial,
-    };
+    // const entryNode: StoryNode = {
+    //     content: introWrapped,
+    //     next: introChoiceBeginStory,
+    // };
 
-    const entryNode: StoryNode = {
-        content: introWrapped,
-        next: introChoiceBeginStory,
-    };
+    let stack: Writable<StoryNode[]> = $state(writable([story.entry]));
 
-    let stack: Writable<StoryNode[]> = $state(writable([entryNode]));
+    onMount(() => {
+        tabRegistry.get("tutorial/intro").load();
+    });
 </script>
 
 {#snippet introWrapped(navigator: StoryNavigatorSingle)}

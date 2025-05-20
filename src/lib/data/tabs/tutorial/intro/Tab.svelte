@@ -6,20 +6,27 @@
         type CardObtainAction,
         type CardReplaceAction,
     } from "$lib/types/card";
-    import type { StoryNavigator, StoryNode } from "$lib/types/story";
+    import {
+        type StoryNavigator,
+        type StoryNode,
+        type StoryNodes,
+    } from "$lib/types/story";
     import type { TabProps } from "$lib/types/tab";
-    import { onMount, onDestroy } from "svelte";
+    import { onMount, onDestroy, type Snippet } from "svelte";
     import type { Data } from "./tab";
     import CardCollectible from "$lib/components/cardboard/CardCollectibleElement.svelte";
     import { writable, type Writable } from "svelte/store";
     import Story from "$lib/components/Story.svelte";
+    import Prose from "$lib/components/Prose.svelte";
+    import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
-    let { stories } = data;
+    let { stories, tutor } = data;
 
     const nodes: StoryNode[] = stories.map((content) => ({
-        content: content,
+        content: contentWrapper,
+        arguments: [content],
         next: undefined,
     }));
 
@@ -31,11 +38,19 @@
     // 最终入口节点（根据实际需求调整）
     const storyEntryNode = nodes[0];
 
+    const story: StoryNodes = {
+        entry: {
+            content: tutor,
+            next: storyEntryNode,
+        },
+    };
+
     let body: Node | undefined;
 
     let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
         $state();
 
+    //TODO 这个也要大改
     const cardCollection = new Map<string, CardAction>([
         [
             "tutor",
@@ -61,6 +76,7 @@
     ]);
 
     function handleCardCollect(event: Event) {
+        console.log(event);
         if (!(event instanceof CustomEvent)) return;
 
         let { detail }: { detail: string } = event;
@@ -124,9 +140,26 @@
         body?.removeEventListener("story-event", handleCardCollect);
     });
 
-    let stack: Writable<StoryNode[]> = $state(writable([storyEntryNode]));
+    let stack: Writable<StoryNode[]> = $state(writable([story.entry]));
 </script>
 
 <svelte:body bind:this={body} />
 
 <Story bind:stack bind:navigator={storyNavigator}></Story>
+
+{#snippet contentWrapper(
+    navigator: StoryNavigator,
+    arg: [Snippet<[StoryNavigator]>]
+)}
+    <Prose>
+        <TypewriterCursored
+            removeCursorWhenFinish={true}
+            time={80}
+            onfinish={() => {
+                navigator.next();
+            }}
+        >
+            {@render arg[0](navigator)}
+        </TypewriterCursored>
+    </Prose>
+{/snippet}
