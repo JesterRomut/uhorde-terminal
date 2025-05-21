@@ -16,6 +16,7 @@
     import VerbObjectSlots from "$lib/components/cardslot/VerbNounSlots.svelte";
     import Registry from "$lib/classes/Registry";
     import type { CardInstance } from "$lib/components/cardboard/types";
+    import { globalState } from "$lib/actions/dragdrop/store.svelte.js";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
@@ -42,7 +43,6 @@
         },
         got_card: {
             content: tutorCardSlot,
-            arguments: [tutor1],
             next: undefined,
         },
     };
@@ -65,18 +65,11 @@
                         : { type: "character:amen_gleph" }
                 );
 
-                new Promise((fulfill) => {
-                    setTimeout(fulfill, 200);
-                }).then(() => {
-                    giveCard({ type: "action:observe" });
-                });
-
-                //console.log(storyEvents.get("tutor_kill").completed);
-                // $cards = $cards.concat(
-                //     storyEvents.get("tutor_kill").completed
-                //         ? { type: "character:amen_gleph:dead" }
-                //         : { type: "character:amen_gleph" }
-                // );
+                // new Promise((fulfill) => {
+                //     setTimeout(fulfill, 200);
+                // }).then(() => {
+                //     giveCard({ type: "action:observe" });
+                // });
 
                 let currentStoryNode = $stack.at(-1);
                 if (!currentStoryNode)
@@ -152,10 +145,13 @@
     </Prose>
 {/snippet}
 
-{#snippet tutorCardSlot(
-    navigator: StoryNavigator,
-    arg: [Snippet<[StoryNavigator]>]
-)}
-    <VerbObjectSlots />
-    {@render arg[0](navigator)}
+{#snippet tutorCardSlot(navigator: StoryNavigator)}
+    <VerbObjectSlots
+        consumeNoun={true}
+        validVerb={(state) => state.draggedItem.type === "action:observe"}
+        validNoun={(state) => {
+            console.log(globalState.invalidDrop);
+            return true;
+        }}
+    />
 {/snippet}

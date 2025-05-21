@@ -1,40 +1,37 @@
-/**
- * @template {unknown} T
- * 
- * @typedef {object} _DroppableOptions
- * @property {string[]} [interactive]
- * @property {string[] | string} [dragoverClass]
- /
- /** 
- * 
- * @typedef {import("./types.js").DragDropOptions<any> & _DroppableOptions<any>} DroppableOptions
- */
+interface _DroppableOptions<T> {
+    interactive?: string[];
+    dragoverClass?: string[] | string;
+}
 
-import { globalState } from "./global.svelte.js";
+type DroppableOptions<T> = DragDropOptions<T> & _DroppableOptions<T>;
+
+import type { ActionReturn } from "svelte/action";
+import { globalState } from "./store.svelte.js";
+import type { DragDropOptions } from "./types.js";
+import { fromStore } from "svelte/store";
 
 /**
  * Credit: https://github.com/thisuxhq/sveltednd
  * I love you
  *
- * @type {import("svelte/action").Action<Element, DroppableOptions<T>>}
- * @template {unknown} T
- * @param {HTMLElement} node
- * @param {DroppableOptions<T>} options
  */
-export function droppable(node, options) {
+export function droppable<T>(
+    node: HTMLElement,
+    options: DroppableOptions<T>
+): ActionReturn<DroppableOptions<T>> {
     let dragEnterCounter = 0;
 
     let state = options.globalState || globalState;
 
     /**@param {DragEvent} event  */
-    function handleDragEnter(event) {
+    function handleDragEnter(event: DragEvent) {
         if (options.disabled) return;
         event.preventDefault();
 
         dragEnterCounter++;
 
         state.targetContainer = options.container;
-        state.targetElement = /**@type {HTMLElement}*/ (event.target);
+        state.targetElement = event.target as HTMLElement;
 
         if (dragEnterCounter == 0) return;
 
@@ -43,7 +40,7 @@ export function droppable(node, options) {
     }
 
     /**@param {DragEvent} event  */
-    function handleDragLeave(event) {
+    function handleDragLeave(event: DragEvent) {
         if (options.disabled) return;
 
         dragEnterCounter--;
@@ -65,7 +62,7 @@ export function droppable(node, options) {
     }
 
     /**@param {DragEvent} event  */
-    function handleDragOver(event) {
+    function handleDragOver(event: DragEvent) {
         if (options.disabled) return;
         event.preventDefault();
 
@@ -77,7 +74,7 @@ export function droppable(node, options) {
         options.callbacks?.onDragOver?.(state);
     }
     /**@param {DragEvent} event  */
-    function handleDrop(event) {
+    function handleDrop(event: DragEvent) {
         if (options.disabled) return;
         event.preventDefault();
 
@@ -96,7 +93,7 @@ export function droppable(node, options) {
     }
 
     /**@param {Event} event  */
-    function handleDragStartOnContainer(event) {
+    function handleDragStartOnContainer(event: Event) {
         if (options.disabled) return;
 
         dragEnterCounter = 0;
@@ -105,7 +102,7 @@ export function droppable(node, options) {
     }
 
     /**@param {PointerEvent} event */
-    function handlePointerOver(event) {
+    function handlePointerOver(event: PointerEvent) {
         if (options.disabled || !state.isDragging) return;
 
         state.targetContainer = options.container;
@@ -113,7 +110,7 @@ export function droppable(node, options) {
     }
 
     /**@param {PointerEvent} event */
-    function handlePointerOut(event) {
+    function handlePointerOut(event: PointerEvent) {
         if (options.disabled || !state.isDragging) return;
 
         if (state.targetContainer === options.container)
@@ -125,7 +122,7 @@ export function droppable(node, options) {
         options.callbacks?.onDragLeave?.(state);
     }
     /**@param {PointerEvent} event */
-    function handlePointerUp(event) {
+    function handlePointerUp(event: PointerEvent) {
         if (options.disabled || !state.isDragging) return;
 
         if (options.dragoverClass)
@@ -152,7 +149,7 @@ export function droppable(node, options) {
 
     return {
         /**@param {DroppableOptions<T>} newOptions  */
-        update(newOptions) {
+        update(newOptions: DroppableOptions<T>) {
             options = newOptions;
         },
         destroy() {

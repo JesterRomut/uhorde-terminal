@@ -1,3 +1,5 @@
+import type { Writable } from "svelte/store";
+
 export type Container = string;
 
 export interface DragDropState<T> {

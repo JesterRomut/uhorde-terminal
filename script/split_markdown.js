@@ -10,7 +10,7 @@ const config = {
 };
 
 /**@type {Set<string>} */
-const entries = new Set();
+//const entries = new Set();
 /**
  * @param {string} content
  */
@@ -60,13 +60,6 @@ function splitContent(content) {
             title: null,
         });
     }
-    // if (headings.length > 0 && headings[0].start > 0) {
-    //     sections.push({
-    //         content: content.slice(0, headings[0].start).trim(),
-    //         title: null,
-    //     });
-    // }
-
     headings.forEach((heading, index) => {
         const nextStart = headings[index + 1]?.start || content.length;
         const sectionContent = content.slice(heading.end, nextStart).trim();
@@ -78,7 +71,6 @@ function splitContent(content) {
         }
     });
 
-    // return sections;
     // 在所有内容片段前添加front matter
     return sections.map((section) => ({
         ...section,
@@ -86,13 +78,20 @@ function splitContent(content) {
     }));
 }
 
-function processFile() {
+/**
+ * @param {string} [filePath]
+ * @returns {Promise<Set<string>>}
+ */
+async function processFile(filePath) {
     let count = 0;
+    const entries = new Set();
     //try {
-    (async () => {
+    try {
         for await (const entry of new Glob(config.match, {
             ignore: config.ignore,
         })) {
+            if (filePath && entry !== filePath) continue;
+
             const content = fs.readFileSync(entry, "utf-8");
             const sections = splitContent(content);
 
@@ -118,15 +117,15 @@ function processFile() {
             sections.forEach((section, index) => {
                 let filename;
                 if (section.title) {
-                    const count = titleCounters[section.title] || 0;
+                    const count_1 = titleCounters[section.title] || 0;
                     const total = titleStats[section.title];
 
                     filename =
                         total > 1
-                            ? `${section.title}${count}.md`
+                            ? `${section.title}${count_1}.md`
                             : `${section.title}.md`;
 
-                    titleCounters[section.title] = count + 1;
+                    titleCounters[section.title] = count_1 + 1;
                 } else {
                     filename = `${index}.md`;
                 }
@@ -140,23 +139,45 @@ function processFile() {
             count++;
             entries.add(entry);
         }
-    })()
-        .then(() => {
-            console.log(`✅ 已处理 ${count} 个文件`);
-        })
-        .catch((error) => {
-            console.error("处理文件失败:", error);
+        console.log(
+            filePath ? `✅ 已处理 ${filePath}` : `✅ 已处理 ${count} 个文件`
+        );
+        return entries;
+    } catch (error) {
+        console.error("处理文件失败:", error);
+        return new Set();
+    }
+}
+
+// /**
+//  * @param {string} pattern
+//  */
+// function toAbsolutePath(pattern) {
+//     return path.resolve(process.cwd(), pattern);
+// }
+
+(async () => {
+    // 首次全量处理
+    let entries = await processFile();
+
+    if (process.env.NODE_ENV === "development") {
+        entries.forEach((entry) => {
+            const watcher = chokidar.watch(entry, {
+                ignored: config.ignore,
+                ignoreInitial: true,
+            });
+            watcher
+                .on("add", (path) => {
+                    processFile(path);
+                })
+                .on("change", (path) => {
+                    console.log("检测到文件修改：", path);
+                    processFile(path);
+                })
+                .on("unlink", (path) => {
+                    console.log("源文件被删除:", path);
+                    // 这里可以添加删除对应生成文件的逻辑
+                });
         });
-}
-
-processFile();
-
-if (process.env.NODE_ENV === "development") {
-    entries.forEach((entry) => {
-        chokidar
-            .watch(entry)
-            .on("add", processFile)
-            .on("change", processFile)
-            .on("unlink", () => console.log("源文件被删除"));
-    });
-}
+    }
+})();

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { draggable } from "$lib/actions/dragdrop/draggable";
 
-    import { globalState } from "$lib/actions/dragdrop/global.svelte.js";
+    import { globalState } from "$lib/actions/dragdrop/store.svelte.js";
     import { cardRegistry } from "$lib/data/cards";
     import type { CardInstance } from "$lib/components/cardboard/types";
     import { fly } from "svelte/transition";

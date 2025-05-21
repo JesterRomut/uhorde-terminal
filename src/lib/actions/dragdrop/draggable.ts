@@ -1,16 +1,17 @@
-import { globalState } from "./global.svelte.js";
+import { fromStore } from "svelte/store";
+import { globalState } from "./store.svelte.js";
+import type { DragDropOptions } from "./types.js";
+import type { Action, ActionReturn } from "svelte/action";
 
 /**
  * @template {unknown} T
- * 
- * @typedef {object} _DraggableOptions
- * @property {string[]} [interactive]
- * @property {{isDragging: boolean}} ref
- /
- /** 
- * 
- * @typedef {import("./types.js").DragDropOptions<any> & _DraggableOptions<any>} DraggableOptions
  */
+interface _DraggableOptions<T> {
+    interactive?: string[];
+    ref: { isDragging: boolean };
+}
+
+type DraggableOptions<T> = DragDropOptions<T> & _DraggableOptions<T>;
 
 const isEventSupported = (function () {
     let TAGNAMES = {
@@ -25,7 +26,7 @@ const isEventSupported = (function () {
     /**
      * @param {string} eventName
      */
-    function isEventSupported(eventName) {
+    function isEventSupported(eventName: string) {
         // @ts-ignore
         let el = document.createElement(TAGNAMES[eventName] || "div");
         eventName = "on" + eventName;
@@ -43,15 +44,15 @@ const isEventSupported = (function () {
  * Credit: https://github.com/thisuxhq/sveltednd
  * I love you
  *
- * @type {import("svelte/action").Action<Element, DraggableOptions<T>>}
- * @template {unknown} T
- * @param {HTMLElement} node
- * @param {DraggableOptions<T>} options
  */
-export function draggable(node, options) {
+export function draggable<T>(
+    node: HTMLElement,
+    options: DraggableOptions<T>
+): ActionReturn<DraggableOptions<T>> {
     let oldStylePos = node.style.position;
 
-    let /**@type {number}*/ initialX, /**@type {number}*/ initialY;
+    let /**@type {number}*/ initialX: number,
+        /**@type {number}*/ initialY: number;
 
     let state = options.globalState || globalState;
 
@@ -64,7 +65,7 @@ export function draggable(node, options) {
      * @param {HTMLElement} target
      * @returns {boolean}
      */
-    function isInteractiveElement(target) {
+    function isInteractiveElement(target: HTMLElement): boolean {
         if (!options.interactive) return false;
 
         return options.interactive.some(
@@ -73,7 +74,7 @@ export function draggable(node, options) {
     }
 
     /** @param {DragEvent} event  */
-    function handleDragStart(event) {
+    function handleDragStart(event: DragEvent) {
         if (options.disabled) return;
 
         state.isDragging = true;
@@ -113,14 +114,14 @@ export function draggable(node, options) {
         state.draggedItem = null;
         state.sourceContainer = "";
         state.targetContainer = null;
+        state.invalidDrop = false;
     }
 
     /**@param {PointerEvent} event  */
-    function handlePointerDown(event) {
+    function handlePointerDown(event: PointerEvent) {
         if (options.disabled) return;
 
-        if (isInteractiveElement(/** @type {HTMLElement} */ (event.target)))
-            return;
+        if (isInteractiveElement(event.target as HTMLElement)) return;
 
         initialX = event.clientX;
         initialY = event.clientY;
@@ -139,12 +140,12 @@ export function draggable(node, options) {
     }
 
     /**@param {PointerEvent} event  */
-    function handlePointerMove(event) {
+    function handlePointerMove(event: PointerEvent) {
         if (!state.isDragging) return;
     }
 
     /**@param {PointerEvent} event  */
-    function handlePointerUp(event) {
+    function handlePointerUp(event: PointerEvent) {
         if (!state.isDragging) return;
 
         node.releasePointerCapture(event.pointerId);
@@ -158,6 +159,7 @@ export function draggable(node, options) {
         state.draggedItem = null;
         state.sourceContainer = "";
         state.targetContainer = null;
+        state.invalidDrop = false;
     }
 
     // /**@param {TouchEvent} event */
@@ -214,7 +216,7 @@ export function draggable(node, options) {
 
     return {
         /**@param {DraggableOptions<T>} newOptions  */
-        update(newOptions) {
+        update(newOptions: DraggableOptions<T>) {
             options = newOptions;
             node.draggable = !options.disabled;
         },

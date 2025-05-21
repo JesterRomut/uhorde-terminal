@@ -4,10 +4,11 @@
         type DragDropCallback,
         type DragDropState,
     } from "$lib/actions/dragdrop/types";
-    import { globalState } from "$lib/actions/dragdrop/global.svelte.js";
+    import { globalState } from "$lib/actions/dragdrop/store.svelte.js";
     import { cardRegistry, type CardData, type CardId } from "$lib/data/cards";
     import type { CardInstance } from "$lib/components/cardboard/types";
     import type { DisplayTextsOptions, HandleDropFn } from "./types";
+    import { fromStore, writable, type Writable } from "svelte/store";
 
     // interface InsertResult {
     //     valid: boolean;
@@ -27,6 +28,9 @@
         callbacks?: DragDropCallback<CardInstance>;
         item?: CardInstance | undefined;
         disabled?: boolean;
+        name?: string;
+        value?: string;
+        group?: string;
     }
 
     let {
@@ -41,6 +45,9 @@
             onDrop: handleDrop,
         },
         disabled = $bindable(false),
+        name = "card-slot",
+        value = "card-slot",
+        group = $bindable(),
     }: Props = $props();
 
     let card = $derived(item ? cardRegistry.get(item.type) : null);
@@ -54,24 +61,39 @@
             : displayTextInactive
     );
 
+    // let dummy: Element | undefined = $state();
+    // let writableThing = $state(false);
+    // let checked = $derived(
+    //     dummy ? window.getComputedStyle(dummy).display : writableThing
+    // );
+    // let checked2 = $derived(dummy?.checkVisibility());
+    // $effect(() => {
+    //     console.log(checked, checked2);
+    // });
+
     //let disabled = $state(false);
 </script>
 
 <div class="inline-grid select-none">
     {#if disabled}
         <span
-            class={"-overlap relative inline peer-checked:hidden pointer-events-none text-gray-400 "}
+            class={"-overlap relative inline pointer-events-none text-gray-400 "}
             >{displayTextInactive}
         </span>
     {:else}
         <input
             class="-overlap peer items-center cursor-pointer appearance-none w-full h-[2em] m-0"
             type="radio"
-            name="card-slot"
+            {name}
+            {value}
             defaultChecked="true"
             aria-label={texts.tooltip()}
             data-title={texts.tooltip()}
+            bind:group
         />
+        <div
+            class="absolute hidden appearance-none pointer-events-none peer-checked:appearance-auto"
+        ></div>
         <span
             class={"-overlap relative inline peer-checked:hidden pointer-events-none text-gray-400 "}
             >{displayTextInactive}
@@ -92,7 +114,12 @@
                         disabled: disabled,
                     }}
                     class="fixed p-2 z-11 left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] bg-black text-center animate-[console-blink_0.5s_infinite]"
-                    >-- PLACE POINTER HERE --
+                >
+                    {#if globalState.invalidDrop == true}
+                        --INVALID--
+                    {:else}
+                        --PLACE POINTER HERE--
+                    {/if}
                 </span>
             </div>
         {/if}
