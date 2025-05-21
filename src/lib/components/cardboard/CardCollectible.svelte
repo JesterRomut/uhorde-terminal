@@ -1,8 +1,7 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
     import { onDestroy, onMount } from "svelte";
-    import { on } from "svelte/events";
-    import { sendStoryEvent } from "../story";
+    import { receiveStoryEvent, sendStoryEvent } from "../story";
 
     let { children, event: eventId }: { children: Snippet; event: string } =
         $props();
@@ -37,8 +36,9 @@
     let removeStoryEventListener: () => void;
 
     onMount(() => {
-        if (!body) throw new TypeError(`expect body, got ${body}`);
-        removeStoryEventListener = on(body, "story-event", handleStoryEvent);
+        removeStoryEventListener = receiveStoryEvent(body, handleStoryEvent);
+        //if (!body) throw new TypeError(`expect body, got ${body}`);
+        //removeStoryEventListener = on(body, "story-event", handleStoryEvent);
         //body?.addEventListener("story-event", handleStoryEvent);
     });
     onDestroy(() => {

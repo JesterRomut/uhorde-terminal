@@ -7,13 +7,16 @@
 <script>
     import Aleph0 from "$lib/assets/cards/characters/amen_gleph.png?enhanced";
     import Aleph0SVG from "$lib/assets/cards/characters/amen_gleph.svg?dataurl";
+    import { m } from "$lib/paraglide/messages";
 </script>
 
 {#snippet title()}
-    <span class="block bg-black">阿门-葛列夫</span>
+    <span class="block bg-black">{m.wise_brief_wasp_peel()}</span>
 {/snippet}
 {#snippet category()}
-    <span class="inline-block relative px-3 bottom-3 bg-black">实体</span>
+    <span class="inline-block relative px-3 bottom-3 bg-black"
+        >{m.candid_happy_goose_swim()}</span
+    >
 {/snippet}
 
 {#snippet background()}

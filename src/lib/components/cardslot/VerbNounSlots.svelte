@@ -11,6 +11,7 @@
     import type { Writable } from "svelte/store";
     import { onMount } from "svelte";
     import Card from "../cardboard/Card.svelte";
+    import { m } from "$lib/paraglide/messages";
     // interface SlotOption {
     //     callbacks?: DragDropCallback<CardInstance>;
     //     texts?: DisplayTextsOptions;
@@ -112,8 +113,8 @@
         <a
             href="javascript:;"
             class="inline-flex w-[1.3em] ml-1 h-full align-middle *:stroke-slate-300 *:hover:stroke-amber-200"
-            data-title={"提交：提交选定的指针。"}
-            aria-label={"提交：提交选定的指针。"}
+            data-title={m.every_bland_octopus_view()}
+            aria-label={m.every_bland_octopus_view()}
             onclick={() => {
                 if (!validSubmit(verb, noun)) return;
                 if (onsubmit) onsubmit(verb, noun);
@@ -140,8 +141,8 @@
         <a
             href="javascript:;"
             class="inline-flex w-[1.3em] ml-1 h-full align-middle *:stroke-slate-300 *:hover:stroke-amber-200"
-            data-title={"重试：返还指针至手中。"}
-            aria-label={"重试：返还指针至手中。"}
+            data-title={m.big_known_goat_grace()}
+            aria-label={m.big_known_goat_grace()}
             onclick={() => {
                 if (verb) {
                     cardboard.update((cards) =>
@@ -177,7 +178,7 @@
             },
             onDrop: (state) => {
                 if (state.invalidDrop) return;
-                const { draggedItem, sourceContainer, targetContainer } = state;
+                const { sourceContainer, targetContainer } = state;
                 if (!targetContainer || sourceContainer === targetContainer)
                     return;
                 insertCardOrReplace(state);
@@ -185,11 +186,10 @@
             },
         }}
         texts={{
-            empty: () => `动词`,
+            empty: () => m.many_sound_wren_hush(),
             filled: (item) => `${item}`,
-            dragging: () => `<待输入>`,
-            tooltip: () =>
-                `动词：表示动作、发展、变化、存在、消失、或是事件发生之词。`,
+            dragging: () => m.weary_best_horse_hunt(),
+            tooltip: () => m.frail_lower_crab_read(),
         }}
         name="verb-noun-slots"
         value={"verb" as SelectedSlot}
@@ -217,10 +217,10 @@
         }}
         name="verb-noun-slots"
         texts={{
-            empty: () => `名词`,
+            empty: () => m.cozy_gaudy_sloth_attend(),
             filled: (item) => `${item}`,
-            dragging: () => `<待输入>`,
-            tooltip: () => `名词：表示人或事物名称之词。`,
+            dragging: () => m.weary_best_horse_hunt(),
+            tooltip: () => m.real_brave_clownfish_flop(),
         }}
         value={"noun" as SelectedSlot}
         disabled={nounDisabled || disabled}
@@ -233,9 +233,7 @@
             class:*:stroke-slate-700={!consume}
             class:*:stroke-rose-600={consume}
             class="inline-flex w-[1.3em] ml-1 h-full align-middle"
-            data-title={consume
-                ? "消耗：此槽位进行操作后会改变对象的状态，导致指针失效。"
-                : null}
+            data-title={consume ? m.sour_aware_blackbird_flow() : null}
         >
             {@render exhaustIcon()}
         </div>

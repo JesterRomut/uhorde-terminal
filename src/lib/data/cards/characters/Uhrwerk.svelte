@@ -6,13 +6,16 @@
 
 <script>
     import UhrwerkPic from "$lib/assets/cards/characters/uhrwerk.png?enhanced";
+    import { m } from "$lib/paraglide/messages";
 </script>
 
 {#snippet title()}
-    <span class="block bg-black">钨尔维克</span>
+    <span class="block bg-black">{m.equal_lime_camel_pet()}</span>
 {/snippet}
 {#snippet category()}
-    <span class="inline-block relative px-3 bottom-3 bg-black">实体</span>
+    <span class="inline-block relative px-3 bottom-3 bg-black"
+        >{m.candid_happy_goose_swim()}</span
+    >
 {/snippet}
 
 {#snippet background()}

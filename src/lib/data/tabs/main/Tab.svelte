@@ -52,7 +52,7 @@
 <TerminalChoice
     choices={[
         {
-            text: "[手册 / MANUAL]",
+            text: m.busy_awful_robin_buzz(),
             waitingTime: 1000,
             onclick: (e) => {
                 //goto("/manual");
@@ -61,7 +61,7 @@
             },
         },
         {
-            text: "[初始化 / INITIALIZE]",
+            text: m.each_cozy_parakeet_twirl(),
             waitingTime: 1000,
             onclick: (e) => {
                 //goto("/offset/1");

@@ -7,6 +7,7 @@
     import type { CardInstance } from "$lib/components/cardboard/types";
     import type { TabNavigator } from "$lib/types/tab";
     import { tabRegistry, type TabId } from "$lib/data/tabs";
+    import { m } from "$lib/paraglide/messages";
 
     let tab = writable<TabId>("main");
 
@@ -45,13 +46,13 @@
 <ConsoleScreen bind:screen={_terminal}>
     {#if entry.load}
         {#await Promise.all([entry.load(), entry.tab()])}
-            <LoadingText>加载中...</LoadingText>
+            <LoadingText>{m.actual_large_manatee_accept()}</LoadingText>
         {:then [data, Tab]}
             <Tab.default {data} navigator={navigator()}></Tab.default>
         {/await}
     {:else}
         {#await entry.tab()}
-            <LoadingText>加载中...</LoadingText>
+            <LoadingText>{m.actual_large_manatee_accept()}</LoadingText>
         {:then Tab}
             <Tab.default navigator={navigator()}></Tab.default>
         {/await}

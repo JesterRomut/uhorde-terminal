@@ -20,6 +20,7 @@
     import { browser } from "$app/environment";
     import Card from "../cardboard/Card.svelte";
     import "tippy.js/animations/scale-subtle.css";
+    import { m } from "$lib/paraglide/messages";
 
     // interface InsertResult {
     //     valid: boolean;
@@ -150,19 +151,23 @@
         </span>
 
         {#if globalState.isDragging}
-            <div class="hidden peer-checked:block">
+            <div
+                class="hidden peer-checked:block"
+                class:**:cursor-no-drop={globalState.invalidDrop}
+            >
                 <span
                     use:droppable={{
                         container: "card-slot",
                         callbacks: callbacks,
                         disabled: disabled,
                     }}
+                    class:text-rose-600={globalState.invalidDrop}
                     class="fixed p-2 z-11 left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] bg-black text-center animate-[console-blink_0.5s_infinite]"
                 >
-                    {#if globalState.invalidDrop == true}
-                        --INVALID POINTER--
+                    {#if globalState.invalidDrop}
+                        {m.inclusive_strong_javelina_pick()}
                     {:else}
-                        --PLACE POINTER HERE--
+                        {m.away_tough_frog_treat()}
                     {/if}
                 </span>
             </div>

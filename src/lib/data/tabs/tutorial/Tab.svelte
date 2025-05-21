@@ -17,6 +17,7 @@
     import type { TabProps } from "$lib/types/tab";
     import { onMount } from "svelte";
     import { tabRegistry } from "..";
+    import { m } from "$lib/paraglide/messages";
 
     let { navigator: tabNavigator }: TabProps = $props();
     //let { cards, terminal } = tabNavigator.context;
@@ -65,7 +66,7 @@
     <TerminalChoice
         choices={[
             {
-                text: "[教程 / TUTORIAL]",
+                text: m.weak_ornate_lemming_clip(),
                 waitingTime: 1000,
                 onclick: (e) => {
                     tabNavigator.goto("tutorial/intro");
