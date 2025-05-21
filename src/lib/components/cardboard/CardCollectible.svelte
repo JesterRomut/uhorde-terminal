@@ -1,6 +1,8 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
     import { onDestroy, onMount } from "svelte";
+    import { on } from "svelte/events";
+    import { sendStoryEvent } from "../story";
 
     let { children, event: eventId }: { children: Snippet; event: string } =
         $props();
@@ -9,7 +11,7 @@
 
     let disabled = $state(false);
 
-    let body: Node | undefined;
+    let body: Element | undefined;
 
     /**@param {MouseEvent} event */
     function handleClick(event: MouseEvent) {
@@ -17,11 +19,12 @@
         if (!body) throw new TypeError(`expect body, got ${body}`);
 
         if (!element) throw new TypeError(`expect Element, got ${element}`);
-        const customEvent = new CustomEvent("story-event", {
-            detail: eventId,
-            bubbles: true,
-        });
-        body.dispatchEvent(customEvent);
+        // const customEvent = new CustomEvent("story-event", {
+        //     detail: eventId,
+        //     bubbles: true,
+        // });
+        // body.dispatchEvent(customEvent);
+        sendStoryEvent(body, eventId);
 
         disabled = true;
     }
@@ -31,11 +34,16 @@
         if (event.detail == event) disabled = true;
     }
 
+    let removeStoryEventListener: () => void;
+
     onMount(() => {
-        body?.addEventListener("story-event", handleStoryEvent);
+        if (!body) throw new TypeError(`expect body, got ${body}`);
+        removeStoryEventListener = on(body, "story-event", handleStoryEvent);
+        //body?.addEventListener("story-event", handleStoryEvent);
     });
     onDestroy(() => {
-        body?.removeEventListener("story-event", handleStoryEvent);
+        removeStoryEventListener();
+        //body?.removeEventListener("story-event", handleStoryEvent);
     });
 </script>
 

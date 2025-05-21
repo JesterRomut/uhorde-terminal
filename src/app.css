@@ -47,15 +47,17 @@
 
 @layer base {
     [data-title]:hover:after {
+        transition: transform 0.1s linear;
+        transform: translateX(-50%) scaleY(100%);
         opacity: 1;
         visibility: visible;
     }
     [data-title]:after {
         content: attr(data-title);
         @apply bg-[image:linear-gradient(#0002,_transparent)] shadow-md shadow-gray-950/25
-        backdrop-blur-md text-slate-300 rounded-sm fixed px-2 py-1 text-xs left-1/2 transform-[translateX(-50%)] top-[2em]
+        backdrop-blur-md text-slate-300 rounded-sm fixed px-2 py-1 text-xs left-1/2 transform-[translateX(-50%)_scaleY(0%)] top-[2em]
         max-w-[100vw] z-99999;
-
+        scale: initial, 0%;
         opacity: 0;
         visibility: hidden;
     }
@@ -71,6 +73,24 @@
 }
 
 @layer base {
+    .tippy-box[data-theme~="console"] {
+        @apply bg-[image:linear-gradient(#0002,_transparent)] shadow-md shadow-gray-950/25
+        backdrop-blur-md text-slate-300 rounded-sm px-2 py-1 text-xs;
+
+        .tippy-arrow {
+            content: " ";
+            @apply border-solid top-1/1 animate-console-blink-1/2s;
+            border-width: 5px;
+            border-color: var(--color-slate-300) transparent transparent
+                transparent;
+        }
+    }
+    .tippy-box[data-theme~="console-card"] {
+        @apply scale-75;
+    }
+}
+
+@layer base {
     * {
         font-family: Maple, "975Maru SC";
         font-weight: normal;
@@ -78,46 +98,11 @@
     body {
         @apply bg-gray-950 text-slate-300;
     }
-    /* 
-    hr {
-        border-top: 2px solid var(--color-slate-300);
-        margin-top: 0.6em;
-        margin-bottom: 1em;
-    }
-
-    p {
-        margin-top: 0.6em;
-        margin-bottom: 0.6em;
-    } */
     img {
         image-rendering: pixelated;
         image-rendering: -moz-crisp-edges;
         image-rendering: crisp-edges;
     }
-    /*     
-    h1 {
-        font-size: var(--text-2xl);
-    }
-    h2 {
-        font-size: var(--text-xl);
-    }
-    h3 {
-        font-size: var(--text-lg);
-    }
-
-    blockquote {
-        font-style: italic;
-        color: var(--tw-prose-quotes);
-        border-inline-start-width: 0.25rem;
-        border-inline-start-color: var(--tw-prose-quote-borders);
-        padding-inline-start: 1em;
-      }
-      blockquote p:first-of-type::before {
-        content: open-quote;
-      }
-      blockquote p:last-of-type::after {
-        content: close-quote;
-      } */
 }
 
 @theme {

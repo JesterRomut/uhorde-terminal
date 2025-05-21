@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { CardInstance } from "$lib/components/cardboard/types";
-    import Card from "./Card.svelte";
+    import { mount } from "svelte";
+    import BoardedCard from "./BoardedCard.svelte";
 
     interface Props {
         cards: CardInstance[];
@@ -22,7 +23,7 @@
     class="md:-bottom-6rem -cardboard fixed bottom-0 flex justify-center items-center"
 >
     {#each cards as card, index}
-        <Card
+        <BoardedCard
             instance={card}
             bind:mouseOnList={hover}
             --card-rotation={(range / cards.length) * index - range / 2}

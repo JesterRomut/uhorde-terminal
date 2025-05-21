@@ -22,10 +22,10 @@ import * as observe from "./actions/Observe.svelte";
 import Registry from "$lib/classes/Registry";
 
 //export const cardRegistry = new CardRegistry();
-export const cardRegistry = Registry.object()
-    .register("character:uhrwerk", uhrwerk)
-    .register("character:amen_gleph", amenGleph)
-    .register("character:amen_gleph:dead", amenGlephDead)
-    .register("action:observe", observe);
+export const cardRegistry = Registry.create()
+    .register("character:uhrwerk", uhrwerk satisfies CardData)
+    .register("character:amen_gleph", amenGleph satisfies CardData)
+    .register("character:amen_gleph:dead", amenGlephDead satisfies CardData)
+    .register("action:observe", observe satisfies CardData);
 
 export type CardId = keyof typeof cardRegistry.registry;

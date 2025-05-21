@@ -9,6 +9,7 @@ import type { ActionReturn } from "svelte/action";
 import { globalState } from "./store.svelte.js";
 import type { DragDropOptions } from "./types.js";
 import { fromStore } from "svelte/store";
+import { on } from "svelte/events";
 
 /**
  * Credit: https://github.com/thisuxhq/sveltednd
@@ -136,16 +137,28 @@ export function droppable<T>(
 
     // /**@param {TouchEvent} event */
     // function handleTouchEnd(event) {}
+    const removeDragEnter = on(node, "dragenter", handleDragEnter);
+    const removeDragLeave = on(node, "dragleave", handleDragLeave);
+    const removeDragOver = on(node, "dragover", handleDragOver);
+    const removeDrop = on(node, "drop", handleDrop);
+    const removeDragStartOnContainer = on(
+        node,
+        "dragstart-on-container",
+        handleDragStartOnContainer
+    );
 
-    node.addEventListener("dragenter", handleDragEnter);
-    node.addEventListener("dragleave", handleDragLeave);
-    node.addEventListener("dragover", handleDragOver);
-    node.addEventListener("drop", handleDrop);
-    node.addEventListener("dragstart-on-container", handleDragStartOnContainer);
+    const removePointerOver = on(node, "pointerover", handlePointerOver);
+    const removePointerOut = on(node, "pointerout", handlePointerOut);
+    const removePointerUp = on(node, "pointerup", handlePointerUp);
+    // node.addEventListener("dragenter", handleDragEnter);
+    // node.addEventListener("dragleave", handleDragLeave);
+    // node.addEventListener("dragover", handleDragOver);
+    // node.addEventListener("drop", handleDrop);
+    // node.addEventListener("dragstart-on-container", handleDragStartOnContainer);
 
-    node.addEventListener("pointerover", handlePointerOver);
-    node.addEventListener("pointerout", handlePointerOut);
-    node.addEventListener("pointerup", handlePointerUp);
+    // node.addEventListener("pointerover", handlePointerOver);
+    // node.addEventListener("pointerout", handlePointerOut);
+    // node.addEventListener("pointerup", handlePointerUp);
 
     return {
         /**@param {DroppableOptions<T>} newOptions  */
@@ -153,18 +166,15 @@ export function droppable<T>(
             options = newOptions;
         },
         destroy() {
-            node.removeEventListener("dragenter", handleDragEnter);
-            node.removeEventListener("dragleave", handleDragLeave);
-            node.removeEventListener("dragover", handleDragOver);
-            node.removeEventListener("drop", handleDrop);
-            node.removeEventListener(
-                "dragstart-on-container",
-                handleDragStartOnContainer
-            );
+            removeDragEnter();
+            removeDragLeave();
+            removeDragOver();
+            removeDrop();
+            removeDragStartOnContainer();
 
-            node.removeEventListener("pointerover", handlePointerOver);
-            node.removeEventListener("pointerout", handlePointerOut);
-            node.removeEventListener("pointerup", handlePointerUp);
+            removePointerOver();
+            removePointerOut();
+            removePointerUp();
         },
     };
 }

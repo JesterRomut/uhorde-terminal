@@ -1,32 +1,3 @@
-<!-- <script module>
-    // export const terminal = () => _terminal;
-    // /**@type {Element | undefined}*/
-    // let _terminal = $state();
-
-    // export const cardboard = {
-    //     get cards() {
-    //         return _cards;
-    //     },
-    //     set cards(value) {
-    //         _cards = value;
-    //     },
-    // };
-    // /**@type {import("$lib/components/cardboard/Card.svelte").CardInstance[]}*/
-    // let _cards = $state([]);
-    // /**@type {import("svelte").SvelteComponent | undefined}*/
-    //let _cardboard = $state();
-    //let _cardboardEnabled = $state(false);
-
-    // export const cardboard = {
-    //     get cards() {
-    //         return _cards;
-    //     },
-    //     set cards(value) {
-    //         _cards = value;
-    //     },
-    // };
-</script> -->
-
 <script>
     import { onMount } from "svelte";
     import "../../app.css";

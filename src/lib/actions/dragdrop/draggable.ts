@@ -2,6 +2,7 @@ import { fromStore } from "svelte/store";
 import { globalState } from "./store.svelte.js";
 import type { DragDropOptions } from "./types.js";
 import type { Action, ActionReturn } from "svelte/action";
+import { on } from "svelte/events";
 
 /**
  * @template {unknown} T
@@ -205,11 +206,16 @@ export function draggable<T>(
     // }
 
     node.draggable = !options.disabled;
-    node.addEventListener("dragstart", handleDragStart);
-    node.addEventListener("dragend", handleDragEnd);
-    node.addEventListener("pointerdown", handlePointerDown);
-    node.addEventListener("pointermove", handlePointerMove);
-    node.addEventListener("pointerup", handlePointerUp);
+
+    const removeDragStart = on(node, "dragstart", handleDragStart);
+    const removeDragEnd = on(node, "dragend", handleDragEnd);
+    const removePointerDown = on(node, "pointerdown", handlePointerDown);
+    const removePointerMove = on(node, "pointermove", handlePointerMove);
+    const removePointerUp = on(node, "pointerup", handlePointerUp);
+    // node.addEventListener("dragend", handleDragEnd);
+    // node.addEventListener("pointerdown", handlePointerDown);
+    // node.addEventListener("pointermove", handlePointerMove);
+    // node.addEventListener("pointerup", handlePointerUp);
     // node.addEventListener("touchstart", handleTouchStart);
     // node.addEventListener("touchmove", handleTouchMove);
     // node.addEventListener("touchend", handleTouchEnd);
@@ -222,11 +228,16 @@ export function draggable<T>(
         },
 
         destroy() {
-            node.removeEventListener("dragstart", handleDragStart);
-            node.removeEventListener("dragend", handleDragEnd);
-            node.removeEventListener("pointerdown", handlePointerDown);
-            node.removeEventListener("pointermove", handlePointerMove);
-            node.removeEventListener("pointerup", handlePointerUp);
+            removeDragStart();
+            removeDragEnd();
+            removePointerDown();
+            removePointerMove();
+            removePointerUp();
+            // node.removeEventListener("dragstart", handleDragStart);
+            // node.removeEventListener("dragend", handleDragEnd);
+            // node.removeEventListener("pointerdown", handlePointerDown);
+            // node.removeEventListener("pointermove", handlePointerMove);
+            // node.removeEventListener("pointerup", handlePointerUp);
             // node.removeEventListener("touchstart", handleTouchStart);
             // node.removeEventListener("touchmove", handleTouchMove);
             // node.removeEventListener("touchend", handleTouchEnd);

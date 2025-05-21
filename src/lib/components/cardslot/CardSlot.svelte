@@ -9,6 +9,17 @@
     import type { CardInstance } from "$lib/components/cardboard/types";
     import type { DisplayTextsOptions, HandleDropFn } from "./types";
     import { fromStore, writable, type Writable } from "svelte/store";
+    import type { Attachment } from "svelte/attachments";
+    import tippy, { followCursor } from "tippy.js";
+    import {
+        mount,
+        onMount,
+        type Component,
+        type ComponentProps,
+    } from "svelte";
+    import { browser } from "$app/environment";
+    import Card from "../cardboard/Card.svelte";
+    import "tippy.js/animations/scale-subtle.css";
 
     // interface InsertResult {
     //     valid: boolean;
@@ -44,7 +55,7 @@
         callbacks = {
             onDrop: handleDrop,
         },
-        disabled = $bindable(false),
+        disabled = false,
         name = "card-slot",
         value = "card-slot",
         group = $bindable(),
@@ -72,6 +83,37 @@
     // });
 
     //let disabled = $state(false);
+    function tooltip(content: string): Attachment {
+        return (element) => {
+            const tooltip = tippy(element, {
+                content,
+                theme: "console-card",
+                arrow: false,
+                allowHTML: true,
+                followCursor: true,
+                plugins: [followCursor],
+                animation: "scale-subtle",
+            });
+            return tooltip.destroy;
+        };
+    }
+
+    function componentAsHTML<T extends Component<any>>(
+        component: T,
+        props: ComponentProps<T>
+    ): string | "" {
+        if (!browser) return "";
+        const elem = document.createElement("div");
+        mount(component, {
+            target: elem,
+            props: props,
+        });
+        return elem.innerHTML;
+    }
+
+    let cardInsideHtml: string | "" = $derived(
+        item ? componentAsHTML(Card, { instance: item }) : ""
+    );
 </script>
 
 <div class="inline-grid select-none">
@@ -81,6 +123,7 @@
             >{displayTextInactive}
         </span>
     {:else}
+        <!-- data-title={texts.tooltip()} -->
         <input
             class="-overlap peer items-center cursor-pointer appearance-none w-full h-[2em] m-0"
             type="radio"
@@ -90,6 +133,7 @@
             aria-label={texts.tooltip()}
             data-title={texts.tooltip()}
             bind:group
+            {@attach tooltip(cardInsideHtml)}
         />
         <div
             class="absolute hidden appearance-none pointer-events-none peer-checked:appearance-auto"
@@ -116,7 +160,7 @@
                     class="fixed p-2 z-11 left-1/2 top-1/2 transform-[translateX(-50%)_translateY(-50%)] bg-black text-center animate-[console-blink_0.5s_infinite]"
                 >
                     {#if globalState.invalidDrop == true}
-                        --INVALID--
+                        --INVALID POINTER--
                     {:else}
                         --PLACE POINTER HERE--
                     {/if}

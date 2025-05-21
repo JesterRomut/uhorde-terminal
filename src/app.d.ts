@@ -11,7 +11,8 @@ declare global {
     }
 
     declare module "*.md" {
-        export default (...args: unknown[]) => unknown;
+        import type { Snippet } from "svelte";
+        export default (...args: unknown[]) => Snippet;
 
         export const metadata: Record<string, unknown>;
     }

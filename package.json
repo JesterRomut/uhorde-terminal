@@ -39,7 +39,7 @@
     "jsdom": "^26.0.0",
     "mdsvex": "^0.12.6",
     "remark-breaks": "^4.0.0",
-    "svelte": "^5.0.0",
+    "svelte": "5.29",
     "svelte-check": "^4.0.0",
     "tailwindcss": "^4.0.0",
     "ts-patch": "^3.3.0",
@@ -48,6 +48,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "tippy.js": "^6.3.7",
     "typia": "^9.3.0"
   }
 }

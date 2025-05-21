@@ -1,6 +1,7 @@
 <script lang="ts">
     import { CustomElementUtils } from "$lib/classes/Utils";
     import {
+        type AnyStoryNode,
         type StoryNavigator,
         type StoryNode,
         type StoryNodes,
@@ -8,7 +9,6 @@
     import type { TabProps } from "$lib/types/tab";
     import { onMount, onDestroy, type Snippet } from "svelte";
     import type { Data } from "./tab";
-    import CardCollectible from "$lib/components/cardboard/CardCollectibleElement.svelte";
     import { writable, type Writable } from "svelte/store";
     import Story from "$lib/components/story/Story.svelte";
     import Prose from "$lib/components/Prose.svelte";
@@ -16,7 +16,8 @@
     import VerbObjectSlots from "$lib/components/cardslot/VerbNounSlots.svelte";
     import Registry from "$lib/classes/Registry";
     import type { CardInstance } from "$lib/components/cardboard/types";
-    import { globalState } from "$lib/actions/dragdrop/store.svelte.js";
+    import { on } from "svelte/events";
+    import { receiveStoryEvent, sendStoryEvent } from "$lib/components/story";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
@@ -36,18 +37,22 @@
     // 最终入口节点（根据实际需求调整）
     const storyEntryNode = nodes[0];
 
-    const story: StoryNodes = {
+    const story = {
         entry: {
             content: tutor0,
-            next: () => story.got_card,
+            next: () => story.cardSlot,
         },
-        got_card: {
+        cardSlot: {
             content: tutorCardSlot,
-            next: undefined,
+            next: () => story.slotTutor,
+        },
+        slotTutor: {
+            content: tutor1,
         },
     };
+    story satisfies StoryNodes;
 
-    let body: Node | undefined;
+    let body: Element | undefined;
 
     let storyNavigator: ((node: StoryNode) => StoryNavigator) | undefined =
         $state();
@@ -56,33 +61,48 @@
         $cards = $cards.concat(card);
     }
 
-    const storyEvents = Registry.object()
+    interface StoryEvent {
+        action: () => void;
+        completed: boolean;
+    }
+
+    const storyEvents = Registry.create()
         .register("tutor", {
             action: () => {
                 giveCard(
-                    storyEvents.get("tutor_kill").completed
+                    storyEvents.get("tutorKill").completed
                         ? { type: "character:amen_gleph:dead" }
                         : { type: "character:amen_gleph" }
                 );
-
-                // new Promise((fulfill) => {
-                //     setTimeout(fulfill, 200);
-                // }).then(() => {
-                //     giveCard({ type: "action:observe" });
-                // });
-
                 let currentStoryNode = $stack.at(-1);
                 if (!currentStoryNode)
                     throw new TypeError(
                         `expect StoryNode, got ${currentStoryNode}`
                     );
-                if (!navigator)
-                    throw new TypeError(`expect navigator, got ${navigator}`);
+                // if (!navigator)
+                //     throw new TypeError(`expect navigator, got ${navigator}`);
                 storyNavigator?.(currentStoryNode).next();
             },
-            completed: false,
-        })
-        .register("tutor_kill", {
+            completed: false as boolean,
+        } satisfies StoryEvent)
+        .register("amenInserted", {
+            action() {
+                let currentStoryNode = $stack.at(-1);
+                if (!currentStoryNode)
+                    throw new TypeError(
+                        `expect StoryNode, got ${currentStoryNode}`
+                    );
+                storyNavigator?.(currentStoryNode).next();
+            },
+            completed: false as boolean,
+        } satisfies StoryEvent)
+        .register("observe", {
+            action() {
+                giveCard({ type: "action:observe" });
+            },
+            completed: false as boolean,
+        } satisfies StoryEvent)
+        .register("tutorKill", {
             action: () => {
                 $cards = $cards.concat({ type: "character:amen_gleph" });
                 let index = $cards.findIndex((value) => {
@@ -94,9 +114,9 @@
                     type: "character:amen_gleph:dead",
                 });
             },
-            completed: false,
-        });
-    function handleCardCollect(event: Event) {
+            completed: false as boolean,
+        } satisfies StoryEvent);
+    function handleStoryEvent(event: Event) {
         if (!(event instanceof CustomEvent)) return;
         let { detail }: { detail: string } = event;
         let storyEvent = storyEvents.get(
@@ -109,16 +129,17 @@
         storyEvent.completed = true;
     }
 
+    type StoryEventId = keyof typeof storyEvents.registry;
+
+    let removeStoryEventListener: () => void;
+
     onMount(() => {
         $cards = [];
 
-        // CustomElementUtils.define("card-collectible", CardCollectible.element);
-        //CustomElementUtils.define("card-slot", CardSlot.element);
-
-        body?.addEventListener("story-event", handleCardCollect);
+        removeStoryEventListener = receiveStoryEvent(body, handleStoryEvent);
     });
     onDestroy(() => {
-        body?.removeEventListener("story-event", handleCardCollect);
+        removeStoryEventListener();
     });
 
     let stack: Writable<StoryNode[]> = $state(writable([story.entry]));
@@ -146,12 +167,16 @@
 {/snippet}
 
 {#snippet tutorCardSlot(navigator: StoryNavigator)}
+    <div class="h-10"></div>
     <VerbObjectSlots
         consumeNoun={true}
         validVerb={(state) => state.draggedItem.type === "action:observe"}
-        validNoun={(state) => {
-            console.log(globalState.invalidDrop);
-            return true;
+        validNoun={(state) => state.draggedItem.type === "character:amen_gleph"}
+        cardboard={cards}
+        afterdrop={(_, group) => {
+            if (group != "noun") return;
+            sendStoryEvent<StoryEventId>(body, "amenInserted");
+            //navigator.next();
         }}
     />
 {/snippet}
