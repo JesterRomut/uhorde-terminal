@@ -32,17 +32,7 @@
         if (!cursorElement) throw TypeError("cursorElement not bound!");
 
         let typewriterInstance;
-        // if (fn) {
-        //     typewriter = fn(terminal, terminalClone, time, cursorElement);
-        // } else {
-        //     typewriter = typewriterCursored(
-        //         terminal,
-        //         terminalClone,
-        //         time,
-        //         cursorElement,
-        //         onappend
-        //     );
-        // }
+
         const cursorPlugin = partial(cursored, cursorElement);
         if (fn) {
             typewriterInstance = fn(

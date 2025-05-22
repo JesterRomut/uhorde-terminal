@@ -155,13 +155,17 @@ export function cursored(cursor: Element) {
     return (() => {
         return {
             postappend: (e: Node, output: Element) => {
-                //if (!(e instanceof Element)) return;
                 if (!cursor) return;
+
+                // new Promise((fulfil) => {
+                //     setTimeout(fulfil, 10);
+                // }).then(() => {
                 if (e.parentNode) {
-                    e.parentNode.insertBefore(cursor, e.nextSibling);
-                    //e.parentNode.appendChild(cursor);
+                    e.parentNode.append(cursor);
                 }
-                //e.insertAdjacentElement("afterend", cursor);
+                //});
+
+                //output.appendChild(cursor);
             },
         };
     }) satisfies TypewriterPlugin;
