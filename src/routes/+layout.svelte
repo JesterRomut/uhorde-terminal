@@ -2,25 +2,26 @@
     import { page } from "$app/state";
     import { locales, localizeHref } from "$lib/paraglide/runtime";
 
-    import { onMount } from "svelte";
+    import { onMount, setContext } from "svelte";
 
     let { children } = $props();
 
-    // onMount(() => {
-    //     import("mobile-drag-drop").then(async (module) => {
-    //         const { polyfill } = module;
-    //         // optional import of scroll behaviour
-    //         const { scrollBehaviourDragImageTranslateOverride } = await import(
-    //             "mobile-drag-drop/scroll-behaviour"
-    //         );
-    //         // options are optional ;)
-    //         polyfill({
-    //             // use this to make use of the scroll behaviour
-    //             dragImageTranslateOverride:
-    //                 scrollBehaviourDragImageTranslateOverride,
-    //         });
-    //     });
-    // });
+    onMount(() => {
+        import("mobile-drag-drop").then(async (module) => {
+            const { polyfill } = module;
+            // optional import of scroll behaviour
+            const { scrollBehaviourDragImageTranslateOverride } = await import(
+                "mobile-drag-drop/scroll-behaviour"
+            );
+            // options are optional ;)
+            const polyfillEnabled = polyfill({
+                // use this to make use of the scroll behaviour
+                dragImageTranslateOverride:
+                    scrollBehaviourDragImageTranslateOverride,
+            });
+            //setContext("polyfillEnabled", polyfillEnabled);
+        });
+    });
 </script>
 
 {@render children()}

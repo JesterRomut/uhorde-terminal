@@ -18,6 +18,7 @@
     import { onMount } from "svelte";
     import { tabRegistry } from "..";
     import { m } from "$lib/paraglide/messages";
+    import { onfinish, time } from "$lib/components/typewriter";
 
     let { navigator: tabNavigator }: TabProps = $props();
     //let { cards, terminal } = tabNavigator.context;
@@ -52,10 +53,12 @@
     <Prose>
         <TypewriterCursored
             removeCursorWhenFinish={true}
-            time={80}
-            onfinish={() => {
-                navigator.next();
-            }}
+            plugins={[
+                time(80),
+                onfinish(() => {
+                    navigator.next();
+                }),
+            ]}
         >
             {@render intro()}
         </TypewriterCursored>

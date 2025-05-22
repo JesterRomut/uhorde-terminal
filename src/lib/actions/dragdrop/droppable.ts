@@ -147,9 +147,9 @@ export function droppable<T>(
         handleDragStartOnContainer
     );
 
-    const removePointerOver = on(node, "pointerover", handlePointerOver);
-    const removePointerOut = on(node, "pointerout", handlePointerOut);
-    const removePointerUp = on(node, "pointerup", handlePointerUp);
+    // const removePointerOver = on(node, "pointerover", handlePointerOver);
+    // const removePointerOut = on(node, "pointerout", handlePointerOut);
+    // const removePointerUp = on(node, "pointerup", handlePointerUp);
     // node.addEventListener("dragenter", handleDragEnter);
     // node.addEventListener("dragleave", handleDragLeave);
     // node.addEventListener("dragover", handleDragOver);
@@ -172,9 +172,9 @@ export function droppable<T>(
             removeDrop();
             removeDragStartOnContainer();
 
-            removePointerOver();
-            removePointerOut();
-            removePointerUp();
+            // removePointerOver();
+            // removePointerOut();
+            // removePointerUp();
         },
     };
 }

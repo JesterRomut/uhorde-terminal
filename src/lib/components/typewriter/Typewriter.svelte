@@ -1,18 +1,16 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { typewriter } from ".";
-    import { type TypewriterFn } from "./types";
+    import { typewriter, time } from ".";
+    import { type TypewriterBuilderFn, type TypewriterPlugin } from "./types";
     //type TypewriterFn = (base: Element, output: Element, time: number) => { start: () => Promise<void>; };
 
     interface Props {
-        onfinish?: () => void;
-        onerror?: (reason: any) => void;
-        time?: number;
-        fn?: TypewriterFn;
+        plugins?: TypewriterPlugin[];
+        fn?: TypewriterBuilderFn;
         children: any;
     }
 
-    let { children, time = 200, onfinish, onerror, fn }: Props = $props();
+    let { children, plugins, fn }: Props = $props();
 
     let terminal: Element | undefined;
 
@@ -26,16 +24,22 @@
         //console.log(terminal.childNodes);
         let typewriterInstance;
         if (fn) {
-            typewriterInstance = fn(terminal, terminalClone, time);
+            typewriterInstance = fn(
+                { base: terminal, output: terminalClone },
+                plugins || [time(100)]
+            );
         } else {
-            typewriterInstance = typewriter(terminal, terminalClone, time);
+            typewriterInstance = typewriter(
+                { base: terminal, output: terminalClone },
+                plugins || [time(100)]
+            );
         }
         let promise = typewriterInstance.start();
         promise.then(() => {
             terminal?.remove();
         });
-        if (onfinish) promise.then(onfinish);
-        if (onerror) promise.catch(onerror);
+        //if (onfinish) promise.then(onfinish);
+        //if (onerror) promise.catch(onerror);
     });
 </script>
 

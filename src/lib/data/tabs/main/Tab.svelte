@@ -9,9 +9,15 @@
     import { m } from "$lib/paraglide/messages.js";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
-    import { typewriterCursoredDeep } from "$lib/components/typewriter";
     import type { Data } from "./tab";
     import type { TabProps } from "$lib/types/tab";
+    import {
+        onfinish,
+        typewriterDeep,
+        time,
+        type DefaultAvailableComponentId,
+        components,
+    } from "$lib/components/typewriter";
 
     let { data, navigator }: TabProps & { data: Data } = $props();
     let roll = $state(data.codes.roll());
@@ -28,19 +34,25 @@
 <div class="block h-1/12"></div>
 <span>> </span>
 <TypewriterCursored
-    fn={typewriterCursoredDeep}
-    time={100}
-    onfinish={() => {
-        showLogo = true;
-    }}><ByteSeparator>{roll}</ByteSeparator></TypewriterCursored
+    fn={typewriterDeep}
+    plugins={[
+        time(100),
+        onfinish(() => {
+            showLogo = true;
+        }),
+    ]}><ByteSeparator>{roll}</ByteSeparator></TypewriterCursored
 >
 <br />
 {#if showLogo}
     <div class="inline-block absolute">
-        <Typewriter time={20}>
-            <p class="mt-0 mb-0">{m.smart_such_fly_catch()}</p>
+        <Typewriter fn={typewriterDeep} plugins={[time(40), components()]}>
+            <p class="mt-0 mb-0">
+                <ByteSeparator>{m.smart_such_fly_catch()}</ByteSeparator>
+            </p>
             <!-- <logos-logo></logos-logo> -->
-            <Logos></Logos>
+            <div
+                data-uhorde-sv-component={"Logos" satisfies DefaultAvailableComponentId}
+            ></div>
             <br />
             <p class="mt-0 mb-0">{m.direct_major_felix_fulfill()}</p>
         </Typewriter>

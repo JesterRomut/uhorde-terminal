@@ -3,6 +3,8 @@
     import {
         type AnyStoryNode,
         type StoryNavigator,
+        type StoryNavigatorForked,
+        type StoryNavigatorSingle,
         type StoryNode,
         type StoryNodes,
     } from "$lib/components/story/types";
@@ -18,16 +20,43 @@
     import type { CardInstance } from "$lib/components/cardboard/types";
     import { on } from "svelte/events";
     import { receiveStoryEvent, sendStoryEvent } from "$lib/components/story";
+    import ByteSeparator from "$lib/components/ByteSeparator.svelte";
+    import { onfinish, time, typewriterDeep } from "$lib/components/typewriter";
+    import { isNil } from "lodash-es";
+    import tutor0 from "./content.sectioned/tutor0.md";
+    import tutor1 from "./content.sectioned/tutor1.md";
+    import end from "./content.sectioned/end.md";
+    import TerminalChoice from "$lib/components/TerminalChoice.svelte";
 
     let { data, navigator: tabNavigator }: TabProps & { data: Data } = $props();
     let { cards, terminal } = tabNavigator.context;
-    let { stories, tutor0, tutor1 } = data.content;
+    let { stories } = data.content;
 
     const nodes: StoryNode[] = stories.map((content) => ({
         content: contentWrapper,
         arguments: [content],
         next: undefined,
     }));
+
+    const story = {
+        entry: {
+            content: contentWrapperNoTypewriter,
+            arguments: [tutor0],
+            next: () => story.cardSlot,
+        },
+        cardSlot: {
+            content: tutorCardSlot,
+            next: { tutor: () => story.slotTutor, story: () => storyEntryNode },
+        },
+        slotTutor: {
+            content: tutor1Wrapped,
+        },
+        end: {
+            content: contentWrapper,
+            arguments: [end],
+        },
+    };
+    story satisfies StoryNodes;
 
     // 建立链表关系（从第一个节点开始）
     for (let i = 0; i < nodes.length - 1; i++) {
@@ -36,21 +65,10 @@
 
     // 最终入口节点（根据实际需求调整）
     const storyEntryNode = nodes[0];
-
-    const story = {
-        entry: {
-            content: tutor0,
-            next: () => story.cardSlot,
-        },
-        cardSlot: {
-            content: tutorCardSlot,
-            next: () => story.slotTutor,
-        },
-        slotTutor: {
-            content: tutor1,
-        },
+    nodes[nodes.length - 1].next = {
+        content: choiceContinue,
+        next: story.end,
     };
-    story satisfies StoryNodes;
 
     let body: Element | undefined;
 
@@ -92,7 +110,7 @@
                     throw new TypeError(
                         `expect StoryNode, got ${currentStoryNode}`
                     );
-                storyNavigator?.(currentStoryNode).next();
+                storyNavigator?.(currentStoryNode).next("tutor");
             },
             completed: false as boolean,
         } satisfies StoryEvent)
@@ -149,6 +167,13 @@
 
 <Story bind:stack bind:navigator={storyNavigator}></Story>
 
+{#snippet contentWrapperNoTypewriter(
+    navigator: StoryNavigator,
+    arg: [Snippet<[StoryNavigator]>]
+)}
+    <Prose>{@render arg[0](navigator)}</Prose>
+{/snippet}
+
 {#snippet contentWrapper(
     navigator: StoryNavigator,
     arg: [Snippet<[StoryNavigator]>]
@@ -156,17 +181,49 @@
     <Prose>
         <TypewriterCursored
             removeCursorWhenFinish={true}
-            time={80}
-            onfinish={() => {
-                navigator.next();
-            }}
+            plugins={[
+                time(100),
+                onfinish(() => {
+                    navigator.next();
+                }),
+            ]}
         >
+            <!-- onfinish={() => {
+            navigator.next();
+        }} -->
             {@render arg[0](navigator)}
         </TypewriterCursored>
     </Prose>
 {/snippet}
 
-{#snippet tutorCardSlot(navigator: StoryNavigator)}
+{#snippet tutor1Wrapped(navigator: StoryNavigator)}
+    <Prose>
+        <TypewriterCursored
+            removeCursorWhenFinish={true}
+            fn={typewriterDeep}
+            plugins={[time(40)]}
+        >
+            <ByteSeparator>{@render tutor1()}</ByteSeparator>
+        </TypewriterCursored>
+    </Prose>
+{/snippet}
+
+{#snippet choiceContinue(navigator: StoryNavigatorSingle)}
+    <TerminalChoice
+        choices={[
+            {
+                text: `[继续 / CONTINUE]`,
+                waitingTime: 1000,
+                onclick: (e) => {
+                    navigator.keep(undefined, -1);
+                    navigator.next();
+                },
+            },
+        ]}
+    />
+{/snippet}
+
+{#snippet tutorCardSlot(navigator: StoryNavigatorForked<"story" | "tutor">)}
     <div class="h-10"></div>
     <VerbObjectSlots
         consumeNoun={true}
@@ -177,6 +234,15 @@
             if (group != "noun") return;
             sendStoryEvent<StoryEventId>(body, "amenInserted");
             //navigator.next();
+        }}
+        onsubmit={(verb, noun) => {
+            if (!verb) return false;
+            if (!noun) return false;
+            navigator.next("story");
+            return true;
+        }}
+        cansubmit={(verb, noun) => {
+            return !(isNil(verb) || isNil(noun));
         }}
     />
 {/snippet}

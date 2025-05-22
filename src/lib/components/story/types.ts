@@ -52,6 +52,6 @@ export interface StoryNavigatorSingle extends StoryNavigator {
     next: () => void;
 }
 
-export interface StoryNavigatorForked extends StoryNavigator {
-    next: (to: string | number) => void;
+export interface StoryNavigatorForked<T extends string> extends StoryNavigator {
+    next: (to: T) => void;
 }

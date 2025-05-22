@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
-    import { typewriterCursoredDeep } from "$lib/components/typewriter";
+    import { onfinish, time, typewriterDeep } from "$lib/components/typewriter";
     import TypewriterCursored from "$lib/components/typewriter/TypewriterCursored.svelte";
     import type { PageData } from "./$types";
 
@@ -13,12 +13,14 @@
 >
     >
     <TypewriterCursored
-        fn={typewriterCursoredDeep}
-        time={60}
+        fn={typewriterDeep}
+        plugins={[
+            time(60),
+            onfinish(() => {
+                goto("/?debug=on");
+            }),
+        ]}
         removeCursorWhenFinish={false}
-        onfinish={() => {
-            //sessionStorage.setItem("debug", "on");
-            goto("/?debug=on");
-        }}><ByteSeparator>HERE BE DEBUGS.</ByteSeparator></TypewriterCursored
+        ><ByteSeparator>HERE BE DEBUGS.</ByteSeparator></TypewriterCursored
     >
 </div>

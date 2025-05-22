@@ -27,10 +27,10 @@
         disabled?: boolean;
         validVerb?: ValidationFn;
         validNoun?: ValidationFn;
-        validSubmit?: (
-            verb: NullableCardInstance,
-            noun: NullableCardInstance
-        ) => boolean;
+        // validSubmit?: (
+        //     verb: NullableCardInstance,
+        //     noun: NullableCardInstance
+        // ) => boolean;
         consumeVerb?: boolean;
         consumeNoun?: boolean;
         cardboard: Writable<CardInstance[]>;
@@ -38,10 +38,14 @@
             state: DragDropState<CardInstance>,
             group: SelectedSlot
         ) => void;
+        cansubmit?: (
+            verb: NullableCardInstance,
+            noun: NullableCardInstance
+        ) => boolean;
         onsubmit?: (
             verb: NullableCardInstance,
             noun: NullableCardInstance
-        ) => void;
+        ) => boolean;
     }
 
     let {
@@ -52,12 +56,13 @@
         disabled = false,
         validVerb = () => true,
         validNoun = () => true,
-        validSubmit = () => true,
+        //validSubmit = () => true,
         consumeVerb = false,
         consumeNoun = false,
         cardboard,
         afterdrop,
-        onsubmit,
+        cansubmit = () => true,
+        onsubmit = () => true,
     }: Props = $props();
 
     // function handleVerbDrop(state: DragDropState<CardInstance>) {
@@ -81,6 +86,8 @@
             ? group === (consumeVerb ? "verb" : "noun")
             : false
     );
+
+    let submitable = $derived(cansubmit(verb, noun));
 
     function insertCardOrReplace(state: DragDropState<CardInstance>) {
         let cardIndex = $cardboard.findIndex(
@@ -110,33 +117,42 @@
 {#snippet toolbar()}
     <div class="flex h-full self-end pr-2 gap-1">
         <!-- svelte-ignore a11y_invalid_attribute -->
-        <a
-            href="javascript:;"
-            class="inline-flex w-[1.3em] ml-1 h-full align-middle *:stroke-slate-300 *:hover:stroke-amber-200"
-            data-title={m.every_bland_octopus_view()}
-            aria-label={m.every_bland_octopus_view()}
-            onclick={() => {
-                if (!validSubmit(verb, noun)) return;
-                if (onsubmit) onsubmit(verb, noun);
+        {#if submitable}
+            <a
+                href="javascript:;"
+                class="inline-flex w-[1.3em] ml-1 h-full align-middle *:stroke-slate-300 *:hover:stroke-amber-200"
+                data-title={m.every_bland_octopus_view()}
+                aria-label={m.every_bland_octopus_view()}
+                onclick={() => {
+                    //if (!validSubmit(verb, noun)) return;
+                    if (!onsubmit(verb, noun)) return;
 
-                if (verb && !consumeVerb) {
-                    cardboard.update((cards) =>
-                        cards.concat(verb as CardInstance)
-                    );
-                    //verb = undefined;
-                }
-                if (noun && !consumeNoun) {
-                    cardboard.update((cards) =>
-                        cards.concat(noun as CardInstance)
-                    );
-                    //noun = undefined;
-                }
+                    if (verb && !consumeVerb) {
+                        cardboard.update((cards) =>
+                            cards.concat(verb as CardInstance)
+                        );
+                        //verb = undefined;
+                    }
+                    if (noun && !consumeNoun) {
+                        cardboard.update((cards) =>
+                            cards.concat(noun as CardInstance)
+                        );
+                        //noun = undefined;
+                    }
 
-                disabled = true;
-            }}
-        >
-            {@render submitIcon()}
-        </a>
+                    disabled = true;
+                }}
+            >
+                {@render submitIcon()}
+            </a>
+        {:else}
+            <span
+                class="inline-flex w-[1.3em] ml-1 h-full align-middle *:stroke-slate-600"
+            >
+                {@render submitIcon()}
+            </span>
+        {/if}
+
         <!-- svelte-ignore a11y_invalid_attribute -->
         <a
             href="javascript:;"
@@ -163,71 +179,75 @@
     </div>
 {/snippet}
 
-<div class="bg-black h-[2em] rounded-md pl-1 flex flex-nowrap">
+<div
+    class="bg-black rounded-md pl-1 grid sm:grid-rows-1 sm:grid-flow-col justify-start justify-items-start"
+>
     {#if !disabled}
         {@render toolbar()}
     {/if}
+    <div class="flex h-[2em]">
+        [
+        <CardSlot
+            callbacks={{
+                onDragOver: (state) => {
+                    state.invalidDrop = !validVerb(state);
 
-    [
-    <CardSlot
-        callbacks={{
-            onDragOver: (state) => {
-                state.invalidDrop = !validVerb(state);
-
-                //return state;
-            },
-            onDrop: (state) => {
-                if (state.invalidDrop) return;
-                const { sourceContainer, targetContainer } = state;
-                if (!targetContainer || sourceContainer === targetContainer)
-                    return;
-                insertCardOrReplace(state);
-                if (afterdrop) afterdrop(state, group);
-            },
-        }}
-        texts={{
-            empty: () => m.many_sound_wren_hush(),
-            filled: (item) => `${item}`,
-            dragging: () => m.weary_best_horse_hunt(),
-            tooltip: () => m.frail_lower_crab_read(),
-        }}
-        name="verb-noun-slots"
-        value={"verb" as SelectedSlot}
-        disabled={verbDisabled || disabled}
-        bind:item={verb}
-        bind:group
-    ></CardSlot>
-    ：
-    <CardSlot
-        callbacks={{
-            onDragOver: (state) => {
-                state.invalidDrop = !validNoun(state);
-                //console.log(!validNoun(state));
-                //return state;
-            },
-            onDrop: (state) => {
-                if (state.invalidDrop) return;
-                const { draggedItem, sourceContainer, targetContainer } = state;
-                if (!targetContainer || sourceContainer === targetContainer)
-                    return;
-                insertCardOrReplace(state);
-                if (afterdrop) afterdrop(state, group);
-                //noun = draggedItem;
-            },
-        }}
-        name="verb-noun-slots"
-        texts={{
-            empty: () => m.cozy_gaudy_sloth_attend(),
-            filled: (item) => `${item}`,
-            dragging: () => m.weary_best_horse_hunt(),
-            tooltip: () => m.real_brave_clownfish_flop(),
-        }}
-        value={"noun" as SelectedSlot}
-        disabled={nounDisabled || disabled}
-        bind:item={noun}
-        bind:group
-    ></CardSlot>
-    ]
+                    //return state;
+                },
+                onDrop: (state) => {
+                    if (state.invalidDrop) return;
+                    const { sourceContainer, targetContainer } = state;
+                    if (!targetContainer || sourceContainer === targetContainer)
+                        return;
+                    insertCardOrReplace(state);
+                    if (afterdrop) afterdrop(state, group);
+                },
+            }}
+            texts={{
+                empty: () => m.many_sound_wren_hush(),
+                filled: (item) => `${item}`,
+                dragging: () => m.weary_best_horse_hunt(),
+                tooltip: () => m.frail_lower_crab_read(),
+            }}
+            name="verb-noun-slots"
+            value={"verb" as SelectedSlot}
+            disabled={verbDisabled || disabled}
+            bind:item={verb}
+            bind:group
+        ></CardSlot>
+        ：
+        <CardSlot
+            callbacks={{
+                onDragOver: (state) => {
+                    state.invalidDrop = !validNoun(state);
+                    //console.log(!validNoun(state));
+                    //return state;
+                },
+                onDrop: (state) => {
+                    if (state.invalidDrop) return;
+                    const { draggedItem, sourceContainer, targetContainer } =
+                        state;
+                    if (!targetContainer || sourceContainer === targetContainer)
+                        return;
+                    insertCardOrReplace(state);
+                    if (afterdrop) afterdrop(state, group);
+                    //noun = draggedItem;
+                },
+            }}
+            name="verb-noun-slots"
+            texts={{
+                empty: () => m.cozy_gaudy_sloth_attend(),
+                filled: (item) => `${item}`,
+                dragging: () => m.weary_best_horse_hunt(),
+                tooltip: () => m.real_brave_clownfish_flop(),
+            }}
+            value={"noun" as SelectedSlot}
+            disabled={nounDisabled || disabled}
+            bind:item={noun}
+            bind:group
+        ></CardSlot>
+        ]
+    </div>
     {#if !disabled && (consumeVerb || consumeNoun)}
         <div
             class:*:stroke-slate-700={!consume}

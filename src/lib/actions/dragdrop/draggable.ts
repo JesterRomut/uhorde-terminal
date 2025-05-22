@@ -209,9 +209,9 @@ export function draggable<T>(
 
     const removeDragStart = on(node, "dragstart", handleDragStart);
     const removeDragEnd = on(node, "dragend", handleDragEnd);
-    const removePointerDown = on(node, "pointerdown", handlePointerDown);
-    const removePointerMove = on(node, "pointermove", handlePointerMove);
-    const removePointerUp = on(node, "pointerup", handlePointerUp);
+    // const removePointerDown = on(node, "pointerdown", handlePointerDown);
+    // const removePointerMove = on(node, "pointermove", handlePointerMove);
+    // const removePointerUp = on(node, "pointerup", handlePointerUp);
     // node.addEventListener("dragend", handleDragEnd);
     // node.addEventListener("pointerdown", handlePointerDown);
     // node.addEventListener("pointermove", handlePointerMove);
@@ -230,9 +230,9 @@ export function draggable<T>(
         destroy() {
             removeDragStart();
             removeDragEnd();
-            removePointerDown();
-            removePointerMove();
-            removePointerUp();
+            // removePointerDown();
+            // removePointerMove();
+            // removePointerUp();
             // node.removeEventListener("dragstart", handleDragStart);
             // node.removeEventListener("dragend", handleDragEnd);
             // node.removeEventListener("pointerdown", handlePointerDown);

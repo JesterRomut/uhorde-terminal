@@ -7,15 +7,23 @@
     import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
     import { CustomElementUtils } from "$lib/classes/Utils";
     import Logos from "$lib/components/Logos.svelte";
-    import TypewriterDeep from "$lib/components/typewriter/TypewriterDeep.svelte";
     import Revelation from "./revelation.md";
+    import {
+        typewriterDeep,
+        time,
+        components,
+    } from "$lib/components/typewriter";
     let stack: Writable<StoryNode[]> = writable([story.entry]);
 
     onMount(() => {
-        CustomElementUtils.define("logos-logo", Logos.element);
+        //CustomElementUtils.define("logos-logo", Logos.element);
     });
 </script>
 
+<!-- <Story bind:stack></Story> -->
 <!-- <Revelation></Revelation> -->
-<Story bind:stack></Story>
-<Revelation></Revelation>
+<Typewriter fn={typewriterDeep} plugins={[time(60), components()]}>
+    <!-- <Revelation></Revelation> -->
+
+    <div data-uhorde-sv-component="Logos">111</div>
+</Typewriter>
