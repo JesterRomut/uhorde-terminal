@@ -21,7 +21,7 @@
 
 {#snippet background()}
     <img
-        class="invert mix-blend-lighten opacity-70 bg-black"
+        class="mix-blend-lighten opacity-70 bg-black"
         src={Aleph0SVG}
         alt={display}
     />

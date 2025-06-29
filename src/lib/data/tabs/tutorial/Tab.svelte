@@ -18,7 +18,8 @@
     import { onMount } from "svelte";
     import { tabRegistry } from "..";
     import { m } from "$lib/paraglide/messages";
-    import { onfinish, time } from "$lib/components/typewriter";
+    import { onfinish, time, typewriter } from "$lib/components/typewriter";
+    import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
 
     let { navigator: tabNavigator }: TabProps = $props();
     //let { cards, terminal } = tabNavigator.context;
@@ -51,8 +52,9 @@
 
 {#snippet introWrapped(navigator: StoryNavigatorSingle)}
     <Prose>
-        <TypewriterCursored
-            removeCursorWhenFinish={true}
+        <Typewriter
+            fn={typewriter}
+            cursored={{ enabled: true }}
             plugins={[
                 time(80),
                 onfinish(() => {
@@ -61,7 +63,7 @@
             ]}
         >
             {@render intro()}
-        </TypewriterCursored>
+        </Typewriter>
     </Prose>
 {/snippet}
 

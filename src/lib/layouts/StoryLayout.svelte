@@ -1,6 +1,7 @@
 <script module lang="ts">
     import { default as a } from "./CardCollectibleLink.svelte";
-    export { a };
+    import { default as img } from "./ImageHandler.svelte";
+    export { a, img };
 </script>
 
 <script lang="ts">

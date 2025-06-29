@@ -6,7 +6,7 @@
         StoryNavigatorForked,
         StoryNode,
     } from "../../../components/story/types";
-    import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
+    import Typewriter from "$lib/components/typewriter/TypewriterBare.svelte";
     import { typewriterDeep } from "$lib/components/typewriter";
     export { content, contentForked, contentAlt, wrapper1 };
 </script>
@@ -39,7 +39,7 @@
     <b> {@render children[0](navigator)}</b>
 {/snippet}
 
-{#snippet contentForked(navigator: StoryNavigatorForked)}
+{#snippet contentForked(navigator: StoryNavigatorForked<"one" | "two">)}
     <!-- <Typewriter time={100} fn={typewriterDeep}
         >{@render Revelation()}</Typewriter
     > -->

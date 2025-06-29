@@ -20,7 +20,7 @@
 
 {#snippet background()}
     <enhanced:img
-        class="invert mix-blend-lighten opacity-70 bg-black"
+        class="mix-blend-lighten opacity-70 bg-black"
         src={UhrwerkPic}
         alt={display}
     ></enhanced:img>

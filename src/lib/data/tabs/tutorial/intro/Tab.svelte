@@ -25,6 +25,7 @@
     import { isNil } from "lodash-es";
     import tutor0 from "./content.sectioned/tutor0.md";
     import tutor1 from "./content.sectioned/tutor1.md";
+    import tutor2 from "./content.sectioned/tutor2.md";
     import end from "./content.sectioned/end.md";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
 
@@ -66,7 +67,7 @@
     // 最终入口节点（根据实际需求调整）
     const storyEntryNode = nodes[0];
     nodes[nodes.length - 1].next = {
-        content: choiceContinue,
+        content: tutorCardSlot2,
         next: story.end,
     };
 
@@ -226,7 +227,6 @@
 {#snippet tutorCardSlot(navigator: StoryNavigatorForked<"story" | "tutor">)}
     <div class="h-10"></div>
     <VerbObjectSlots
-        consumeNoun={true}
         validVerb={(state) => state.draggedItem.type === "action:observe"}
         validNoun={(state) => state.draggedItem.type === "character:amen_gleph"}
         cardboard={cards}
@@ -245,4 +245,35 @@
             return !(isNil(verb) || isNil(noun));
         }}
     />
+{/snippet}
+
+{#snippet tutorCardSlot2(navigator: StoryNavigatorForked<"story" | "tutor">)}
+    <div class="h-10"></div>
+    <VerbObjectSlots
+        consumeVerb={true}
+        validVerb={(state) => state.draggedItem.type === "action:observe"}
+        validNoun={(state) => state.draggedItem.type === "character:amen_gleph"}
+        cardboard={cards}
+        afterdrop={(_, group) => {
+            if (group != "noun") return;
+            //sendStoryEvent<StoryEventId>(body, "amenInserted");
+            //navigator.next();
+        }}
+        onsubmit={(verb, noun) => {
+            if (!verb) return false;
+            if (!noun) return false;
+            navigator.next("story");
+            return true;
+        }}
+        cansubmit={(verb, noun) => {
+            return !(isNil(verb) || isNil(noun));
+        }}
+    />
+    <TypewriterCursored
+        removeCursorWhenFinish={true}
+        fn={typewriterDeep}
+        plugins={[time(40)]}
+    >
+        <ByteSeparator>{@render tutor2()}</ByteSeparator>
+    </TypewriterCursored>
 {/snippet}

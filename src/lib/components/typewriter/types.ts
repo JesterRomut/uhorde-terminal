@@ -5,6 +5,9 @@ export type TypewriterResult = { start: () => Promise<void> };
 export type TypewriterCallback<T extends Function> = T | T[];
 
 export interface TypewriterCallbacks {
+    onappend: TypewriterCallback<
+        (node: Node, output: Element) => boolean | Promise<boolean>
+    >;
     postappend: TypewriterCallback<
         (node: Node, output: Element) => void | Promise<void>
     >;
@@ -29,7 +32,7 @@ export interface TypewriterParams {
     output: Element;
     //time: number;
 }
-export type TypewriterPlugin = () => Partial<TypewriterCallbacks>;
+export type TypewriterPlugin = Partial<TypewriterCallbacks>;
 // export type TypewriterCursoredFn = (
 //     base: Element,
 //     output: Element,

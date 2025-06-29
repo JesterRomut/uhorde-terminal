@@ -4,7 +4,7 @@
     import Loader from "$lib/components/Loader.svelte";
     import Logos from "$lib/components/Logos.svelte";
     import TerminalChoice from "$lib/components/TerminalChoice.svelte";
-    import Typewriter from "$lib/components/typewriter/Typewriter.svelte";
+    import Typewriter from "$lib/components/typewriter/TypewriterBare.svelte";
     import { onMount } from "svelte";
     import { m } from "$lib/paraglide/messages.js";
     import ByteSeparator from "$lib/components/ByteSeparator.svelte";
@@ -72,12 +72,12 @@
                 //context.tab.set("manual");
             },
         },
-        {
-            text: m.each_cozy_parakeet_twirl(),
-            waitingTime: 1000,
-            onclick: (e) => {
-                //goto("/offset/1");
-            },
-        },
+        // {
+        //     text: m.each_cozy_parakeet_twirl(),
+        //     waitingTime: 1000,
+        //     onclick: (e) => {
+        //         //goto("/offset/1");
+        //     },
+        // },
     ]}
 />

@@ -19,6 +19,8 @@ import * as amenGlephDead from "./characters/AmenGlephDead.svelte";
 
 import * as observe from "./actions/Observe.svelte";
 
+import * as bananaPeel from "./misc/BananaPeel.svelte";
+
 import Registry from "$lib/classes/Registry";
 
 //export const cardRegistry = new CardRegistry();
@@ -26,6 +28,7 @@ export const cardRegistry = Registry.create()
     .register("character:uhrwerk", uhrwerk satisfies CardData)
     .register("character:amen_gleph", amenGleph satisfies CardData)
     .register("character:amen_gleph:dead", amenGlephDead satisfies CardData)
-    .register("action:observe", observe satisfies CardData);
+    .register("action:observe", observe satisfies CardData)
+    .register("misc:banana_peel", bananaPeel);
 
 export type CardId = keyof typeof cardRegistry.registry;

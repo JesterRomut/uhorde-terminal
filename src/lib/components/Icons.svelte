@@ -3,7 +3,28 @@
 </script>
 
 {#snippet exhaustIcon()}
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        version="1.1"
+        id="svg1"
+        xml:space="preserve"
+        ><defs id="defs1" /><g
+            style="display:inline;fill:none"
+            id="g2"
+            transform="translate(-0.01544402)"
+            ><path
+                d="m 12,5 c 3.866,0 7,3.13401 7,7 M 12,5 C 11.5608,5 11.131,5.04045 10.7142,5.11783 M 12,19 C 8.13401,19 5,15.866 5,12 m 0,0 C 5,10.065 5.78512,8.3134 7.05417,7.04634 M 19,12 c 0,0.4385 -0.0403,0.8675 -0.1174,1.2837 M 3,3 21,21 M 9.6814671,20.538611 12.028958,18.99807 m 0,0 -1.57143,-2.316603"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                id="path1-2"
+                style="display:inline"
+            /></g
+        ></svg
+    >
+    <!-- <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
         ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
             id="SVGRepo_tracerCarrier"
             stroke-linecap="round"
@@ -16,7 +37,7 @@
                 stroke-linejoin="round"
             ></path>
         </g>
-    </svg>
+    </svg> -->
 {/snippet}
 {#snippet retryIcon()}
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"

@@ -2,6 +2,8 @@
 layout: story
 name: bible-revelation
 ---
+##### +story
+![1](amenglephpaint_0)
 
 1 第五位天使吹号，我就看见一个星从天落到地上。有无底坑的钥匙赐给他。
 2 他开了无底坑，便有烟从坑里往上冒，好像大火炉的烟。日头和天空，都因这烟昏暗了。
